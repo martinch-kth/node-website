@@ -63,24 +63,43 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     }
 
     .children:hover rect.child {
-      fill: #bbb;
+      fill: #aaa;
     }
 
   </style>
 
-  <link rel="stylesheet" type="text/css" href="stylesheets/semantic.css">
-  <script
-          src="https://code.jquery.com/jquery-3.1.1.min.js"
-          integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-          crossorigin="anonymous"></script>
+    <style> /* set the CSS */
 
-  <script src="https://d3js.org/d3.v3.min.js"></script>
+        path {
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+
+    </style>
+
+
+  <link rel="stylesheet" type="text/css" href="stylesheets/semantic.css">
+  <script src="javascripts/http_code.jquery.com_jquery-3.1.1.js"></script>
+  <script src="javascripts/http_d3js.org_d3.v3.js"></script>
 
   <% include partials/head %>
 
 </head>
 
 <body >
+
+
+
+
 
 
 <% include partials/menu %>
@@ -188,7 +207,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     </div>
 
 </div>
-
 
 
 <script>
@@ -340,12 +358,50 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
       var children = g.selectAll(".child")
               .data(function(d) { return d._children || [d]; })
               .enter().append("g");
+        /*
+        Sätt div för att skicka SVG till:
+
+            <div class="status">Click on chart... </div>
+
+               .on('click', function(d, i) {
+
+                   if (i===0)
+                   {
+                       d3.select('.status')
+                           .text('You clicked on THE LAST NODE!! ' + i)
+
+
+                   }
+                   else{
+                       d3.select('.status')
+                           .text('You clicked on ...: ' + i);
+                   }
+
+               });
+   //-----------------------------------------------
+
+       .on("mouseover", function(d) {
+               div.transition()
+                   .duration(200)
+                   .style("opacity", .9);
+               div	.html("<h3>hii</h3>")
+                   .style("left", "20px")
+                   .style("top", "20px");
+           })
+               .on("mouseout", function(d) {
+                   div.transition()
+                       .duration(500)
+                       .style("opacity", 0);
+               });
+   */
+//--------------------------------------------------------------------
 
       children.append("rect")
               .attr("class", "child")
               .call(rect)
               .append("title")
               .text(function(d) { return d.key + " (" + formatNumber(d.value) + ")"; });
+
       children.append("text")
               .attr("class", "ctext")
               .text(function(d) { return d.key; })
@@ -368,6 +424,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
       g.selectAll("rect")
               .style("fill", function(d) { return color(d.key); });
+
 
       function transition(d) {
         if (transitioning || !d) return;
@@ -422,6 +479,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
               .style("opacity", function(d) { return this.getComputedTextLength() < x(d.x + d.dx) - x(d.x) ? 1 : 0; });
     }
 
+    // skapar graphens rektangel..inte texten...
     function rect(rect) {
       rect.attr("x", function(d) { return x(d.x); })
               .attr("y", function(d) { return y(d.y); })
@@ -437,7 +495,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
   }
 
   if (window.location.hash === "") {
-    d3.json("http://localhost:3000/treemap", function(err, res) {
+    d3.json("http://localhost:3000/data/mystuff.json", function(err, res) {
       if (!err) {
         console.log(res);
         var data = d3.nest().key(function(d) { return d.region; }).key(function(d) { return d.subregion; }).entries(res);

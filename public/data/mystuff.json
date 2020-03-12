@@ -1,6 +1,6 @@
 [
   {
-    "key": "Error log: \n occurrences: 3 WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYY.YYYYYYY.YYYY.YYYYYYYYYYYY[YYYYYYY] - \n YYYYYY YY YYYYYY YYYYYY YYYYYYYYYYY YYY [/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY] \n \n occurrences: 1 WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYY.YYYYYYY.YYYY.YYYYYYYYYYYY[YYYYYYY] - \n YYYYYY YY YYYYYY YYYYYY YYYYYYYYYYY YYY [/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY] \n",
+    "key": "Error log: \n occurrences: 3 WYYYYYYYYYYY* 12*45*02*599",
     "region": "Host1",
     "subregion": "Module1",
     "value": 4
