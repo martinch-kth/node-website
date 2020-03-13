@@ -92,10 +92,9 @@ router.get('/treemap', function(req, res, next) {
   res.json(treemap_data_errors)
 });
 
-/* GET treemap data with WARNINGS */
-router.get('/treemap', function(req, res, next) {
-  res.json(treemap_data_warnings)
-});
+
+
+
 
 router.get('/about', function(req, res, next) {
   res.render('about', {page:'About Us', menuId:'about'});
