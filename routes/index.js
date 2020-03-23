@@ -93,9 +93,6 @@ router.get('/treemap', function(req, res, next) {
 });
 
 
-
-
-
 router.get('/about', function(req, res, next) {
   res.render('about', {page:'About Us', menuId:'about'});
 });

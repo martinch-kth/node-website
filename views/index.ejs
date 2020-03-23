@@ -22,6 +22,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
       margin-top: 6px;
       margin-bottom: 6px;
     }
+
+
     text {
       pointer-events: none;
     }
@@ -68,24 +70,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
   </style>
 
-    <style> /* set the CSS */
-
-        path {
-            stroke: steelblue;
-            stroke-width: 2;
-            fill: none;
-        }
-
-        .axis path,
-        .axis line {
-            fill: none;
-            stroke: grey;
-            stroke-width: 1;
-            shape-rendering: crispEdges;
-        }
-
-    </style>
-
 
   <link rel="stylesheet" type="text/css" href="stylesheets/semantic.css">
   <script src="javascripts/http_code.jquery.com_jquery-3.1.1.js"></script>
@@ -96,10 +80,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 </head>
 
 <body >
-
-
-
-
 
 
 <% include partials/menu %>
@@ -206,6 +186,10 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         <div id="chart" style="padding-top: 50px"></div>
     </div>
 
+    <div class="row">
+        <div class="status"></div>
+    </div>
+
 </div>
 
 
@@ -272,6 +256,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             .attr("y", -margin.top)
             .attr("width", width)
             .attr("height", margin.top);
+
 
     grandparent.append("text")
             .attr("x", 6)
@@ -351,58 +336,48 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
               .data(d._children)
               .enter().append("g");
 
+        g.filter(function(d) { return d._children; })
+            .classed("children", true)
+            .on("click", transition);
+
+//my neeeeww
+        g.filter(function(d) { return d._children; })
+            .classed("child", true)
+
+    .on('click', function(d , i) {   // lägger till data i status div
+
+            d3.select('.status')
+                .text(d._children[0].key)
+            transition(d)
+        });
+
+
+      /*
       g.filter(function(d) { return d._children; })
               .classed("children", true)
-              .on("click", transition);
+              .on('click', function(d , i) {   // lägger till data i status div
 
-      var children = g.selectAll(".child")
+                 d3.select('.status')
+                .text(d._children[0].key)
+                transition(d)
+        });
+*/
+
+      var children = g.selectAll(".child")                       // slutnod
               .data(function(d) { return d._children || [d]; })
               .enter().append("g");
-        /*
-        Sätt div för att skicka SVG till:
-
-            <div class="status">Click on chart... </div>
-
-               .on('click', function(d, i) {
-
-                   if (i===0)
-                   {
-                       d3.select('.status')
-                           .text('You clicked on THE LAST NODE!! ' + i)
 
 
-                   }
-                   else{
-                       d3.select('.status')
-                           .text('You clicked on ...: ' + i);
-                   }
-
-               });
-   //-----------------------------------------------
-
-       .on("mouseover", function(d) {
-               div.transition()
-                   .duration(200)
-                   .style("opacity", .9);
-               div	.html("<h3>hii</h3>")
-                   .style("left", "20px")
-                   .style("top", "20px");
-           })
-               .on("mouseout", function(d) {
-                   div.transition()
-                       .duration(500)
-                       .style("opacity", 0);
-               });
-   */
-//--------------------------------------------------------------------
 
       children.append("rect")
-              .attr("class", "child")
+              .attr("class", "child")    // slutnod
               .call(rect)
-              .append("title")
-              .text(function(d) { return d.key + " (" + formatNumber(d.value) + ")"; });
 
-      children.append("text")
+              .append("title")           // all data här
+              .text(function(d) { return d.key + " (" + formatNumber(d.value) + ")"; })   // ;
+
+        // HÄR finns all DATA... finns på 2 ställen...
+          children.append("text")
               .attr("class", "ctext")
               .text(function(d) { return d.key; })
               .call(text2);
@@ -461,7 +436,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
           transitioning = false;
         });
       }
-
       return g;
     }
 
