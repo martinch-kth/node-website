@@ -1,0 +1,44 @@
+(function ($) {
+    $.fn.longDialog = function (options) {
+        var openButton = options.openButton,
+            dialog = $(this),
+            main = options.mainContainer,
+            body = $("body"),
+            html = $("html");
+
+        
+        openButton.click(function (e) {
+            main.css("width", main.width() + "px");
+            body.css("overflow", "hidden");
+            var bst = body.scrollTop(),
+                hst = html.scrollTop();
+            dialog.css("top", bst !== 0 ? bst + "px" : (hst !== 0 ? hst + "px" : ""));
+            if (typeof options.open === "function") {
+                options.open.call(dialog);
+            }
+            dialog.fadeIn("fast", function () {
+                $(this).attr("tabindex", "-1").focus();
+            });
+            e.preventDefault();
+        });
+        
+        dialog.on("click keyup", function (e) {
+            if (typeof e.keyCode !== "undefined" && e.keyCode !== 27 /* Esc */) {
+                return;
+            }
+            $(this).fadeOut("fast", function () {
+                body.css("overflow", "");
+                main.css("width", "");
+                dialog.css("top", "");
+                $(this).attr("tabindex", "");
+                if (typeof options.close === "function") {
+                    options.close.call(dialog);
+                }
+            });
+        });
+        
+        dialog.find(".dialog").click(function (e) {
+            e.stopPropagation();
+        });
+    };
+})(jQuery);
