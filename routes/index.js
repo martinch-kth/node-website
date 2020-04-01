@@ -39,9 +39,23 @@ function createTreemapData(file) {
 
       // Check if json was errors or warnings..
       if (original_DATA[i].hasOwnProperty('errors')) {
+
+        // Gå igenom ..
         for (var j = 0; j < original_DATA[i].errors.length; j++) {
           total_errors += parseInt(original_DATA[i].errors[j].occurrences)
-          total_string_log += original_DATA[i].errors[j].message + "\n"
+
+          // få in occurances in i strängen.. -> Error log:
+          //                                     occurrences: 1
+
+          occurrences_string = "Occurrences: " + original_DATA[i].errors[j].occurrences + "\n"
+
+          // sätt occurences...
+
+          // ta ut felmeddelandet, dela upp det så det finns radbrytning var 50:e tecken..
+
+          // i slutet så lägger du även till htlm <BR> så att Semantic UI ska förstå .... . . .
+
+          total_string_log += occurrences_string + explode(original_DATA[i].errors[j].message,50) + "<br />"
         }
       }
 
@@ -80,6 +94,32 @@ function createTreemapData(file) {
     console.log("-------------------------------------------")
   })
 }
+
+function explode(text, max) {
+  text = text.replace(/  +/g, " ").replace(/^ /, "").replace(/ $/, "");
+  if (typeof text === "undefined") return "";
+  if (typeof max === "undefined") max = 50;
+  if (text.length <= max) return text;
+  var exploded = text.substring(0, max);
+  text = text.substring(max);
+  if (text.charAt(0) !== " ") {
+    while (exploded.charAt(exploded.length - 1) !== " " && exploded.length > 0) {
+      text = exploded.charAt(exploded.length - 1) + text;
+      exploded = exploded.substring(0, exploded.length - 1);
+    }
+    if (exploded.length == 0) {
+      exploded = text.substring(0, max);
+      text = text.substring(max);
+    } else {
+      exploded = exploded.substring(0, exploded.length - 1);
+    }
+  } else {
+    text = text.substring(1);
+  }
+  return exploded + "\n" + explode(text);
+}
+
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
