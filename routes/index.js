@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
+var browseDir = require("browse-directory");
+
+var dirFiles = browseDir.browseFiles("public/data");
+
+// transform array
+const filenames= dirFiles.map(element => element.name);
 
 var treemap_data_errors   = [] // globalt... :-/
 var treemap_data_warnings = []
@@ -123,7 +129,7 @@ function explode(text, max) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {page:'Home', menuId:'home',hosts: Array.from(new Set(hosts)).length.toString() , modules: Array.from(new Set(modules)).length.toString(),amount_errors: amount_errors.toString()});
+  res.render('index', {page:'Home', menuId:'home',hosts: Array.from(new Set(hosts)).length.toString() , modules: Array.from(new Set(modules)).length.toString(),filenames: filenames,amount_errors: amount_errors.toString()});
 });
 
 
