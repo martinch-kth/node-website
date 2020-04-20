@@ -1,4 +1,5 @@
 var express = require('express');
+var cors = require('cors')
 var path = require('path');
 var logger = require('morgan');
 var index = require('./routes/index');
@@ -12,10 +13,17 @@ app.set('view engine', 'ejs');
 // set path for static assets
 app.use(express.static(path.join(__dirname, 'public')));
 
+// CORS request -allow all
+app.use(cors())
+
 
 // routes
 app.use('/', index);
 
+
+//
+// CORS settings.. maybe not needed since cors module installed: https://www.npmjs.com/package/cors
+//
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "localhost"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
