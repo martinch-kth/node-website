@@ -198,18 +198,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 </div>
 
 <div class="row">
-
-    <div class="ui modal">
-        <div class="header">Error log</div>
-        <div class="scrolling content">
-
-            <div id="mymodal"></div>
-        </div>
-    </div>
-
-</div>
-
-<div class="row">
     <br/>
     File selector...
     <form>
@@ -395,7 +383,18 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         function display(d) {
             grandparent
                 .datum(d.parent)
-                .on("click", transition)
+
+
+                .on('click', function (d, i) {
+
+                    transition(d)
+                    $("#status").empty()
+                })
+
+
+
+
+
                 .select("text")
                 .text(name(d));
 
@@ -422,7 +421,12 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             })
                 .classed("child", true)
 
+
                 .on('click', function (d, i) {
+
+
+                    /*
+
 
                     // solution for now.. wont work for general use case.....
                     if (d._children[0].key.includes('Module')) {
@@ -437,11 +441,19 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     }
 
                     console.log(d._children[0].key)
+*/
+                  //  d3.select('#status').text(d._children[0].key)  // innehåller </br> ... ta bor..
 
-                    d3.select('#status').text(d._children[0].key)
+                    // använd jquery...
+                    $("#status").empty()
+
+                    $("#status").append(d._children[0].key);
+
+
 
                     transition(d)
                 });
+
 
 
             var children = g.selectAll(".child")                       // slutnod

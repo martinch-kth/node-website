@@ -101,6 +101,7 @@ function createTreemapData(file) {
   })
 }
 
+// format text to a certain length width.
 function explode(text, max) {
   text = text.replace(/  +/g, " ").replace(/^ /, "").replace(/ $/, "");
   if (typeof text === "undefined") return "";
