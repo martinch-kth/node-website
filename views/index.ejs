@@ -87,6 +87,22 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 <% include partials/menu %>
 
+
+
+<div class="row">
+<div class="ui compact menu">
+    <div class="ui simple dropdown item">
+        Dropdown
+        <i class="dropdown icon"></i>
+        <div class="menu">
+            <div class="item">Choice 1</div>
+            <div class="item">Choice 2</div>
+            <div class="item">Choice 3</div>
+        </div>
+    </div>
+</div>
+</div>
+
 <div class="row">
     <div class="ui nine column grid">
         <div class="column">
@@ -182,6 +198,60 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     </div>
 
 </div>
+
+
+
+
+<div class="row">
+    <div class="ui labeled icon top right pointing dropdown button">
+        <i class="filter icon"></i>
+        <span class="text">Filter Posts</span>
+        <div class="menu">
+            <div class="ui search icon input">
+                <i class="search icon"></i>
+                <input type="text" name="search" placeholder="Search issues...">
+            </div>
+            <div class="divider"></div>
+            <div class="header">
+                <i class="tags icon"></i>
+                Filter by tag
+            </div>
+            <div class="item">
+                <div class="ui red empty circular label"></div>
+                Important
+            </div>
+            <div class="item">
+                <div class="ui blue empty circular label"></div>
+                Announcement
+            </div>
+            <div class="item">
+                <div class="ui black empty circular label"></div>
+                Discussion
+            </div>
+            <div class="divider"></div>
+            <div class="header">
+                <i class="calendar icon"></i>
+                Filter by date
+            </div>
+            <div class="item">
+                <i class="olive circle icon"></i>
+                This Week
+            </div>
+            <div class="item">
+                <i class="violet circle icon"></i>
+                This Month
+            </div>
+            <div class="item">
+                <i class="orange circle icon"></i>
+                This Year
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
 <div class="row">
     <div id="chart" style="padding-top: 5px"></div>
@@ -391,10 +461,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     $("#status").empty()
                 })
 
-
-
-
-
                 .select("text")
                 .text(name(d));
 
@@ -598,7 +664,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     }
 
     if (window.location.hash === "") {
-        d3.json("http://localhost:3000/treemap", function (err, res) {
+        d3.json("treemap", function (err, res) {
             if (!err) {
                 console.log(res);
                 var data = d3.nest().key(function (d) {
