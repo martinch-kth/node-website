@@ -1,83 +1,31 @@
 <!DOCTYPE html>
 <!--
 Generic treemap, based on http://bost.ocks.org/mike/treemap/
-
 -->
 <html>
 <head>
 
     <meta charset="utf-8">
     <title>Zoomable treemap template</title>
-    <style>
 
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-        #chart {
-            background: #fff;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-        .title {
-            font-weight: bold;
-            font-size: 24px;
-            text-align: center;
-            margin-top: 6px;
-            margin-bottom: 6px;
-        }
-
-
-        text {
-            pointer-events: none;
-        }
-
-        .grandparent text {
-            font-weight: bold;
-        }
-
-        rect {
-            fill: none;
-            stroke: #fff;
-        }
-
-        rect.parent,
-        .grandparent rect {
-            stroke-width: 2px;
-        }
-
-        rect.parent {
-            pointer-events: none;
-        }
-
-        .grandparent rect {
-            fill: orange;
-        }
-
-        .grandparent:hover rect {
-            fill: #ee9700;
-        }
-
-        .children rect.parent,
-        .grandparent rect {
-            cursor: pointer;
-        }
-
-        .children rect.parent {
-            fill: #bbb;
-            fill-opacity: .5;
-        }
-
-        .children:hover rect.child {
-            fill: #aaa;
-        }
-
-    </style>
-
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="stylesheets/semantic.css">
-    <script src="javascripts/http_code.jquery.com_jquery-3.1.1.js"></script>
+
     <script src="javascripts/semantic/semantic.js"></script>
-
-
     <script src="javascripts/http_d3js.org_d3.v3.js"></script>
+
+    <script src="javascripts/textsearch/jquery.highlight.js"></script>
+    <script src="javascripts/textsearch/jquery.scrollto.js"></script>
+    <script src="javascripts/textsearch/jquery.finder.js"></script>
+    <link rel="stylesheet" href="stylesheets/text_search_style.css">
 
     <% include partials/head %>
 
@@ -86,22 +34,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 <br id="main-container" style="padding-left: 50px">
 
 <% include partials/menu %>
-
-
-
-<div class="row">
-<div class="ui compact menu">
-    <div class="ui simple dropdown item">
-        Dropdown
-        <i class="dropdown icon"></i>
-        <div class="menu">
-            <div class="item">Choice 1</div>
-            <div class="item">Choice 2</div>
-            <div class="item">Choice 3</div>
-        </div>
-    </div>
-</div>
-</div>
 
 <div class="row">
     <div class="ui nine column grid">
@@ -196,90 +128,31 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         <input type="checkbox" name="example">
         <label>Display Exceptions</label>
     </div>
-
 </div>
-
-
 
 
 <div class="row">
-    <div class="ui labeled icon top right pointing dropdown button">
-        <i class="filter icon"></i>
-        <span class="text">Filter Posts</span>
-        <div class="menu">
-            <div class="ui search icon input">
-                <i class="search icon"></i>
-                <input type="text" name="search" placeholder="Search issues...">
-            </div>
-            <div class="divider"></div>
-            <div class="header">
-                <i class="tags icon"></i>
-                Filter by tag
-            </div>
-            <div class="item">
-                <div class="ui red empty circular label"></div>
-                Important
-            </div>
-            <div class="item">
-                <div class="ui blue empty circular label"></div>
-                Announcement
-            </div>
-            <div class="item">
-                <div class="ui black empty circular label"></div>
-                Discussion
-            </div>
-            <div class="divider"></div>
-            <div class="header">
-                <i class="calendar icon"></i>
-                Filter by date
-            </div>
-            <div class="item">
-                <i class="olive circle icon"></i>
-                This Week
-            </div>
-            <div class="item">
-                <i class="violet circle icon"></i>
-                This Month
-            </div>
-            <div class="item">
-                <i class="orange circle icon"></i>
-                This Year
-            </div>
-        </div>
+    <div class="ui dropdown">
+        <div class="text"></div>
+        <i class="dropdown icon"></i>
     </div>
 </div>
-
-
-
 
 
 <div class="row">
     <div id="chart" style="padding-top: 5px"></div>
 </div>
 
-
 <div class="row">
-    <div id="modal01" class="modal">blaaaah</div>
-    <div id="box" class="modal-box"></div>
+ <div class="app" data-finder-wrapper data-finder-scroll-offset="175">
+  <button class="finder-activator" data-finder-activator>Search</button>
+  <div class="content" data-finder-content>
+     <div id="status"></div>
+  </div>
+ </div>
 </div>
 
 <div class="row">
-    <div id="status"></div>
-</div>
-
-<div class="row">
-    <br/>
-    File selector...
-    <form>
-        <input type="file">
-    </form>
-
-    <br/>
-
-</div>
-
-<div class="row">
-
     <div class="ui list">
         <div class="item">
             <i class="folder icon"></i>
@@ -308,6 +181,63 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
 </div>
+
+<script>
+
+    allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
+
+    values = []
+    var i;
+
+    for (i = 0; i < allfiles.length; i++) {
+
+        if (i===0)
+        {
+            dropdown_allfiles = {name : allfiles[i],value: [i], selected : true}
+        }
+        else
+        {
+            dropdown_allfiles = {name : allfiles[i],value: [i]}
+        }
+        values.push(dropdown_allfiles)
+    }
+
+    $('.ui.dropdown')
+        .dropdown({
+            values
+        })
+    ;
+
+
+    $('.ui.dropdown')
+        .dropdown({
+            onChange: function(value, text, $selectedItem) {
+                // custom action
+
+                alert(text)
+
+                //måste ta bort lite saker...i guess...
+
+
+
+             //   d3.select("svg").remove();  // tar bort visst...
+
+                d3.json("http://localhost:3000/treemapinput?file=" + text, function (err, res) {
+                    if (!err) {
+                        console.log(res);
+                        var data = d3.nest().key(function (d) {
+                            return d.region;
+                        }).key(function (d) {
+                            return d.subregion;
+                        }).entries(res);
+                        main({title: "All Hosts"}, {key: "Hosts", values: data});
+                    }
+                });
+
+            }
+        })
+    ;
+</script>
 
 
 <script>
@@ -663,8 +593,10 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         }
     }
 
+
+
     if (window.location.hash === "") {
-        d3.json("treemap", function (err, res) {
+        d3.json("http://localhost:3000/treemap", function (err, res) {
             if (!err) {
                 console.log(res);
                 var data = d3.nest().key(function (d) {
@@ -676,6 +608,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             }
         });
     }
+
+
 
 </script>
 </body>

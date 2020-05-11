@@ -5,32 +5,36 @@ var browseDir = require("browse-directory");
 
 var dirFiles = browseDir.browseFiles("public/data");
 
-// transform array
-const filenames= dirFiles.map(element => element.name);
+var directories = browseDir.browseDirs("public/data")
 
-var treemap_data_errors   = [] // globalt... :-/
-var treemap_data_warnings = []
+
+
+// transform array
+const filenames= dirFiles.map(element => element.src);
+
+console.log(filenames)
+
+//var treemap_data_warnings = []
 
 var hosts = []
 var modules = []
 
-var amount_errors = 0
-var amount_warnings = 0
-
-// mystuff.json till json objekt..
+var amount_errors = 0 // får ta tag i det från..någon metod...
 
 const jsonfile = require('jsonfile')
-const file_errors   = 'public/data/original-data-structure-errors.json'
-const file_warnings = 'public/data/original-data-structure-warnings.json'
 
+
+// borde inte behöva köra det här..men men...för nu..!!....ändra sen...
+const file_errors   = 'public/data/YYYY-MM-DD_TT-TT-TT_Longname_number1/original-data-structure-errors.json'
 createTreemapData(file_errors)
-
-createTreemapData(file_warnings)
 
 //----------------------------------------------------------------------------
 function createTreemapData(file) {
+
   jsonfile.readFile(file, function (err, obj) {
     if (err) console.error(err)
+
+    var treemap_data_errors = []
 
     var original_DATA = obj.modules
 
@@ -38,9 +42,8 @@ function createTreemapData(file) {
       hosts.push(original_DATA[i].onHost)
       modules.push(original_DATA[i].moduleName)
 
-      // errors , warnings array
+      // errors array
       var total_errors = 0
-      var total_warnings = 0
       var total_string_log = ""
 
       // Check if json was errors or warnings..
@@ -65,16 +68,7 @@ function createTreemapData(file) {
         }
       }
 
-
-      else if (original_DATA[i].hasOwnProperty('warnings')) {
-        for (var j = 0; j < original_DATA[i].warnings.length; j++) {
-          total_warnings += parseInt(original_DATA[i].warnings[j].occurrences)
-          total_string_log += original_DATA[i].warnings[j].message + "\n"
-        }
-      }
-
       amount_errors += total_errors
-      amount_warnings += total_warnings
 
       treemap_data_errors.push({
         "key": total_string_log,
@@ -82,23 +76,21 @@ function createTreemapData(file) {
         "subregion": original_DATA[i].moduleName,
         "value": total_errors
       })
-
-      treemap_data_warnings.push({
-        "key": total_string_log,
-        "region": original_DATA[i].onHost,
-        "subregion": original_DATA[i].moduleName,
-        "value": total_warnings
-      })
-
     }
 
     console.log("total host: " + Array.from(new Set(hosts)).length)
     console.log("total modules: " + Array.from(new Set(modules)).length)
     console.log("total errors: " + amount_errors)
-    console.log("total warnings: " + amount_warnings)
+  //  console.log("total warnings: " + amount_warnings)
 
     console.log("-------------------------------------------")
+
+    console.log("oooooooook::::")
+   // console.log(treemap_data_errors)
+    return treemap_data_errors
   })
+
+
 }
 
 // format text to a certain length width.
@@ -127,7 +119,6 @@ function explode(text, max) {
 }
 
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', {page:'Home', menuId:'home',hosts: Array.from(new Set(hosts)).length.toString() , modules: Array.from(new Set(modules)).length.toString(),filenames: filenames,amount_errors: amount_errors.toString()});
@@ -136,9 +127,19 @@ router.get('/', function(req, res, next) {
 
 /* GET treemap data */
 router.get('/treemap', function(req, res, next) {
-  res.json(treemap_data_errors)
+  res.json (createTreemapData('public/data/YYYY-MM-DD_TT-TT-TT_Longname_number1/original-data-structure-errors.json'))
 });
 
+router.get('/treemapinput', async function(req, res) {
+
+  // Access the provided 'file' query parameters
+  let file = req.query.file;
+
+  let treemap_data_errors = await createTreemapData(file)
+
+  console.log(file)
+  res.json(treemap_data_errors)
+});
 
 router.get('/about', function(req, res, next) {
   res.render('about', {page:'About Us', menuId:'about'});
