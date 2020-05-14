@@ -132,7 +132,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
 <div class="row">
-    <div class="ui dropdown">
+    <div id="filedropdown" class="ui dropdown">
         <div class="text"></div>
         <i class="dropdown icon"></i>
     </div>
@@ -150,33 +150,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
      <div id="status"></div>
   </div>
  </div>
-</div>
-
-<div class="row">
-    <div class="ui list">
-        <div class="item">
-            <i class="folder icon"></i>
-            <div class="content">
-                <div class="header">Error logs</div>
-                <div class="description">Files with error logs</div>
-                <div class="list">
-
-                    <ul>
-                        <% filenames.map((file)=>{ %>
-
-                            <div class="item">
-                                <i class="file icon"></i>
-                                <div class="content">
-                                    <div class="header"><%= file %></div>
-                                </div>
-                            </div>
-
-                        <% }) %>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 
@@ -212,15 +185,15 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     $('.ui.dropdown')
         .dropdown({
             onChange: function(value, text, $selectedItem) {
-                // custom action
 
-                alert(text)
+                //måste skriva någon function som tar bort i guess...
+                // något som i still med...
 
-                //måste ta bort lite saker...i guess...
+                // sen måste all statistik beräknas om..funkar inte nu....
 
+              //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
 
-
-             //   d3.select("svg").remove();  // tar bort visst...
+                $( "#chart" ).empty();
 
                 d3.json("http://localhost:3000/treemapinput?file=" + text, function (err, res) {
                     if (!err) {
@@ -596,7 +569,14 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
     if (window.location.hash === "") {
-        d3.json("http://localhost:3000/treemap", function (err, res) {
+
+
+        allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
+
+        var default_file = allfiles[0].toString()
+
+
+        d3.json("http://localhost:3000/treemapinput?file=" + default_file, function (err, res) {
             if (!err) {
                 console.log(res);
                 var data = d3.nest().key(function (d) {

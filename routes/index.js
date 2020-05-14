@@ -5,8 +5,10 @@ var browseDir = require("browse-directory");
 
 var dirFiles = browseDir.browseFiles("public/data");
 
-var directories = browseDir.browseDirs("public/data")
+const fs = require('fs');
+const util = require('util');
 
+const readFile = util.promisify(fs.readFile);
 
 
 // transform array
@@ -14,10 +16,9 @@ const filenames= dirFiles.map(element => element.src);
 
 console.log(filenames)
 
-//var treemap_data_warnings = []
-
 var hosts = []
 var modules = []
+//var treemap_data_errors = []
 
 var amount_errors = 0 // får ta tag i det från..någon metod...
 
@@ -25,16 +26,82 @@ const jsonfile = require('jsonfile')
 
 
 // borde inte behöva köra det här..men men...för nu..!!....ändra sen...
-const file_errors   = 'public/data/YYYY-MM-DD_TT-TT-TT_Longname_number1/original-data-structure-errors.json'
-createTreemapData(file_errors)
+//const file_errors   = 'public/data/YYYY-MM-DD_TT-TT-TT_Longname_number1/original-data-structure-errors.json'
+// treemap_data_errors = createTreemapData(file_errors)
 
 //----------------------------------------------------------------------------
-function createTreemapData(file) {
+
+async function createTreemapData(file) {
+  try {
+    const all_file = await jsonfile.readFile(file, 'utf8');
+
+    var content = all_file.modules
+
+    var treemap_data_errors = []
+
+    for (var i = 0; i < content.length; i++) {
+      hosts.push(content[i].onHost)
+      modules.push(content[i].moduleName)
+
+      // errors array
+      var total_errors = 0
+      var total_string_log = ""
+
+      // Check if json was errors or warnings..
+      if (content[i].hasOwnProperty('errors')) {
+
+        // Gå igenom ..
+        for (var j = 0; j < content[i].errors.length; j++) {
+          total_errors += parseInt(content[i].errors[j].occurrences)
+
+          // få in occurances in i strängen.. -> Error log:
+          //                                     occurrences: 1
+
+          occurrences_string = "Occurrences: " + content[i].errors[j].occurrences + "\n"
+
+          // sätt occurences...
+
+          // ta ut felmeddelandet, dela upp det så det finns radbrytning var 50:e tecken..
+
+          // i slutet så lägger du även till htlm <BR> så att Semantic UI ska förstå .... . . .
+
+          total_string_log += occurrences_string + explode(content[i].errors[j].message,50) + "<br />"
+        }
+      }
+
+      amount_errors += total_errors
+
+      treemap_data_errors.push({
+        "key": total_string_log,
+        "region": content[i].onHost,
+        "subregion": content[i].moduleName,
+        "value": total_errors
+      })
+    }
+
+    console.log("total host: " + Array.from(new Set(hosts)).length)
+    console.log("total modules: " + Array.from(new Set(modules)).length)
+    console.log("total errors: " + amount_errors)
+
+    console.log("-------------------------------------------")
+  //  console.log(treemap_data_errors)
+    console.log("oooooooook::::")
+
+    return treemap_data_errors
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
+
+function createTreemapData2(file) {
+
+  var treemap_data_errors = []
 
   jsonfile.readFile(file, function (err, obj) {
     if (err) console.error(err)
-
-    var treemap_data_errors = []
 
     var original_DATA = obj.modules
 
@@ -81,16 +148,15 @@ function createTreemapData(file) {
     console.log("total host: " + Array.from(new Set(hosts)).length)
     console.log("total modules: " + Array.from(new Set(modules)).length)
     console.log("total errors: " + amount_errors)
-  //  console.log("total warnings: " + amount_warnings)
 
     console.log("-------------------------------------------")
-
+    console.log(treemap_data_errors)
     console.log("oooooooook::::")
-   // console.log(treemap_data_errors)
-    return treemap_data_errors
   })
 
+  console.log(treemap_data_errors)
 
+  return treemap_data_errors
 }
 
 // format text to a certain length width.
@@ -127,7 +193,7 @@ router.get('/', function(req, res, next) {
 
 /* GET treemap data */
 router.get('/treemap', function(req, res, next) {
-  res.json (createTreemapData('public/data/YYYY-MM-DD_TT-TT-TT_Longname_number1/original-data-structure-errors.json'))
+  res.json (createTreemapData(file_errors))
 });
 
 router.get('/treemapinput', async function(req, res) {
@@ -135,10 +201,9 @@ router.get('/treemapinput', async function(req, res) {
   // Access the provided 'file' query parameters
   let file = req.query.file;
 
-  let treemap_data_errors = await createTreemapData(file)
+  var result = await createTreemapData(file)
 
-  console.log(file)
-  res.json(treemap_data_errors)
+  res.json(result)
 });
 
 router.get('/about', function(req, res, next) {
