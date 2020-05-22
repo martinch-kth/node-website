@@ -587,7 +587,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         var default_file = allfiles[0].toString()
 
 
-        d3.json("http://localhost:3000/treemapinput?file=" + default_file, function (err, res) {
+        d3.json("treemapinput?file=" + default_file, function (err, res) {
             if (!err) {
                 console.log(res);
                 var data = d3.nest().key(function (d) {
