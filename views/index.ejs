@@ -206,7 +206,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                 $( "#chart" ).empty();
 
-                d3.json("http://localhost:3000/treemapinput?file=" + text, function (err, res) {
+                d3.json("treemapinput?file=" + text, function (err, res) {
                     if (!err) {
                         console.log(res);
                         var data = d3.nest().key(function (d) {
