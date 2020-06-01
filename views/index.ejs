@@ -89,8 +89,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         <div class="column">
             <div class="ui segment">
                 <div class="ui statistic yellow">
-                    <div class="value">
-                        0
+                    <div id="warnings" class="value">0
                     </div>
                     <div class="label">
                         Warnings
@@ -110,6 +109,18 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 </div>
             </div>
         </div>
+
+        <div class="column">
+        <div class="row">
+
+            <div class="ui search">
+                <input class="prompt" type="text" placeholder="Search all...">
+                <div class="results"></div>
+            </div>
+
+        </div>
+        </div>
+
     </div>
 </div>
 
@@ -145,7 +156,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 <div class="row">
  <div class="app" data-finder-wrapper data-finder-scroll-offset="175">
-  <button class="finder-activator" data-finder-activator>Search</button>
+  <button class="finder-activator" data-finder-activator>Search Module</button>
   <div class="content" data-finder-content>
      <div id="status"></div>
   </div>
@@ -157,15 +168,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 <script>
 
-    // fix button icon on search...
-
-    $("#finderPrev").html("Button New Text");
-
-
-    if ($("#finderPrev"))
-    {
-       // alert("hihihi")
-    }
+    // fix button icon on search... funkar inte denna lösning!
+  //  $("#finderPrev").html("Button New Text");
 
 
     allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
@@ -197,24 +201,27 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         .dropdown({
             onChange: function(value, text, $selectedItem) {
 
-                //måste skriva någon function som tar bort i guess...
-                // något som i still med...
-
-                // sen måste all statistik beräknas om..funkar inte nu....
-
               //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
 
                 $( "#chart" ).empty();
 
                 d3.json("treemapinput?file=" + text, function (err, res) {
                     if (!err) {
-                        console.log(res);
+
+                        $('.ui.search')
+                            .search({
+                                type: 'category',
+                                source: createAllList(res),
+                                cache: false
+                            })
+                        ;
+
                         var data = d3.nest().key(function (d) {
                             return d.region;
                         }).key(function (d) {
                             return d.subregion;
                         }).entries(res);
-                        main({title: "All Hosts"}, {key: "Hosts", values: data});
+                        main({title: ""}, {key: "Hosts", values: data});
                     }
                 });
 
@@ -316,7 +323,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         initialize(root);
         accumulate(root);
         layout(root);
-        console.log(root);
         display(root);
 
         if (window.parent !== window) {
@@ -388,7 +394,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
             // TA bort om man INTE vill se alla moduler på en gång.
-            ////////////////////////////////////////////////////////
             g.filter(function (d) {
                 return d._children;
             })
@@ -406,8 +411,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
                     /*
-
-
                     // solution for now.. wont work for general use case.....
                     if (d._children[0].key.includes('Module')) {
                         console.log("module...")
@@ -429,14 +432,12 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                     $("#status").append(d._children[0].key);
 
-
-
                     transition(d)
                 });
 
 
 
-            var children = g.selectAll(".child")                       // slutnod
+            var children = g.selectAll(".child")
                 .data(function (d) {
                     return d._children || [d];
                 })
@@ -444,7 +445,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
             children.append("rect")
-                .attr("class", "child")    // slutnod
+                .attr("class", "child")
                 .call(rect)
                 .append("title")
 
@@ -453,7 +454,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     return d.key + " (" + formatNumber(d.value) + ")";
                 })   // ;
 
-            // HÄR finns all DATA... finns på 2 ställen...
             children.append("text")
                 .attr("class", "ctext")
                 .text(function (d) {
@@ -577,30 +577,75 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         }
     }
 
+    function createAllList(data) {
+
+      //      { category: 'host1/Module2', title: 'massa feltext
+      //      { category: 'host2/Module2', title: 'massa feltext....
+
+        console.log("--------------------new stuff-----------------")
+
+        var all_info = []
+
+        for (var i = 0; i < data.length; i++) {
+
+            // gå igenom HELA -> ALLT ...array
+            // ta namnet på host + / + modulnamnet
+
+            console.log(data[i].region)  // host name...
+            console.log(data[i].subregion)  // module name...
+
+            console.log(data[i].key)  // error message...
+
+            all_info.push({
+                "category": data[i].region + "/" + data[i].subregion,
+                "title": data[i].key
+            })
+        }
+
+        console.log("--------------------new datastruCT-----------------")
+        console.log(all_info)
+
+        return all_info
+    }
+
 
 
     if (window.location.hash === "") {
-
 
         allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
 
         var default_file = allfiles[0].toString()
 
-
         d3.json("treemapinput?file=" + default_file, function (err, res) {
             if (!err) {
-                console.log(res);
+
+                $('.ui.search')
+                    .search({
+                        type: 'category',
+                        source: createAllList(res),
+                        cache: false
+                    });
+
                 var data = d3.nest().key(function (d) {
                     return d.region;
                 }).key(function (d) {
                     return d.subregion;
                 }).entries(res);
-                main({title: "All Hosts"}, {key: "Hosts", values: data});
+                main({title: ""}, {key: "Hosts", values: data});
+
+
+
             }
         });
+
+        // testa ändra i ... sätt statistik:
+        // bryt ut i egen funktion sen...
+
+        $( "#hosts").html("123");
+        $( "#modules").html("123");
+        $( "#errors").html("123");
+
     }
-
-
 
 </script>
 </body>

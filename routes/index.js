@@ -3,39 +3,19 @@ var router = express.Router();
 
 var browseDir = require("browse-directory");
 
-var dirFiles = browseDir.browseFiles("public/data");
-
-const fs = require('fs');
-const util = require('util');
-
-const readFile = util.promisify(fs.readFile);
-
-
-// transform array
-const filenames= dirFiles.map(element => element.src);
-
-console.log(filenames)
-
+// Måste nollställa vid varje..reset.. mmm  s'tt in det någonstan..
 var hosts = []
 var modules = []
-//var treemap_data_errors = []
 
 var amount_errors = 0 // får ta tag i det från..någon metod...
 
 const jsonfile = require('jsonfile')
 
-
-// borde inte behöva köra det här..men men...för nu..!!....ändra sen...
-//const file_errors   = 'public/data/YYYY-MM-DD_TT-TT-TT_Longname_number1/original-data-structure-errors.json'
-// treemap_data_errors = createTreemapData(file_errors)
-
-//----------------------------------------------------------------------------
-
 async function createTreemapData(file) {
   try {
-    const all_file = await jsonfile.readFile(file, 'utf8');
+    const file_data = await jsonfile.readFile(file, 'utf8');
 
-    var content = all_file.modules
+    var content = file_data.modules
 
     var treemap_data_errors = []
 
@@ -50,7 +30,6 @@ async function createTreemapData(file) {
       // Check if json was errors or warnings..
       if (content[i].hasOwnProperty('errors')) {
 
-        // Gå igenom ..
         for (var j = 0; j < content[i].errors.length; j++) {
           total_errors += parseInt(content[i].errors[j].occurrences)
 
@@ -60,9 +39,7 @@ async function createTreemapData(file) {
           occurrences_string = "Occurrences: " + content[i].errors[j].occurrences + "\n"
 
           // sätt occurences...
-
           // ta ut felmeddelandet, dela upp det så det finns radbrytning var 50:e tecken..
-
           // i slutet så lägger du även till htlm <BR> så att Semantic UI ska förstå .... . . .
 
           total_string_log += occurrences_string + explode(content[i].errors[j].message,50) + "<br />"
@@ -84,8 +61,6 @@ async function createTreemapData(file) {
     console.log("total errors: " + amount_errors)
 
     console.log("-------------------------------------------")
-  //  console.log(treemap_data_errors)
-    console.log("oooooooook::::")
 
     return treemap_data_errors
 
@@ -94,69 +69,11 @@ async function createTreemapData(file) {
   }
 }
 
+function getAllFiles() {
 
+  var dirFiles = browseDir.browseFiles("public/data");
 
-function createTreemapData2(file) {
-
-  var treemap_data_errors = []
-
-  jsonfile.readFile(file, function (err, obj) {
-    if (err) console.error(err)
-
-    var original_DATA = obj.modules
-
-    for (var i = 0; i < original_DATA.length; i++) {
-      hosts.push(original_DATA[i].onHost)
-      modules.push(original_DATA[i].moduleName)
-
-      // errors array
-      var total_errors = 0
-      var total_string_log = ""
-
-      // Check if json was errors or warnings..
-      if (original_DATA[i].hasOwnProperty('errors')) {
-
-        // Gå igenom ..
-        for (var j = 0; j < original_DATA[i].errors.length; j++) {
-          total_errors += parseInt(original_DATA[i].errors[j].occurrences)
-
-          // få in occurances in i strängen.. -> Error log:
-          //                                     occurrences: 1
-
-          occurrences_string = "Occurrences: " + original_DATA[i].errors[j].occurrences + "\n"
-
-          // sätt occurences...
-
-          // ta ut felmeddelandet, dela upp det så det finns radbrytning var 50:e tecken..
-
-          // i slutet så lägger du även till htlm <BR> så att Semantic UI ska förstå .... . . .
-
-          total_string_log += occurrences_string + explode(original_DATA[i].errors[j].message,50) + "<br />"
-        }
-      }
-
-      amount_errors += total_errors
-
-      treemap_data_errors.push({
-        "key": total_string_log,
-        "region": original_DATA[i].onHost,
-        "subregion": original_DATA[i].moduleName,
-        "value": total_errors
-      })
-    }
-
-    console.log("total host: " + Array.from(new Set(hosts)).length)
-    console.log("total modules: " + Array.from(new Set(modules)).length)
-    console.log("total errors: " + amount_errors)
-
-    console.log("-------------------------------------------")
-    console.log(treemap_data_errors)
-    console.log("oooooooook::::")
-  })
-
-  console.log(treemap_data_errors)
-
-  return treemap_data_errors
+  return dirFiles.map(element => element.src)
 }
 
 // format text to a certain length width.
@@ -185,22 +102,17 @@ function explode(text, max) {
 }
 
 
+// så.. detta vill man egentligen inte ha med nått...med...
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {page:'Home', menuId:'home',hosts: Array.from(new Set(hosts)).length.toString() , modules: Array.from(new Set(modules)).length.toString(),filenames: filenames,amount_errors: amount_errors.toString()});
-});
-
-
-/* GET treemap data */
-router.get('/treemap', function(req, res, next) {
-  res.json (createTreemapData(file_errors))
+  res.render('index', {page:'Home', menuId:'home',hosts: Array.from(new Set(hosts)).length.toString() , modules: Array.from(new Set(modules)).length.toString(),filenames: getAllFiles(),amount_errors: amount_errors.toString()});
 });
 
 router.get('/treemapinput', async function(req, res) {
 
   // Access the provided 'file' query parameters
   let file = req.query.file;
-
   var result = await createTreemapData(file)
 
   res.json(result)
