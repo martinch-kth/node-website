@@ -411,33 +411,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                 .on('click', function (d, i) {
 
-
-                    /*
-                    // solution for now.. wont work for general use case.....
-                    if (d._children[0].key.includes('Module')) {
-                        console.log("module...")
-                    } else {
-                        // clear modal.. to remove old stuff..
-
-                        $("#mymodal").empty()
-
-                        $("#mymodal").append("<h5>" + d._children[0].key + "</h5>"); // bryr sig inte om blankspace tecken...
-                        $('.ui.modal').modal('show');
-                    }
-
-                    console.log(d._children[0].key)
-*/
-                  //  d3.select('#status').text(d._children[0].key)  // innehåller </br> ... ta bor..
-
-                    // använd jquery...
                     $("#status").empty()
-
                     $("#status").append(d._children[0].key);
 
                     transition(d)
                 });
-
-
 
             var children = g.selectAll(".child")
                 .data(function (d) {
@@ -585,7 +563,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         var hosts = []
         var modules = []
 
-        var total_errors = 0 // får ta tag i det från..någon metod...
+        var total_errors = 0
 
         for (var i = 0; i < data.length; i++) {
 
@@ -595,13 +573,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             total_errors += parseInt(data[i].value) // occurrences
         }
 
-        console.log("total host: " + Array.from(new Set(hosts)).length)
-        console.log("total modules: " + Array.from(new Set(modules)).length)
-        console.log("total errors: " + total_errors)
-
-        // testa ändra i ... sätt statistik:
-        // bryt ut i egen funktion sen...
-
         $( "#hosts").html(Array.from(new Set(hosts)).length)
         $( "#modules").html(Array.from(new Set(modules)).length)
         $( "#errors").html(String(total_errors))
@@ -610,33 +581,20 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
     function createAllList(data) {
 
-      //      { category: 'host1/Module2', title: 'massa feltext
-      //      { category: 'host2/Module2', title: 'massa feltext....
-
-        console.log("--------------------new stuff-----------------")
+      //  exempel:    { category: 'host1/Module2', title: 'massa feltext
+      //              { category: 'host2/Module2', title: 'massa feltext....
 
         var all_info = []
 
         for (var i = 0; i < data.length; i++) {
-
-            // gå igenom HELA -> ALLT ...array
-            // ta namnet på host + / + modulnamnet
-
-            console.log(data[i].region)  // host name...
-            console.log(data[i].subregion)  // module name...
-
-            console.log(data[i].key)  // error message...
 
             all_info.push({
                 "category": data[i].region + "/" + data[i].subregion,
                 "title": data[i].key
             })
         }
-
         return all_info
     }
-
-
 
     if (window.location.hash === "") {
 

@@ -3,10 +3,7 @@ var router = express.Router();
 
 var browseDir = require("browse-directory");
 
-// Load the full build.
 var _ = require('lodash');
-
-var amount_errors = 0 // får ta tag i det från..någon metod...
 
 const jsonfile = require('jsonfile')
 
@@ -17,9 +14,6 @@ async function createTreemapData(file) {
     var content = file_data.modules
 
     // sort errors by occurrences
-
-
-
     for (var i = 0; i < content.length; i++) {
 
       var err = content[i].errors
@@ -34,9 +28,6 @@ async function createTreemapData(file) {
       Object.assign(content[i].errors, funcResult) // replaces array with sorted array
     }
 
-    console.log("----------------------------------")
-    console.log(content)
-    console.log("----------------------------------")
     var treemap_data_errors = []
 
     for (var i = 0; i < content.length; i++) {
@@ -56,7 +47,7 @@ async function createTreemapData(file) {
           // sätt occurences...
           // ta ut felmeddelandet, dela upp det så det finns radbrytning var 50:e tecken..
           // i slutet så lägger du även till htlm <BR> så att Semantic UI ska förstå .... . . .
-          total_string_log += occurrences_string + explode(content[i].errors[j].message,50) + "<br />"
+          total_string_log += occurrences_string + explode(content[i].errors[j].message,50) + "<br>"
         }
       }
 
@@ -74,7 +65,6 @@ async function createTreemapData(file) {
     console.error(e);
   }
 }
-
 
 // detta måste köras så for en ny fil kommer in...
 // eller ska jag köra den så fort man byter fil? ... Finns jobb kvar...
@@ -109,9 +99,6 @@ function explode(text, max) {
   }
   return exploded + "\n" + explode(text);
 }
-
-
-// så.. detta vill man egentligen inte ha med nått...med...
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
