@@ -3,6 +3,10 @@ var router = express.Router();
 
 var browseDir = require("browse-directory");
 
+// Load the full build.
+var _ = require('lodash');
+
+
 // Måste nollställa vid varje..reset.. mmm  s'tt in det någonstan..
 var hosts = []
 var modules = []
@@ -17,13 +21,31 @@ async function createTreemapData(file) {
 
     var content = file_data.modules
 
+    // sort errors by occurrences
+
+    for (var i = 0; i < content.length; i++) {
+
+      var err = content[i].errors
+
+      for (var j = 0; j < err.length; j++)
+      {
+        err[j].occurrences = parseInt(err[j].occurrences)
+      }
+
+      var funcResult = _.orderBy(content[i].errors, [(errors) => errors.occurrences, (occurrences) => occurrences], ["desc", "asc"])
+
+      Object.assign(content[i].errors, funcResult) // replaces array with sorted array
+    }
+
+    console.log("----------------------------------")
+    console.log(content)
+    console.log("----------------------------------")
     var treemap_data_errors = []
 
     for (var i = 0; i < content.length; i++) {
       hosts.push(content[i].onHost)
       modules.push(content[i].moduleName)
 
-      // errors array
       var total_errors = 0
       var total_string_log = ""
 
