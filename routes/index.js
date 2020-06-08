@@ -6,11 +6,6 @@ var browseDir = require("browse-directory");
 // Load the full build.
 var _ = require('lodash');
 
-
-// Måste nollställa vid varje..reset.. mmm  s'tt in det någonstan..
-var hosts = []
-var modules = []
-
 var amount_errors = 0 // får ta tag i det från..någon metod...
 
 const jsonfile = require('jsonfile')
@@ -22,6 +17,8 @@ async function createTreemapData(file) {
     var content = file_data.modules
 
     // sort errors by occurrences
+
+
 
     for (var i = 0; i < content.length; i++) {
 
@@ -43,32 +40,25 @@ async function createTreemapData(file) {
     var treemap_data_errors = []
 
     for (var i = 0; i < content.length; i++) {
-      hosts.push(content[i].onHost)
-      modules.push(content[i].moduleName)
 
-      var total_errors = 0
       var total_string_log = ""
 
       // Check if json was errors or warnings..
       if (content[i].hasOwnProperty('errors')) {
 
+        var total_errors = 0
+
         for (var j = 0; j < content[i].errors.length; j++) {
           total_errors += parseInt(content[i].errors[j].occurrences)
-
-          // få in occurances in i strängen.. -> Error log:
-          //                                     occurrences: 1
 
           occurrences_string = "Occurrences: " + content[i].errors[j].occurrences + "\n"
 
           // sätt occurences...
           // ta ut felmeddelandet, dela upp det så det finns radbrytning var 50:e tecken..
           // i slutet så lägger du även till htlm <BR> så att Semantic UI ska förstå .... . . .
-
           total_string_log += occurrences_string + explode(content[i].errors[j].message,50) + "<br />"
         }
       }
-
-      amount_errors += total_errors
 
       treemap_data_errors.push({
         "key": total_string_log,
@@ -78,12 +68,6 @@ async function createTreemapData(file) {
       })
     }
 
-    console.log("total host: " + Array.from(new Set(hosts)).length)
-    console.log("total modules: " + Array.from(new Set(modules)).length)
-    console.log("total errors: " + amount_errors)
-
-    console.log("-------------------------------------------")
-
     return treemap_data_errors
 
   } catch (e) {
@@ -91,6 +75,9 @@ async function createTreemapData(file) {
   }
 }
 
+
+// detta måste köras så for en ny fil kommer in...
+// eller ska jag köra den så fort man byter fil? ... Finns jobb kvar...
 function getAllFiles() {
 
   var dirFiles = browseDir.browseFiles("public/data");
@@ -128,7 +115,7 @@ function explode(text, max) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {page:'Home', menuId:'home',hosts: Array.from(new Set(hosts)).length.toString() , modules: Array.from(new Set(modules)).length.toString(),filenames: getAllFiles(),amount_errors: amount_errors.toString()});
+  res.render('index', {page:'Home', menuId:'home',filenames: getAllFiles()});
 });
 
 router.get('/treemapinput', async function(req, res) {

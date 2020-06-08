@@ -53,8 +53,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         <div class="column">
             <div class="ui segment">
                 <div class="ui statistic blue">
-                    <div class="value">
-                        <%= hosts %>
+                    <div id="hosts" class="value">
+
                     </div>
                     <div class="label">
                         Hosts
@@ -65,8 +65,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         <div class="column">
             <div class="ui segment">
                 <div class="ui statistic green">
-                    <div class="value">
-                        <%= modules %>
+                    <div id="modules" class="value">
+
                     </div>
                     <div class="label">
                         Modules
@@ -77,8 +77,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         <div class="column">
             <div class="ui segment">
                 <div class="ui statistic red">
-                    <div class="value">
-                        <%= amount_errors %>
+                    <div id="errors" class="value">
+
                     </div>
                     <div class="label">
                         Errors
@@ -215,6 +215,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                                 cache: false
                             })
                         ;
+
+                        createStatistics(res)
 
                         var data = d3.nest().key(function (d) {
                             return d.region;
@@ -577,6 +579,35 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         }
     }
 
+
+    function createStatistics(data) {
+
+        var hosts = []
+        var modules = []
+
+        var total_errors = 0 // får ta tag i det från..någon metod...
+
+        for (var i = 0; i < data.length; i++) {
+
+            hosts.push(data[i].region)
+            modules.push(data[i].subregion)
+
+            total_errors += parseInt(data[i].value) // occurrences
+        }
+
+        console.log("total host: " + Array.from(new Set(hosts)).length)
+        console.log("total modules: " + Array.from(new Set(modules)).length)
+        console.log("total errors: " + total_errors)
+
+        // testa ändra i ... sätt statistik:
+        // bryt ut i egen funktion sen...
+
+        $( "#hosts").html(Array.from(new Set(hosts)).length)
+        $( "#modules").html(Array.from(new Set(modules)).length)
+        $( "#errors").html(String(total_errors))
+    }
+
+
     function createAllList(data) {
 
       //      { category: 'host1/Module2', title: 'massa feltext
@@ -602,9 +633,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             })
         }
 
-        console.log("--------------------new datastruCT-----------------")
-        console.log(all_info)
-
         return all_info
     }
 
@@ -619,6 +647,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         d3.json("treemapinput?file=" + default_file, function (err, res) {
             if (!err) {
 
+                // Load dropdown with filelist
                 $('.ui.search')
                     .search({
                         type: 'category',
@@ -626,25 +655,17 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                         cache: false
                     });
 
+                // få in all statistik här...
+                createStatistics(res)
+
                 var data = d3.nest().key(function (d) {
                     return d.region;
                 }).key(function (d) {
                     return d.subregion;
                 }).entries(res);
                 main({title: ""}, {key: "Hosts", values: data});
-
-
-
             }
         });
-
-        // testa ändra i ... sätt statistik:
-        // bryt ut i egen funktion sen...
-
-        $( "#hosts").html("123");
-        $( "#modules").html("123");
-        $( "#errors").html("123");
-
     }
 
 </script>
