@@ -32,14 +32,14 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 </head>
 
 <div class="row">
-<br id="main-container" style="padding-left: 50px">
-
-<% include partials/menu %>
-
+    <div class="column">
+      <br id="main-container" style="padding-left: 50px">
+      <% include partials/menu %>
+    </div>
 </div>
 
 <div class="row">
-    <div class="ui nine column grid">
+    <div class="ui thirteen column grid">
         <div class="column">
             <div class="ui segment">
                 <div class="ui statistic black">
@@ -114,6 +114,10 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         </div>
 
         <div class="column">
+
+        </div>
+
+        <div class="column">
         <div class="row">
 
             <div class="ui search">
@@ -146,10 +150,9 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
 <div class="row">
-    <div id="filedropdown" class="ui dropdown large text">
-        <div class="text"></div>
-        <i class="dropdown icon"></i>
-    </div>
+    <select id="filedropdown" class="ui selection dropdown large text">
+
+    </select>
 </div>
 
 
@@ -252,7 +255,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         rootname: "TOP",
         format: ",d",
         title: "",
-        width: screen_width - screen_width / 11,
+        width: screen_width - screen_width / 12,
         height: screen_width / 3
     };
 
