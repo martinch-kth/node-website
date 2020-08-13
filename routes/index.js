@@ -71,8 +71,7 @@ async function createTreemapData(file) {
 function getAllFiles() {
 
   var dirFiles = browseDir.browseFiles("public/data");
-
-  return dirFiles.map(element => element.src)
+  return dirFiles.map(element => element.src).reverse()
 }
 
 // format text to a certain length width.
