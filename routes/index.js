@@ -71,7 +71,8 @@ async function createTreemapData(file) {
 function getAllFiles() {
 
   var dirFiles = browseDir.browseFiles("public/data");
-  return dirFiles.map(element => element.src).reverse()
+
+  return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
 }
 
 // format text to a certain length width.

@@ -160,6 +160,13 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     <div id="chart" style="padding-top: 5px"></div>
 </div>
 
+
+</div>
+
+<script>
+
+/*  Tog bort Search module.. ett annat att söka i texten.. sätt tillbaka om det behövs sen..sparar ifall att..
+
 <div class="row">
  <div class="app" data-finder-wrapper data-finder-scroll-offset="175">
   <button class="finder-activator" data-finder-activator>Search Module</button>
@@ -169,16 +176,14 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
  </div>
 </div>
 
+ */
 
-</div>
-
-<script>
-
-    // fix button icon on search... funkar inte denna lösning!
+  // fix button icon on search... funkar inte denna lösning!
   //  $("#finderPrev").html("Button New Text");
 
-
     allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
+
+    // TODO: removed "public/data" with slice()
 
     values = []
     var i;
@@ -187,11 +192,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
         if (i===0)
         {
-            dropdown_allfiles = {name : allfiles[i],value: [i], selected : true}
+            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i], selected : true}
         }
         else
         {
-            dropdown_allfiles = {name : allfiles[i],value: [i]}
+            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i]}
         }
         values.push(dropdown_allfiles)
     }
@@ -211,7 +216,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                 $( "#chart" ).empty();
 
-                d3.json("treemapinput?file=" + text, function (err, res) {
+               // Have to add PATH public/data manually since I remove it before..
+                d3.json("treemapinput?file=" + "public/data/" + text, function (err, res) {
                     if (!err) {
 
                         $('.ui.search')
