@@ -150,8 +150,19 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
 <div class="row">
-    <select id="filedropdown" class="ui selection dropdown large text">
 
+
+<select id="thickness" name="thick"  multiple="" class="ui multiple dropdown selection" value.bind="thickness_selected">
+
+</select>
+
+
+</div>
+
+
+
+<div class="row">
+    <select id="filedropdown" class="ui selection dropdown large text">
     </select>
 </div>
 
@@ -208,8 +219,20 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     ;
 
 
+
+
     $('.ui.dropdown')
         .dropdown({
+
+
+            // Måste få flera värden från multi select...
+
+            // Här finn en lösning: https://stackoverflow.com/questions/40590329/cant-get-values-from-semanticui-multi-dropdown
+
+            // man måste ha någon observer som kollar varje gång något väljs..
+
+
+
             onChange: function(value, text, $selectedItem) {
 
               //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
@@ -240,6 +263,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 });
 
             }
+
+
         })
     ;
 </script>
