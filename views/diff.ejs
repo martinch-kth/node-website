@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <% include partials/script %>
-    <% include partials/head %>
+
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
@@ -12,27 +12,48 @@
 
     <link rel="stylesheet" href="stylesheets/semantic.css">
     <link rel="stylesheet" href="stylesheets/text_search_style.css">
+
+    <% include partials/head %>
 </head>
 <body>
 
 
-    <div class="container-fluid bg-3 text-center">
-        <h3><%= page %></h3><br>
+<div class="row">
+    <div class="column">
+        <br id="main-container" style="padding-left: 50px">
+        <% include partials/menu %>
+    </div>
+</div>
 
-        <div class="row">
-            <select id="filedropdown" class="ui dropdown large text filedrop">
-            </select>
-
-            <select id="diff_dropdown" class="ui dropdown large text diffdrop">
-            </select>
-
+<div class="ui two column grid">
+    <div class="row">
+        <div class="column">
+        <div style="width: 80%">
+        <select id="filedropdown" class="ui dropdown large text filedrop fluid">
+        </select>
+        </div>
         </div>
 
-
-        <div class="row">
-            <div id="display3"></div>
+        <div class="column">
+        <div style="width: 80%">
+        <select id="diff_dropdown" class="ui dropdown large text diffdrop fluid">
+        </select>
+        </div>
         </div>
     </div>
+</div>
+
+
+<div class="ui one column grid">
+    <div class="row">
+        <div class="column"></div>
+        <div class="column"><div style="width:95%" id="display3"></div></div>
+        <div class="column"></div>
+    </div>
+</div>
+
+
+
 
 
 <script>
@@ -70,9 +91,6 @@
         values.push(dropdown_allfiles)
     }
 
-    var two_files_2_compare = []   // make empty at first...
-
-
     $('.ui.dropdown.filedrop')
         .dropdown({
             values
@@ -92,38 +110,58 @@
 
             onChange: function(value, text, $selectedItem) {
 
+                // visa diff nu..
 
-                //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
+                var return_first;
+                var return_second;
 
-                $( "#chart" ).empty();
+                function callback(response) {
+                    return_first = response;
+                    //use return_first variable here
+                }
 
-                // Have to add PATH public/data manually since I remove it before..
-                d3.json("treemapinput?file=" + "public/data/" + text, function (err, res) {
-                    if (!err) {
+                function callback_second(response) {
+                    return_second = response;
+                    //use return_first AND return_second variable here
+                    createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
+                }
 
-                        $('.ui.search')
-                            .search({
-                                type: 'category',
-                                source: createAllList(res),
-                                cache: false
-                            });
 
-                        createStatistics(res)
+                // set URL different...NOT static...get url used right now..
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/data/'+ text,
+                    'success': function(data){
+                        callback(data);
 
-                        var data = d3.nest().key(function (d) {
-                            return d.region;
-                        }).key(function (d) {
-                            return d.subregion;
-                        }).entries(res);
-                        main({title: ""}, {key: "Hosts", values: data});
+                        // få vad första dropdown har för värde...
+                        // alert($( "#filedropdown").val())
+
+                        var second_dropdown = $('#diff_dropdown').dropdown('get text') // + " : " + $('.ui.dropdown').dropdown('get value') );
+
+                        $.ajax({
+                            type: 'GET',
+                            url: 'http://localhost:3000/data/' + second_dropdown,
+                            'success': function(data){
+                                callback_second(data);
+                            },
+                            error: function(xhr, status, err) {
+                                console.log(xhr.responseText);
+                            }
+                        });
+                    },
+                    error: function(xhr, status, err) {
+                        console.log(xhr.responseText);
                     }
                 });
             }
-        })
-    ;
+        });
 
     // sätt den först för att rensa värden.. blir fel med CSS eller nått sen..
-    $('.ui.dropdown.diffdrop').dropdown('clear'); // this will also remove css..
+    $('#diff_dropdown').dropdown('clear'); // this will also remove css..
+
+    // lösning kanske...
+    // https://stackoverflow.com/questions/46994947/semantic-overriding-my-dropdown-menu-making-it-big
 
 
     $('.ui.dropdown.diffdrop')
@@ -155,9 +193,14 @@
                     'success': function(data){
                         callback(data);
 
+                        // få vad första dropdown har för värde...
+                       // alert($( "#filedropdown").val())
+
+                        var first_dropdown = $('#filedropdown').dropdown('get text') // + " : " + $('.ui.dropdown').dropdown('get value') );
+
                         $.ajax({
                             type: 'GET',
-                            url: 'http://localhost:3000/data/YYYY-MM-DD_TT-TT-TT_Longname_number2/original-data-structure-errors.json',
+                            url: 'http://localhost:3000/data/' + first_dropdown,
                             'success': function(data){
                                 callback_second(data);
                             },
@@ -173,8 +216,22 @@
             }
         });
 
+
+    function createDiff(one, other){
+
+        // rubrik                kan va vad som helst...
+        var diff = JsDiff.createPatch('fileName', one, other, 'oldHeader', 'newHeader');
+        //var diff2htmlUi = new Diff2HtmlUI({ diff: diff });
+
+        // anvädn js2html
+        const targetElement = document.getElementById('display3');              // lines  ..stod det innan...
+        const configuration = { inputFormat: 'json', drawFileList: true, matching: 'none', highlight: true,  outputFormat: 'side-by-side' };
+        const diff2htmlUi = new Diff2HtmlUI(targetElement, diff, configuration);
+        diff2htmlUi.draw();
+        diff2htmlUi.highlightCode();
+    }
+
 </script>
 
 </body>
-<% include partials/menu %>
 </html>
