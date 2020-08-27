@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include partials/script %>
+    <% include partials/head %>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
+
+    <link rel="stylesheet" href="stylesheets/semantic.css">
+    <link rel="stylesheet" href="stylesheets/text_search_style.css">
+</head>
+<body>
+
+
+    <div class="container-fluid bg-3 text-center">
+        <h3><%= page %></h3><br>
+
+        <div class="row">
+            <select id="filedropdown" class="ui dropdown large text filedrop">
+            </select>
+
+            <select id="diff_dropdown" class="ui dropdown large text diffdrop">
+            </select>
+
+        </div>
+
+
+        <div class="row">
+            <div id="display3"></div>
+        </div>
+    </div>
+
+
+<script>
+
+    /*  Tog bort Search module.. ett annat att söka i texten.. sätt tillbaka om det behövs sen..sparar ifall att..
+
+    <div class="row">
+     <div class="app" data-finder-wrapper data-finder-scroll-offset="175">
+      <button class="finder-activator" data-finder-activator>Search Module</button>
+      <div class="content" data-finder-content>
+         <div id="status"></div>
+      </div>
+     </div>
+    </div>
+
+     */
+
+    allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
+
+    // TODO: removed "public/data" with slice()
+
+    values = []
+    var i;
+
+    for (i = 0; i < allfiles.length; i++) {
+
+        if (i===0)
+        {
+            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i], selected : true}
+        }
+        else
+        {
+            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i]}
+        }
+        values.push(dropdown_allfiles)
+    }
+
+    var two_files_2_compare = []   // make empty at first...
+
+
+    $('.ui.dropdown.filedrop')
+        .dropdown({
+            values
+        });
+    $('.ui.dropdown.diffdrop')
+        .dropdown({
+            values
+        });
+
+
+    $('.ui.dropdown.filedrop')
+        .dropdown({
+
+            // Måste få flera värden från multi select...
+            // Här finn en lösning: https://stackoverflow.com/questions/40590329/cant-get-values-from-semanticui-multi-dropdown
+            // man måste ha någon observer som kollar varje gång något väljs..
+
+            onChange: function(value, text, $selectedItem) {
+
+
+                //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
+
+                $( "#chart" ).empty();
+
+                // Have to add PATH public/data manually since I remove it before..
+                d3.json("treemapinput?file=" + "public/data/" + text, function (err, res) {
+                    if (!err) {
+
+                        $('.ui.search')
+                            .search({
+                                type: 'category',
+                                source: createAllList(res),
+                                cache: false
+                            });
+
+                        createStatistics(res)
+
+                        var data = d3.nest().key(function (d) {
+                            return d.region;
+                        }).key(function (d) {
+                            return d.subregion;
+                        }).entries(res);
+                        main({title: ""}, {key: "Hosts", values: data});
+                    }
+                });
+            }
+        })
+    ;
+
+    // sätt den först för att rensa värden.. blir fel med CSS eller nått sen..
+    $('.ui.dropdown.diffdrop').dropdown('clear'); // this will also remove css..
+
+
+    $('.ui.dropdown.diffdrop')
+        .dropdown({
+
+            onChange: function(value, text, $selectedItem) {
+
+                // visa diff nu..
+
+                var return_first;
+                var return_second;
+
+                function callback(response) {
+                    return_first = response;
+                    //use return_first variable here
+                }
+
+                function callback_second(response) {
+                    return_second = response;
+                    //use return_first AND return_second variable here
+                    createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
+                }
+
+
+                // set URL different...NOT static...get url used right now..
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/data/'+ text,
+                    'success': function(data){
+                        callback(data);
+
+                        $.ajax({
+                            type: 'GET',
+                            url: 'http://localhost:3000/data/YYYY-MM-DD_TT-TT-TT_Longname_number2/original-data-structure-errors.json',
+                            'success': function(data){
+                                callback_second(data);
+                            },
+                            error: function(xhr, status, err) {
+                                console.log(xhr.responseText);
+                            }
+                        });
+                    },
+                    error: function(xhr, status, err) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+        });
+
+</script>
+
+</body>
+<% include partials/menu %>
+</html>

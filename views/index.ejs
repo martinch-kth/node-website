@@ -5,41 +5,18 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 <html>
 <head>
 
+    <% include partials/script %>
+
     <meta charset="utf-8">
     <title>Zoomable treemap template</title>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
 
-
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
 
-
-    <!-- Javascripts -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html.min.js"></script>
-
-    <!-- Javascripts -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
-
-
-
-
-
-    <!-- jQuery library -->
-    <script src="javascript/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="javascript/bootstrap.min.js"></script>
-
     <link rel="stylesheet" href="stylesheets/semantic.css">
-
-    <script src="javascript/semantic/semantic.js"></script>
-    <script src="javascript/http_d3js.org_d3.v3.js"></script>
-
-    <script src="javascript/textsearch/jquery.highlight.js"></script>
-    <script src="javascript/textsearch/jquery.scrollto.js"></script>
-    <script src="javascript/textsearch/jquery.finder.js"></script>
     <link rel="stylesheet" href="stylesheets/text_search_style.css">
 
     <% include partials/head %>
@@ -180,16 +157,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 <div class="row">
     <div id="status" style="padding-top: 5px"></div>
-</div>
-
-
-
-<div class="row">
- <pre id="display"></pre>
-</div>
-
-<div class="row">
-    <div id="display2"></div>
 </div>
 
 <div class="row">
@@ -719,9 +686,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
                 }
 
+
+                // set URL different...NOT static...get url used right now..
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/data/YYYY-MM-DD_TT-TT-TT_Longname_number4/original-data-structure-errors.json',
+                    url: 'http://localhost:3000/data/'+ text,
                     'success': function(data){
                         callback(data);
 
@@ -744,9 +713,5 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         });
 
 </script>
-
-
-
-
 </body>
 </html>

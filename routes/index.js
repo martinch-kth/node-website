@@ -140,4 +140,8 @@ router.get('/contact', function(req, res, next) {
   res.render('contact', {page:'Contact Us', menuId:'contact'});
 });
 
+router.get('/diff', function(req, res, next) {
+  res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles()});
+});
+
 module.exports = router;
