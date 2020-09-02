@@ -166,6 +166,14 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 <script>
 
+    // to keep track of diff path... and file choosen.. global ...
+
+    var diff_path = []
+
+    var return_first
+    var return_second
+    ////////////////////////////////////////////////////////////////////
+
     window.addEventListener('message', function (e) {
         var opts = e.data.opts,
             data = e.data.data;
@@ -343,7 +351,50 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 .on('click', function (d, i) {
 
                     $("#status").empty()
+
+
                     $("#status").append(d._children[0].key);
+
+                    // här vill man diffa en mot en anann...
+
+                    // första klicket får man tag i HOST .. andra klicket modulenamn..
+                 //    alert(d.key)  // kommer bli 1) först klicka - host 2) andra klicka - module
+                    // varning !! kommer INTE att fungera om man VÄLJER filen EFTER man klicka 1 gång..? eller??.. tex på HOST1..å sen
+
+                    if (diff_path.length == 2)
+                    {
+                        diff_path = [] // empty, it already contains module and host..
+                    }
+
+                    if (diff_path.length < 2)  // add ..
+                    {
+                        diff_path.push(d.key)
+
+                        var second_dropdown = $('#diff_dropdown').dropdown('get text') // two files has to be choosen..
+
+                        if (diff_path.length === 2 && second_dropdown !== "" )
+                        {
+
+                      //      alert("diffpath0 =" + diff_path[0])
+                      //      alert("diffpath1 =" + diff_path[1])
+                      //      alert("firts file dropdown =" + JSON.stringify(return_first))
+
+                            for (mod in return_first.modules) {
+
+                                if (return_first.modules[mod].onHost === diff_path[0] && return_first.modules[mod].moduleName === diff_path[1])
+                                {
+                                    alert("ok! samma module i samma host..")
+
+
+                                    // får ju ut den texten som är redan formatterad!!! inte bra..... den är ju redan fixad...
+                                    // men.. ja skulle kunna...båda originalfilerna..
+
+                                                                                          // vill ha samma sak i andra filen.. modulename "module1" tex...
+                                    createDiff(JSON.stringify(return_first.modules[mod], null, 1),JSON.stringify(return_second.modules[mod], null, 1))
+                                }
+                            }
+                        }
+                    }
 
                     transition(d)
                 });
@@ -488,6 +539,23 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         }
     }
 
+    // However, if you want to get the value of a nested property and not only check its existence, here is a simple one-line function:
+    function getNested(obj, ...args) {
+        return args.reduce((obj, level) => obj && obj[level], obj)
+    }
+
+
+    function checkIfHostModuleExist()
+    {
+        // ladda in den.. som är..eller
+
+        // var second_file... = > filen som är vald...
+
+        // nu vll ja kolla om den här pathen finns..
+
+        //
+
+    }
 
     function createStatistics(data) {
 
@@ -547,6 +615,27 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
         var default_file = allfiles[0].toString()
 
+        // ta bort "public/data"...
+        var trimmed_name = default_file.slice(12, default_file.length)
+
+
+        function callback(response) {
+            // do what you want...
+            return_first = response
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: 'http://localhost:3000/data/'+ trimmed_name,
+            'success': function(data){
+                callback(data);
+
+            },
+            error: function(xhr, status, err) {
+                console.log(xhr.responseText);
+            }
+        });
+
         d3.json("treemapinput?file=" + default_file, function (err, res) {
             if (!err) {
 
@@ -569,11 +658,9 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 main({title: ""}, {key: "Hosts", values: data});
             }
         });
+
     }
 
-</script>
-
-<script>
 
     /*  Tog bort Search module.. ett annat att söka i texten.. sätt tillbaka om det behövs sen..sparar ifall att..
 
@@ -608,9 +695,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         values.push(dropdown_allfiles)
     }
 
-    var two_files_2_compare = []   // make empty at first...
-
-
     $('.ui.dropdown.filedrop')
         .dropdown({
             values
@@ -630,10 +714,28 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
             onChange: function(value, text, $selectedItem) {
 
-
                 //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
 
                 $( "#chart" ).empty();
+
+
+                function callback(response) {
+                    return_first = response;
+                }
+
+
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:3000/data/'+ text,
+                    'success': function(data){
+                        callback(data);
+
+                    },
+                    error: function(xhr, status, err) {
+                        console.log(xhr.responseText);
+                    }
+                });
+
 
                 // Have to add PATH public/data manually since I remove it before..
                 d3.json("treemapinput?file=" + "public/data/" + text, function (err, res) {
@@ -663,46 +765,24 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     // sätt den först för att rensa värden.. blir fel med CSS eller nått sen..
     $('.ui.dropdown.diffdrop').dropdown('clear'); // this will also remove css..
 
-
     $('.ui.dropdown.diffdrop')
         .dropdown({
 
             onChange: function(value, text, $selectedItem) {
 
-                // visa diff nu..
-
-                var return_first;
-                var return_second;
-
-                function callback(response) {
-                    return_first = response;
-                    //use return_first variable here
-                }
 
                 function callback_second(response) {
                     return_second = response;
-                    //use return_first AND return_second variable here
-                    createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
+
                 }
 
-
-                // set URL different...NOT static...get url used right now..
+                // set URL different...NOT static/localhost....get url used right now..
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:3000/data/'+ text,
                     'success': function(data){
-                        callback(data);
+                        callback_second(data);
 
-                        $.ajax({
-                            type: 'GET',
-                            url: 'http://localhost:3000/data/YYYY-MM-DD_TT-TT-TT_Longname_number2/original-data-structure-errors.json',
-                            'success': function(data){
-                                callback_second(data);
-                            },
-                            error: function(xhr, status, err) {
-                                console.log(xhr.responseText);
-                            }
-                        });
                     },
                     error: function(xhr, status, err) {
                         console.log(xhr.responseText);

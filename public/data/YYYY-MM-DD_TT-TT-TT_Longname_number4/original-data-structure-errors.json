@@ -2,14 +2,14 @@
   "buildID":"0",
   "modules":[
     {
-      "moduleName":"difftext",
+      "moduleName":"module1",
       "errors":[
         {
           "message":"YYYYY* YYYYY difftext YYY YYYYY YY /YYY/YYYYY.YYYY",
           "occurrences":"1"
         }
       ],
-      "onHost":"ÄÄÄ1"
+      "onHost":"HOST1"
     },
     {
       "moduleName":"difftext2",
