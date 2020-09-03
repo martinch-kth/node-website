@@ -141,16 +141,23 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     </div>
 </div>
 
+<div class="ui two column grid">
+    <div class="row">
+        <div class="column">
+            <div style="width: 80%">
+                <select id="filedropdown" class="ui dropdown large text filedrop fluid">
+                </select>
+            </div>
+        </div>
 
-<div class="row">
-    <select id="filedropdown" class="ui dropdown large text filedrop">
-    </select>
-
-    <select id="diff_dropdown" class="ui dropdown large text diffdrop">
-    </select>
-
+        <div class="column">
+            <div style="width: 80%">
+                <select id="diff_dropdown" class="ui dropdown large text diffdrop fluid">
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
-
 
 <div class="row">
     <div id="chart" style="padding-top: 5px"></div>
@@ -355,51 +362,29 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             })
                 .classed("child", true)
 
-
                 .on('click', function (d, i) {
 
                     $("#status").empty()
-
-
                     $("#status").append(d._children[0].key);
 
-                    // här vill man diffa en mot en anann...
-
-                    // första klicket får man tag i HOST .. andra klicket modulenamn..
-                 //    alert(d.key)  // kommer bli 1) först klicka - host 2) andra klicka - module
-                    // varning !! kommer INTE att fungera om man VÄLJER filen EFTER man klicka 1 gång..? eller??.. tex på HOST1..å sen
-
+                    // module and host are saved on click to later make a diff
                     if (diff_path.length == 2)
                     {
-                        diff_path = [] // empty, it already contains module and host..
+                        diff_path = []
                     }
 
                     if (diff_path.length < 2)  // add ..
                     {
                         diff_path.push(d.key)
 
-                        var second_dropdown = $('#diff_dropdown').dropdown('get text') // two files has to be choosen..
+                        var second_dropdown = $('#diff_dropdown').dropdown('get text')
 
-                        if (diff_path.length === 2 && second_dropdown !== "" )
+                        if (diff_path.length === 2 && second_dropdown !== "" ) // module,host and second filname has to exist
                         {
-
-                      //      alert("diffpath0 =" + diff_path[0])
-                      //      alert("diffpath1 =" + diff_path[1])
-                      //      alert("firts file dropdown =" + JSON.stringify(return_first))
-
-                            for (mod in return_first.modules) {
-
+                            for (mod in return_first.modules) // check if module exist on same host
+                            {
                                 if (return_second.modules[mod].onHost === diff_path[0] && return_second.modules[mod].moduleName === diff_path[1])
                                 {
-                                    alert("onhost..." + return_first.modules[mod].onHost)
-                                    alert("modulename:" +return_first.modules[mod].moduleName)
-                                    alert("ok! samma module i samma host..")
-
-
-                                    // får ju ut den texten som är redan formatterad!!! inte bra..... den är ju redan fixad...
-                                    // men.. ja skulle kunna...båda originalfilerna..
-
-                                                                                          // vill ha samma sak i andra filen.. modulename "module1" tex...
                                     createDiff(JSON.stringify(return_first.modules[mod], null, 1),JSON.stringify(return_second.modules[mod], null, 1))
                                 }
                             }
@@ -552,19 +537,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     // However, if you want to get the value of a nested property and not only check its existence, here is a simple one-line function:
     function getNested(obj, ...args) {
         return args.reduce((obj, level) => obj && obj[level], obj)
-    }
-
-
-    function checkIfHostModuleExist()
-    {
-        // ladda in den.. som är..eller
-
-        // var second_file... = > filen som är vald...
-
-        // nu vll ja kolla om den här pathen finns..
-
-        //
-
     }
 
     function createStatistics(data) {
