@@ -389,8 +389,10 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                             for (mod in return_first.modules) {
 
-                                if (return_first.modules[mod].onHost === diff_path[0] && return_first.modules[mod].moduleName === diff_path[1])
+                                if (return_second.modules[mod].onHost === diff_path[0] && return_second.modules[mod].moduleName === diff_path[1])
                                 {
+                                    alert("onhost..." + return_first.modules[mod].onHost)
+                                    alert("modulename:" +return_first.modules[mod].moduleName)
                                     alert("ok! samma module i samma host..")
 
 
