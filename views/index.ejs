@@ -10,11 +10,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     <meta charset="utf-8">
     <title>Zoomable treemap template</title>
 
+    <!-- d3 -->
+    <script src="javascript/http_d3js.org_d3.v3.js"></script>
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
-
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
 
     <link rel="stylesheet" href="stylesheets/semantic.css">
     <link rel="stylesheet" href="stylesheets/text_search_style.css">
@@ -224,7 +224,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             height = opts.height - margin.top - margin.bottom - theight,
             transitioning;
 
-        var color = d3.scale.category20c();
+        var color =  d3.scale.category20c(); //d3.scaleOrdinal(d3.scale.schemeCategory10) //
 
         var x = d3.scale.linear()
             .domain([0, width])
