@@ -615,7 +615,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
         $.ajax({
             type: 'GET',
-            url: 'http://localhost:3000/data/'+ trimmed_name,
+            url: '/data/'+ trimmed_name,
             'success': function(data){
                 callback(data);
 
@@ -716,7 +716,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/data/'+ text,
+                    url: '/data/'+ text,
                     'success': function(data){
                         callback(data);
 
@@ -769,7 +769,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 // set URL different...NOT static/localhost....get url used right now..
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/data/'+ text,
+                    url: '/data/'+ text,
                     'success': function(data){
                         callback_second(data);
 
