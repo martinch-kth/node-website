@@ -370,10 +370,30 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                     // module and host are saved on click to later make a diff
 
-
                     // göra om.. kolla inte på längd.. kolla på vad man klicka..på.. om det är host eller module..
-
                     // inte på Arrayen...
+
+                    var list = Object.entries(d._children[0])
+                        .filter(([key, value]) => `${key}`[value] !== 'undefined' ) //has options
+                        .map(([key, value], idx) => `{${idx} {${key}: ${value}}}`)
+
+                    console.log(list[1].toString().includes("region"))
+
+                    /*
+                    // if false = host true = module
+                    if (list[1].toString().includes("region"))
+                    {
+                        alert ("module")
+                    }
+                    else{
+                        alert("host!")
+                    }
+                    */
+
+                //    console.log(Object.keys(d._children[0].key));
+
+
+
 
                     if (diff_path.length == 2)
                     {
@@ -606,7 +626,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
         // ta bort "public/data"...
         var trimmed_name = default_file.slice(12, default_file.length)
-
 
         function callback(response) {
             // do what you want...
