@@ -129,7 +129,7 @@
                 // set URL different...NOT static...get url used right now..
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/data/'+ text,
+                    url: '/data/'+ text,
                     'success': function(data){
                         callback(data);
 
@@ -140,7 +140,7 @@
 
                         $.ajax({
                             type: 'GET',
-                            url: 'http://localhost:3000/data/' + second_dropdown,
+                            url: '/data/' + second_dropdown,
                             'success': function(data){
                                 callback_second(data);
                             },
@@ -188,7 +188,7 @@
                 // set URL different...NOT static...get url used right now..
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:3000/data/'+ text,
+                    url: '/data/'+ text,
                     'success': function(data){
                         callback(data);
 
@@ -199,7 +199,7 @@
 
                         $.ajax({
                             type: 'GET',
-                            url: 'http://localhost:3000/data/' + first_dropdown,
+                            url: '/data/' + first_dropdown,
                             'success': function(data){
                                 callback_second(data);
                             },
