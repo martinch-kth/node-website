@@ -335,6 +335,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                     transition(d)
                     $("#status").empty()
+
                 })
 
                 .select("text")
@@ -368,6 +369,12 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     $("#status").append(d._children[0].key);
 
                     // module and host are saved on click to later make a diff
+
+
+                    // göra om.. kolla inte på längd.. kolla på vad man klicka..på.. om det är host eller module..
+
+                    // inte på Arrayen...
+
                     if (diff_path.length == 2)
                     {
                         diff_path = []
@@ -699,7 +706,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 //  https://medium.com/@ridermansb/update-graph-in-d3-30baaebcc8c3
 
                 $( "#chart" ).empty();
-
+                $("#status").empty()
+                $("#display3").empty()
 
                 function callback(response) {
                     return_first = response;
