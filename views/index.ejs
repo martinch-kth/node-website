@@ -224,7 +224,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             height = opts.height - margin.top - margin.bottom - theight,
             transitioning;
 
-        var color =  d3.scale.category20c(); //d3.scaleOrdinal(d3.scale.schemeCategory10) //
+        var color =  d3.scale.category20();
 
         var x = d3.scale.linear()
             .domain([0, width])
@@ -395,7 +395,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
 
-                    if (diff_path.length == 2)
+                    if (list[1].toString().includes("region") === false)  //host
                     {
                         diff_path = []
                     }
@@ -779,7 +779,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         .dropdown({
 
             onChange: function(value, text, $selectedItem) {
-
 
                 function callback_second(response) {
                     return_second = response;

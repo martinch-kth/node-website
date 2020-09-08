@@ -7,10 +7,6 @@ var _ = require('lodash');
 
 const jsonfile = require('jsonfile')
 
-
-
-
-
 async function createTreemapData(file) {
   try {
     const file_data = await jsonfile.readFile(file, 'utf8');
@@ -126,7 +122,6 @@ router.get('/rawfile', async function(req, res) {
   const file_data = await jsonfile.readFile(file, 'utf8');
 
   var content = file_data.modules
-
 
   res.json(content)
 });
