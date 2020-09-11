@@ -173,6 +173,18 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 </div>
 
 
+
+<div id="textareabox" class="row">
+ <div class="ui form">
+    <div class="field">
+        <label>Text</label>
+        <lt-mirror style="display: none;"><lt-highlighter style="display: none;" contenteditable="false"><lt-div spellcheck="false" class="lt-highlighter__wrapper" style="width: 958px !important; height: 166px !important; transform: none !important; transform-origin: 480px 84px 0px !important; margin-top: 1px !important; margin-left: 1px !important;"><lt-div class="lt-highlighter__scrollElement" style="top: 0px !important; left: 0px !important; width: 958px !important; height: 166px !important;"></lt-div></lt-div></lt-highlighter><lt-div spellcheck="false" class="lt-mirror__wrapper notranslate" style="border-width: 1px !important; border-style: solid !important; direction: ltr !important; font: 400 14px / 18px sans-serif !important; font-synthesis: weight style !important; hyphens: manual !important; letter-spacing: normal !important; line-break: auto !important; margin: 0px !important; padding: 11px 14px !important; text-align: start !important; text-decoration: rgba(0, 0, 0, 0.87) !important; text-indent: 0px !important; text-rendering: optimizelegibility !important; text-transform: none !important; transform: none !important; transform-origin: 480px 84px 0px !important; unicode-bidi: normal !important; white-space: pre-wrap !important; word-spacing: 0px !important; overflow-wrap: break-word !important; writing-mode: horizontal-tb !important; width: 930px !important; height: 144px !important;" data-lt-scroll-top="0" data-lt-scroll-left="0" data-lt-scroll-top-scaled="0" data-lt-scroll-left-scaled="0" data-lt-scroll-top-scaled-and-zoomed="0" data-lt-scroll-left-scaled-and-zoomed="0"><lt-div class="lt-mirror__canvas" style="margin-top: 0px !important; margin-left: 0px !important; width: 930px !important; height: 144px !important;"></lt-div></lt-div><lt-div class="lt-mirror__measurer"></lt-div></lt-mirror><textarea spellcheck="false" data-gramm="false" style="line-height: 18px;"></textarea>
+    </div>
+ </div>
+</div>
+
+
+
 <div class="row">
     <div id="status" style="padding-top: 5px"></div>
 </div>
@@ -181,9 +193,17 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 <script>
 
+
+    $(document).ready(function ()
+    {
+        $('#textareabox').hide(); //ADD THIS
+
+    });
+
+
     // to keep track of diff path... and file choosen.. global ...
 
-    var diff_path = []
+    var host_path = "" // keeps track of host your in..
 
     var return_first
     var return_second
@@ -368,54 +388,39 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     $("#status").empty()
                     $("#status").append(d._children[0].key);
 
-                    // module and host are saved on click to later make a diff
-
-                    // göra om.. kolla inte på längd.. kolla på vad man klicka..på.. om det är host eller module..
-                    // inte på Arrayen...
 
                     var list = Object.entries(d._children[0])
                         .filter(([key, value]) => `${key}`[value] !== 'undefined' ) //has options
                         .map(([key, value], idx) => `{${idx} {${key}: ${value}}}`)
 
-                    console.log(list[1].toString().includes("region"))
+                 //  console.log(list[1].toString().includes("region"))
+                 //   console.log(Object.keys(d._children[0].key));
 
-                    /*
-                    // if false = host true = module
-                    if (list[1].toString().includes("region"))
+                    if (list[1].toString().includes("region") === true)  // true = module
                     {
-                        alert ("module")
-                    }
-                    else{
-                        alert("host!")
-                    }
-                    */
-
-                //    console.log(Object.keys(d._children[0].key));
-
-
-
-
-                    if (list[1].toString().includes("region") === false)  //host
-                    {
-                        diff_path = []
-                    }
-
-                    if (diff_path.length < 2)  // add ..
-                    {
-                        diff_path.push(d.key)
 
                         var second_dropdown = $('#diff_dropdown').dropdown('get text')
 
-                        if (diff_path.length === 2 && second_dropdown !== "" ) // module,host and second filname has to exist
+                        if (second_dropdown !== "")
                         {
+                            alert("module: "+ d.key)
+
                             for (mod in return_first.modules) // check if module exist on same host
                             {
-                                if (return_second.modules[mod].onHost === diff_path[0] && return_second.modules[mod].moduleName === diff_path[1])
+                                if (return_second.modules[mod].onHost === host_path && return_second.modules[mod].moduleName === d.key)
                                 {
+                                    $('#textareabox').show();
+
                                     createDiff(JSON.stringify(return_first.modules[mod], null, 1),JSON.stringify(return_second.modules[mod], null, 1))
                                 }
                             }
                         }
+
+                    }else {
+
+                   //     alert("host= " + d.key)
+                        host_path = d.key
+                        $('#textareabox').hide(); // always...
                     }
 
                     transition(d)

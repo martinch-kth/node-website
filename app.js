@@ -6,6 +6,17 @@ var index = require('./routes/index');
 var app = express();
 
 
+var mongoose = require("mongoose");
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect("mongodb://localhost:27017/db", {useNewUrlParser: true,  useUnifiedTopology: true } );  // 'commits' verkar vara en collection?!?! inte en DB namn?? wtf..????
+let db = mongoose.connection;
+db.once("open", () => console.log("connected to the database"));
+// checks if connection with the database is successful
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

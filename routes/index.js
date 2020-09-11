@@ -1,11 +1,57 @@
 var express = require('express');
 var router = express.Router();
-
 var browseDir = require("browse-directory");
-
 var _ = require('lodash');
-
 const jsonfile = require('jsonfile')
+
+var Comments = require('.././comments');
+
+// https://stackoverflow.com/questions/19051041/cannot-overwrite-model-once-compiled-mongoose
+
+//comment_id:String, // two filenames.. the path..host + module name..
+//    username:String,
+//    comment:String
+
+
+/*
+var minicommit = new Comments({ "comment_id" : "66645","username" : "123","comment" : "123" });
+
+console.log(minicommit.comment_id); // 'Silence'
+
+minicommit.save(function (err, fluffy) {
+    if (err) return console.error(err);
+
+    console.log("saveed")
+});
+
+
+Comments.find(function (err, commits) {
+    if (err) return console.error(err);
+    console.log(commits);
+})
+
+router.get('/:tagId', function(req, res) {
+
+    var query  = Comments.where({ commit_id: req.params.tagId });
+
+    console.log('letar ...')
+
+    query.findOne(function (err, commit) {
+        if (err) return handleError(err);
+        if (commit) {
+            // doc may be null if no document matched
+            console.log('hittade ...')
+
+            res.send(commit);
+            // res.json(commit);  // kan även vara:....    res.send(commit)
+        }
+    });
+
+})
+
+
+*/
+
 
 async function createTreemapData(file) {
   try {
@@ -113,6 +159,8 @@ router.get('/treemapinput', async function(req, res) {
 
   res.json(result)
 });
+
+
 
 router.get('/rawfile', async function(req, res) {
 
