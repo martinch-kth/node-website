@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var browseDir = require("browse-directory");
+
+const dirTree = require("directory-tree");
+
+
 var _ = require('lodash');
 const jsonfile = require('jsonfile')
 
@@ -51,6 +55,11 @@ router.get('/:tagId', function(req, res) {
 
 
 */
+
+
+
+
+
 
 
 async function createTreemapData(file) {
@@ -121,6 +130,50 @@ function getAllFiles() {
   return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
 }
 
+
+function getJstree() {
+
+  const treed = Object.values(dirTree("public/data"));
+
+  // gör om till array!?!..
+
+  const tree = treed[2]
+
+  var latest_parent = "";
+  var jstree = []
+
+  function eachRecursive(data) {
+    if (data.type === "directory") {
+      var dirobj = { id: data.name, parent: "#", text: data.name };
+      latest_parent = data.name;
+
+      jstree.push(dirobj);
+    } else if (data.type === "file") {
+      // man skulle kunnna spara namnet på .. den i en TMP var.. fukk va dåligT!!!
+      var fileobj = { id: data.name, parent: latest_parent, text: data.name };
+
+      jstree.push(fileobj);
+    }
+
+    // Ta hand om barnen
+    if (Array.isArray(data.children)) {
+      // varning.. vad händer.. då data.children INTE finns alls...
+      for (var i = 0; i < data.children.length; i++) {
+        eachRecursive(data.children[i]);
+      }
+    }
+  }
+
+  tree.forEach(eachRecursive);
+
+  console.log("borde va nptt...: "+ jstree);
+
+  return jstree
+}
+
+
+
+
 // format text to a certain length width.
 function explode(text, max) {
   text = text.replace(/  +/g, " ").replace(/^ /, "").replace(/ $/, "");
@@ -184,7 +237,7 @@ router.get('/contact', function(req, res, next) {
 });
 
 router.get('/diff', function(req, res, next) {
-  res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles()});
+  res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles(), jstree: getJstree()});
 });
 
 module.exports = router;

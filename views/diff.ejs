@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <% include partials/script %>
 
-    <!-- d3 -->
-    <script src="javascript/http_d3js.org_d3.v3.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
+
+    <link href="/stylesheets/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
+
+
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
 
-    <link rel="stylesheet" href="stylesheets/semantic.css">
-    <link rel="stylesheet" href="stylesheets/text_search_style.css">
+    <link rel="stylesheet" href="/stylesheets/semantic.css">
+    <link rel="stylesheet" href="/stylesheets/text_search_style.css">
+
+
 
     <% include partials/head %>
 </head>
 <body>
+
+<div id="container"></div>
+
 
 
 <div class="row">
@@ -156,6 +166,32 @@
             }
         });
 
+
+  //  const data2 = [ { "text" : "Root node"", "children" : [ "Child node 1", "Child node 2" ] } ]
+
+/*
+    const filedata =
+        [
+            {
+                "text": "YYYY-MM-DD_TT-TT-TT_Longname_number1",
+                "children": [
+
+                        "original-data-structure-errors.json", "2222"
+
+                ]
+            }]
+*/
+
+    var filedata = JSON.parse('<%- JSON.stringify(jstree) %>');
+
+    console.log("filedata!!!: "+  filedata)
+
+    $('#container').jstree({
+        'core' : {
+          'data' : filedata
+        }
+    });
+
     // sätt den först för att rensa värden.. blir fel med CSS eller nått sen..
     $('#diff_dropdown').dropdown('clear'); // this will also remove css..
 
@@ -214,6 +250,7 @@
                 });
             }
         });
+
 
 
     function createDiff(one, other){

@@ -174,14 +174,19 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
 
 
-<div id="textareabox" class="row">
- <div class="ui form">
+<div class="row">
+<div style="width:95%" id="textareabox" class="ui form large text">
     <div class="field">
-        <label>Text</label>
-        <lt-mirror style="display: none;"><lt-highlighter style="display: none;" contenteditable="false"><lt-div spellcheck="false" class="lt-highlighter__wrapper" style="width: 958px !important; height: 166px !important; transform: none !important; transform-origin: 480px 84px 0px !important; margin-top: 1px !important; margin-left: 1px !important;"><lt-div class="lt-highlighter__scrollElement" style="top: 0px !important; left: 0px !important; width: 958px !important; height: 166px !important;"></lt-div></lt-div></lt-highlighter><lt-div spellcheck="false" class="lt-mirror__wrapper notranslate" style="border-width: 1px !important; border-style: solid !important; direction: ltr !important; font: 400 14px / 18px sans-serif !important; font-synthesis: weight style !important; hyphens: manual !important; letter-spacing: normal !important; line-break: auto !important; margin: 0px !important; padding: 11px 14px !important; text-align: start !important; text-decoration: rgba(0, 0, 0, 0.87) !important; text-indent: 0px !important; text-rendering: optimizelegibility !important; text-transform: none !important; transform: none !important; transform-origin: 480px 84px 0px !important; unicode-bidi: normal !important; white-space: pre-wrap !important; word-spacing: 0px !important; overflow-wrap: break-word !important; writing-mode: horizontal-tb !important; width: 930px !important; height: 144px !important;" data-lt-scroll-top="0" data-lt-scroll-left="0" data-lt-scroll-top-scaled="0" data-lt-scroll-left-scaled="0" data-lt-scroll-top-scaled-and-zoomed="0" data-lt-scroll-left-scaled-and-zoomed="0"><lt-div class="lt-mirror__canvas" style="margin-top: 0px !important; margin-left: 0px !important; width: 930px !important; height: 144px !important;"></lt-div></lt-div><lt-div class="lt-mirror__measurer"></lt-div></lt-mirror><textarea spellcheck="false" data-gramm="false" style="line-height: 18px;"></textarea>
+        <label>Error message</label>
+        <textarea rows="2">YYYY**YYY_YyYYYY_YYYY**YYYY_YYYY YYYYY (2) YYYYwYYYYYY YyYYYY_YYYY=YYYY wYYY YYw YYYYY=YYYY</textarea>
     </div>
- </div>
+    <div class="field">
+        <label>Error description</label>
+        <textarea>This error...****** ******* *********** ************ ************ *****</textarea>
+    </div>
 </div>
+</div>
+
 
 
 
@@ -403,7 +408,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                         if (second_dropdown !== "")
                         {
-                            alert("module: "+ d.key)
+                        //    alert("module: "+ d.key)
 
                             for (mod in return_first.modules) // check if module exist on same host
                             {
