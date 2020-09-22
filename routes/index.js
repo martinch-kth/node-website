@@ -234,4 +234,7 @@ router.get('/diff', function(req, res, next) {
   res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles(), jstree: getJstree()});
 });
 
+router.get('/difffolders', function(req, res, next) {
+  res.render('difffolders', {page:'Diff folders', menuId:'difffolders',filenames: getAllFiles(), jstree: getJstree()});
+});
 module.exports = router;
