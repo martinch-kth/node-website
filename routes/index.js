@@ -134,9 +134,6 @@ function getAllFiles() {
 function getJstree() {
 
   const treed = Object.values(dirTree("public/data"));
-
-  // gör om till array!?!..
-
   const tree = treed[2]
 
   var latest_parent = "";
@@ -144,13 +141,13 @@ function getJstree() {
 
   function eachRecursive(data) {
     if (data.type === "directory") {
-      var dirobj = { id: data.name, parent: "#", text: data.name };
+      var dirobj = { id: data.name, parent: "#",a_attr: {class:"no_checkbox"},text: data.name };
       latest_parent = data.name;
 
       jstree.push(dirobj);
     } else if (data.type === "file") {
-      // man skulle kunnna spara namnet på .. den i en TMP var.. fukk va dåligT!!!
-      var fileobj = { id: data.name, parent: latest_parent, text: data.name };
+
+      var fileobj = { id: latest_parent+'/'+data.name, parent: latest_parent, text: data.name, icon : " glyphicon glyphicon-file" };
 
       jstree.push(fileobj);
     }
@@ -165,9 +162,6 @@ function getJstree() {
   }
 
   tree.forEach(eachRecursive);
-
-  console.log("borde va nptt...: "+ jstree);
-
   return jstree
 }
 
