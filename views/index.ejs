@@ -266,8 +266,12 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             .sort(function (a, b) {
                 return a.value - b.value;
             })
+
+
+
             .ratio(height / width * 0.5 * (1 + Math.sqrt(5)))
             .round(false);
+
 
         var svg = d3.select("#chart").append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -281,16 +285,16 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         var grandparent = svg.append("g")
             .attr("class", "grandparent");
 
-        grandparent.append("rect")
-            .attr("y", -margin.top)
-            .attr("width", width)
-            .attr("height", margin.top);
+                grandparent.append("rect")
+                    .attr("y", -margin.top)
+                    .attr("width", width)
+                  .attr("height", margin.top);
 
 
-        grandparent.append("text")
-            .attr("x", 6)
-            .attr("y", 6 - margin.top)
-            .attr("dy", ".75em");
+                grandparent.append("text")
+                    .attr("x", 6)
+                    .attr("y", 6 - margin.top)
+                    .attr("dy", ".75em");
 
         if (opts.title) {
             $("#chart").prepend("<p class='title'>" + opts.title + "</p>");
@@ -366,9 +370,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 .select("text")
                 .text(name(d));
 
+
             var g1 = svg.insert("g", ".grandparent")
                 .datum(d)
                 .attr("class", "depth");
+
 
             var g = g1.selectAll("g")
                 .data(d._children)
@@ -421,11 +427,11 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                             }
                         }
 
-                    }else {
-
-                   //     alert("host= " + d.key)
-                        host_path = d.key
-                        $('#textareabox').hide(); // always...
+                    }
+                    else
+                    {
+                       host_path = d.key
+                       $('#textareabox').hide(); // always...
                     }
 
                     transition(d)
@@ -441,12 +447,13 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             children.append("rect")
                 .attr("class", "child")
                 .call(rect)
-                .append("title")
+                //    .append("title")  <-- Not appending this prevents d3 default tooltip from being displayed.
 
                 // all data här
                 .text(function (d) {
                     return d.key + " (" + formatNumber(d.value) + ")";
-                })   // ;
+                });
+
 
             children.append("text")
                 .attr("class", "ctext")
@@ -454,6 +461,8 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                     return d.key;
                 })
                 .call(text2);
+
+
 
             g.append("rect")
                 .attr("class", "parent")
@@ -463,10 +472,13 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 .attr("class", "ptext")
                 .attr("dy", ".75em")
 
+
             t.append("tspan")
                 .text(function (d) {
                     return d.key;
                 });
+
+
             t.append("tspan")
                 .attr("dy", "1.0em")
                 .text(function (d) {
@@ -483,6 +495,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             function transition(d) {
                 if (transitioning || !d) return;
                 transitioning = true;
+
 
                 var g2 = display(d),
                     t1 = g1.transition().duration(750),
