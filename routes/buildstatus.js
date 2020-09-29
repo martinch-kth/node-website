@@ -237,9 +237,4 @@ router.get('/diff', function(req, res, next) {
 router.get('/difffolders', function(req, res, next) {
   res.render('difffolders', {page:'Diff folders', menuId:'difffolders',filenames: getAllFiles(), jstree: getJstree()});
 });
-
-router.get('/buildstatus', function(req, res, next) {
-  res.render('buildstatus', {page:'Build status', menuId:'buildstatus'});
-});
-
 module.exports = router;

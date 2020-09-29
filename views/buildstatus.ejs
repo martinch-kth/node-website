@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <% include partials/script %>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
+
+    <link rel="stylesheet" href="/stylesheets/diff.css">
+
+    <link href="/stylesheets/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
+
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/stylesheets/semantic.css">
+    <link rel="stylesheet" href="/stylesheets/text_search_style.css">
+
+
+
+    <% include partials/head %>
+</head>
+<body>
+
+
+
+
+<div class="row">
+    <div class="column">
+        <br id="main-container" style="padding-left: 50px">
+        <% include partials/menu %>
+    </div>
+</div>
+
+
+<div class="ui four cards" id="ongoingTasksContainer" style="padding-right: 50px">
+</div>
+
+
+
+
+<script>
+
+    // Update the bootstrap grid once the tasks are added
+    function updateTaskContainerHead(containerId){
+        let containerHead = document.getElementById(containerId);
+        // Take the row headings and make an HTML container out of them
+
+        $( '<div class="ui card"> '+
+        '<div class="content"> '+
+            '<div class="header">Host Name</div> '+
+        '</div>                                  '+
+        '<div class="content">                   '+
+         '   <h4 class="ui sub header">Build name</h4> '+
+       ' <div class="ui small feed">'+
+        '    <div class="event">'+
+         '   <div class="content">'+
+          '  <div class="summary">'+
+          '  buildname some some some      '+
+       ' </div>'+
+       ' </div>'+
+       ' </div>'+
+       ' <div class="event">'+
+       '     <div class="content">'+
+       '     <div class="summary">'+
+       '     ETA - Time'+
+        '    </div>'+
+        '    </div>'+
+        '    </div>'+
+        '    <div class="event">'+
+        '    <div class="content">'+
+        '    <div class="summary">'+
+        '    Status build/failed'+
+       ' </div>'+
+       ' </div>'+
+       ' </div>'+
+
+       ' <h4 class="ui sub header">Modules failed</h4>'+
+       ' <div class="ui small feed">'+
+        '    <div class="event">'+
+         '   <div class="content">'+
+         '   <div class="summary">'+
+         '   modulenames: module1, module 2...'+
+       ' </div>'+
+       ' </div>'+
+       ' </div>'+
+
+       ' <h4 class="ui sub header">Build name</h4>'+
+       ' <div class="ui small feed">'+
+        '    <div class="event">'+
+        '    <div class="content">'+
+        '    <div class="summary">'+
+         '   buildname some some some'+
+       ' </div>'+
+       ' </div>'+
+       ' </div>'+
+       ' </div>'+
+       ' </div>'+
+       ' <div class="extra content">'+
+        '    <button class="ui button">Some more info..</button>'+
+       ' </div>'+
+       ' </div>'
+
+
+            , {
+            "class": "four wide column",
+            text: "Click me!",
+            click: function() {
+                $( this ).toggleClass( "test" );
+            }
+        })
+
+            .appendTo( containerHead );
+
+
+
+    }
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+    updateTaskContainerHead('ongoingTasksContainer');
+
+
+
+
+</script>
+
+</body>
+</html>
