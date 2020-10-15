@@ -13,6 +13,8 @@
     "directory-tree": "^2.2.4",
     "ejs": "^2.5.7",
     "express": "^4.17.1",
+    "jenkins": "^0.28.1",
+    "jenkins-log-stream": "^2.0.0",
     "jsonfile": "^6.0.1",
     "lodash": "^4.17.20",
     "mongoose": "^5.10.4",

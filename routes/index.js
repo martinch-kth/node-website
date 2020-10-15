@@ -58,7 +58,58 @@ router.get('/:tagId', function(req, res) {
 
 
 
+///////////////////
 
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+
+// https://stackoverflow.com/questions/46390733/recursively-read-a-directories-with-a-folder
+
+
+//  NÅGOT ÄR FEL...får inte med FILER!!!
+
+const traverse = function(dir, result = []) {
+
+  // list files in directory and loop through
+  fs.readdirSync(dir).forEach((file) => {
+
+    // builds full path of file
+    const fPath = path.resolve(dir, file);
+
+    // prepare stats obj
+    const fileStats = { file, path: fPath };
+
+    // is the file a directory ?
+    // if yes, traverse it also, if no just add it to the result
+    if (fs.statSync(fPath).isDirectory()) {
+      fileStats.type = 'dir';
+      fileStats.files = [];
+
+
+      var dirobj = { id: fileStats.file, parent: "#",a_attr: {class:"yes_checkbox"},text: fileStats.file};
+
+      result.push(dirobj);
+
+      return traverse(fPath, fileStats.files)
+    }
+
+    fileStats.type = 'file';
+
+    //
+    //  Ta BORT allt före / ... så får du path fast ..directory bara...
+    //
+    var fileobj = { id: fileStats.file+'/'+fileStats.path, parent: fileStats.path, text: fileStats.file, icon : " glyphicon glyphicon-file" };
+
+    result.push(fileobj);
+  });
+  return result;
+};
+
+console.log(util.inspect(traverse("public/data")), false, null);
+
+
+//////////////////////////////////
 
 
 
@@ -239,6 +290,27 @@ router.get('/difffolders', function(req, res, next) {
 });
 
 router.get('/buildstatus', function(req, res, next) {
+
+  var jenkins = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
+
+  jenkins.info(function(err, data) {
+    if (err) throw err;
+
+    console.log('info', data);
+  });
+
+  var JenkinsLogStream = require('jenkins-log-stream');
+  var stream = new JenkinsLogStream({
+    'baseUrl': 'http://admin:admin@localhost:8080',
+    'job': 'test',
+    'build': 'lastBuild',
+    'pollInterval': 1000
+  });
+
+  stream.pipe(process.stdout);
+
+
+
   res.render('buildstatus', {page:'Build status', menuId:'buildstatus'});
 });
 

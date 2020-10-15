@@ -7,10 +7,9 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
 
-    <link rel="stylesheet" href="/stylesheets/diff.css">
+    <link rel="stylesheet" href="/stylesheets/diff-folders.css">
 
     <link href="/stylesheets/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
-
 
 
     <!-- Latest compiled and minified CSS -->
@@ -18,8 +17,6 @@
 
     <link rel="stylesheet" href="/stylesheets/semantic.css">
     <link rel="stylesheet" href="/stylesheets/text_search_style.css">
-
-
 
     <% include partials/head %>
 </head>
@@ -35,23 +32,7 @@
     </div>
 </div>
 
-<div class="ui two column grid">
-    <div class="row">
-        <div class="column">
-        <div style="width: 80%">
-        <select id="filedropdown" class="ui dropdown large text filedrop fluid">
-        </select>
-        </div>
-        </div>
 
-        <div class="column">
-        <div style="width: 80%">
-        <select id="diff_dropdown" class="ui dropdown large text diffdrop fluid">
-        </select>
-        </div>
-        </div>
-    </div>
-</div>
 
 <p></p>
 <p>TODO: 1) sätt tillbaka så man Ser root checkboxes.. sen när man väljer en så väljs alla filer under automatiskt.. sen körs en diff för varje likadan fil. lång diff vy under??</p>
@@ -82,105 +63,6 @@
 
 
 <script>
-
-    /*  Tog bort Search module.. ett annat att söka i texten.. sätt tillbaka om det behövs sen..sparar ifall att..
-
-    <div class="row">
-     <div class="app" data-finder-wrapper data-finder-scroll-offset="175">
-      <button class="finder-activator" data-finder-activator>Search Module</button>
-      <div class="content" data-finder-content>
-         <div id="status"></div>
-      </div>
-     </div>
-    </div>
-
-     */
-
-    allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
-
-    // TODO: removed "public/data" with slice()
-
-    values = []
-    var i;
-
-    for (i = 0; i < allfiles.length; i++) {
-
-        if (i===0)
-        {
-            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i], selected : true}
-        }
-        else
-        {
-            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i]}
-        }
-        values.push(dropdown_allfiles)
-    }
-
-    $('.ui.dropdown.filedrop')
-        .dropdown({
-            values
-        });
-    $('.ui.dropdown.diffdrop')
-        .dropdown({
-            values
-        });
-
-
-    $('.ui.dropdown.filedrop')
-        .dropdown({
-
-            // Måste få flera värden från multi select...
-            // Här finn en lösning: https://stackoverflow.com/questions/40590329/cant-get-values-from-semanticui-multi-dropdown
-            // man måste ha någon observer som kollar varje gång något väljs..
-
-            onChange: function(value, text, $selectedItem) {
-
-                // visa diff nu..
-
-                var return_first;
-                var return_second;
-
-                function callback(response) {
-                    return_first = response;
-                    //use return_first variable here
-                }
-
-                function callback_second(response) {
-                    return_second = response;
-                    //use return_first AND return_second variable here
-                    createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
-                }
-
-
-                // set URL different...NOT static...get url used right now..
-                $.ajax({
-                    type: 'GET',
-                    url: '/data/'+ text,
-                    'success': function(data){
-                        callback(data);
-
-                        // få vad första dropdown har för värde...
-                        // alert($( "#filedropdown").val())
-
-                        var second_dropdown = $('#diff_dropdown').dropdown('get text')
-
-                        $.ajax({
-                            type: 'GET',
-                            url: '/data/' + second_dropdown,
-                            'success': function(data){
-                                callback_second(data);
-                            },
-                            error: function(xhr, status, err) {
-                                console.log(xhr.responseText);
-                            }
-                        });
-                    },
-                    error: function(xhr, status, err) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-        });
 
 
     var filedata = JSON.parse('<%- JSON.stringify(jstree) %>');
@@ -224,8 +106,6 @@
 
         var selectedSecondFile = $('#container2').jstree(true).get_selected()[0]  // för att få hela pathen...
 
-
-
         if (selectedSecondFile !== "" && selectedSecondFile !== null && selectedSecondFile !== undefined)
         {
             $("#display3").empty()
@@ -247,12 +127,6 @@
             makeDiff(selectedFirstFile, path)
         }
     })
-
-    // sätt den först för att rensa värden.. blir fel med CSS eller nått sen..
-    $('#diff_dropdown').dropdown('clear'); // this will also remove css..
-
-    // lösning kanske...
-    // https://stackoverflow.com/questions/46994947/semantic-overriding-my-dropdown-menu-making-it-big
 
     function makeDiff(firstFile, secondFile)
     {
@@ -294,60 +168,6 @@
             }
         });
     }
-
-
-    $('.ui.dropdown.diffdrop')
-        .dropdown({
-
-            onChange: function(value, text, $selectedItem) {
-
-                // visa diff nu..
-
-                var return_first;
-                var return_second;
-
-                function callback(response) {
-                    return_first = response;
-                    //use return_first variable here
-                }
-
-                function callback_second(response) {
-                    return_second = response;
-                    //use return_first AND return_second variable here
-                    createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
-                }
-
-
-                // set URL different...NOT static...get url used right now..
-                $.ajax({
-                    type: 'GET',
-                    url: '/data/'+ text,
-                    'success': function(data){
-                        callback(data);
-
-                        // få vad första dropdown har för värde...
-                       // alert($( "#filedropdown").val())
-
-                        var first_dropdown = $('#filedropdown').dropdown('get text') // + " : " + $('.ui.dropdown').dropdown('get value') );
-
-                        $.ajax({
-                            type: 'GET',
-                            url: '/data/' + first_dropdown,
-                            'success': function(data){
-                                callback_second(data);
-                            },
-                            error: function(xhr, status, err) {
-                                console.log(xhr.responseText);
-                            }
-                        });
-                    },
-                    error: function(xhr, status, err) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-        });
-
 
 
     function createDiff(one, other){
