@@ -224,7 +224,6 @@
         var selectedSecondFile = $('#container2').jstree(true).get_selected()[0]  // för att få hela pathen...
 
 
-
         if (selectedSecondFile !== "" && selectedSecondFile !== null && selectedSecondFile !== undefined)
         {
             $("#display3").empty()
@@ -236,7 +235,9 @@
         var path = data.instance.get_path(data.node,'/');
         console.log('Selected from 2: ' + path);
 
-        var selectedFirstFile = $('#container').jstree(true).get_selected()[0]
+        var selectedFirstFile = $('#container2').jstree(true).get_selected()[0]
+
+
 
         var lastChar = path.substr(-1); // Selects the last character
 

@@ -94,6 +94,8 @@ const traverse = function(dir, result = []) {
       return traverse(fPath, fileStats.files)
     }
 
+
+
     fileStats.type = 'file';
 
     //
@@ -107,6 +109,8 @@ const traverse = function(dir, result = []) {
 };
 
 console.log(util.inspect(traverse("public/data")), false, null);
+
+console.log()
 
 
 //////////////////////////////////
@@ -190,26 +194,48 @@ function getJstree() {
   var latest_parent = "";
   var jstree = []
 
+  var id = 0
+
   function eachRecursive(data) {
+
+    // få tag i lat
+
+    id++
+
     if (data.type === "directory") {
-      var dirobj = { id: data.name, parent: "#",a_attr: {class:"no_checkbox"},text: data.name };
-      latest_parent = data.name;
+
+
+      // path är unikt...
+
+      var dirobj = { id: data.path , parent: "#",a_attr: {class:"no_checkbox"},text: data.name };
+
 
       jstree.push(dirobj);
+
+      // kolla om den har .. barn.. om det har de så lägg in dessa oxo..
+      // Ta hand om barnen
+      if (Array.isArray(data.children)) {
+        // varning.. vad händer.. då data.children INTE finns alls...
+        //    for (var i = 0; i < data.children.length; i++) {
+
+        data.children.forEach(eachRecursive)
+        // eachRecursive(data.children);
+        //   }
+      }
+
     } else if (data.type === "file") {
 
-      var fileobj = { id: latest_parent+'/'+data.name, parent: latest_parent, text: data.name, icon : " glyphicon glyphicon-file" };
+
+      // remove everything after & including the last forward slazh!
+      var afterWithout = data.path.substr(0, data.path.lastIndexOf("/"));
+
+
+      var fileobj = { id: afterWithout+data.name, parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
 
       jstree.push(fileobj);
     }
 
-    // Ta hand om barnen
-    if (Array.isArray(data.children)) {
-      // varning.. vad händer.. då data.children INTE finns alls...
-      for (var i = 0; i < data.children.length; i++) {
-        eachRecursive(data.children[i]);
-      }
-    }
+
   }
 
   tree.forEach(eachRecursive);
