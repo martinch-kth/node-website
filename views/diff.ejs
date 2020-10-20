@@ -4,8 +4,6 @@
 
     <% include partials/script %>
 
-
-
     <link rel="stylesheet" href="/stylesheets/jstree.style.min.css" />
     <script src="/javascript/jstree.min.js"></script>
 
@@ -13,8 +11,6 @@
     <link rel="stylesheet" href="/stylesheets/diff.css">
 
    <!-- <link href="/stylesheets/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet"> needed?? -->
-
-
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
@@ -29,8 +25,6 @@
 <body>
 
 
-
-
 <div class="row">
     <div class="column">
         <br id="main-container" style="padding-left: 50px">
@@ -38,23 +32,6 @@
     </div>
 </div>
 
-<div class="ui two column grid">
-    <div class="row">
-        <div class="column">
-        <div style="width: 80%">
-        <select id="filedropdown" class="ui dropdown large text filedrop fluid">
-        </select>
-        </div>
-        </div>
-
-        <div class="column">
-        <div style="width: 80%">
-        <select id="diff_dropdown" class="ui dropdown large text diffdrop fluid">
-        </select>
-        </div>
-        </div>
-    </div>
-</div>
 
 <div class="ui two column grid">
     <div class="row">
@@ -78,8 +55,6 @@
 </div>
 
 
-
-
 <script>
 
     /*  Tog bort Search module.. ett annat att söka i texten.. sätt tillbaka om det behövs sen..sparar ifall att..
@@ -97,89 +72,6 @@
 
     allfiles = JSON.parse('<%- JSON.stringify(filenames) %>');
 
-    // TODO: removed "public/data" with slice()
-
-    values = []
-    var i;
-
-    for (i = 0; i < allfiles.length; i++) {
-
-        if (i===0)
-        {
-            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i], selected : true}
-        }
-        else
-        {
-            dropdown_allfiles = {name : allfiles[i].slice(12, allfiles[i].length) ,value: [i]}
-        }
-        values.push(dropdown_allfiles)
-    }
-
-    $('.ui.dropdown.filedrop')
-        .dropdown({
-            values
-        });
-    $('.ui.dropdown.diffdrop')
-        .dropdown({
-            values
-        });
-
-
-    $('.ui.dropdown.filedrop')
-        .dropdown({
-
-            // Måste få flera värden från multi select...
-            // Här finn en lösning: https://stackoverflow.com/questions/40590329/cant-get-values-from-semanticui-multi-dropdown
-            // man måste ha någon observer som kollar varje gång något väljs..
-
-            onChange: function(value, text, $selectedItem) {
-
-                // visa diff nu..
-
-                var return_first;
-                var return_second;
-
-                function callback(response) {
-                    return_first = response;
-                    //use return_first variable here
-                }
-
-                function callback_second(response) {
-                    return_second = response;
-                    //use return_first AND return_second variable here
-                    createDiff(JSON.stringify(return_first, null, 1),JSON.stringify(return_second, null, 1))
-                }
-
-
-                // set URL different...NOT static...get url used right now..
-                $.ajax({
-                    type: 'GET',
-                    url: '/data/'+ text,
-                    'success': function(data){
-                        callback(data);
-
-                        // få vad första dropdown har för värde...
-                        // alert($( "#filedropdown").val())
-
-                        var second_dropdown = $('#diff_dropdown').dropdown('get text')
-
-                        $.ajax({
-                            type: 'GET',
-                            url: '/data/' + second_dropdown,
-                            'success': function(data){
-                                callback_second(data);
-                            },
-                            error: function(xhr, status, err) {
-                                console.log(xhr.responseText);
-                            }
-                        });
-                    },
-                    error: function(xhr, status, err) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-        });
 
 
     var filedata = JSON.parse('<%- JSON.stringify(jstree) %>');
@@ -187,9 +79,9 @@
     $('#container').jstree({
         'core' : {
 
-  //          "themes" : {                   <--- Remove comments to make tree larger...
-  //              "variant" : "large"
-  //          },
+            "themes" : {
+                "variant" : "large"
+            },
           'multiple' : false,
           'data' : filedata
         },
@@ -197,23 +89,20 @@
         "checkbox" : {
             "keep_selected_style" : false
         },
-        "plugins" : [ "wholerow", "checkbox" ]
+        "plugins" : [ "checkbox" ]
     });
 
     $('#container2').jstree({
         'core' : {
-
-            //          "themes" : {                   <--- Remove comments to make tree larger...
-            //              "variant" : "large"
-            //          },
+                      "themes" : {
+                      "variant" : "large"
+            },
             'multiple' : false,
             'data' : filedata
         },
-
-        "checkbox" : { three_state: false,
-                       keep_selected_style : false  //, cascade: 'down'
+        "checkbox" : { keep_selected_style : false , cascade: 'down'
         },
-        "plugins" : [  "checkbox" ]
+        "plugins" : [ "checkbox" ]
     });
 
 

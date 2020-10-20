@@ -198,44 +198,35 @@ function getJstree() {
 
   function eachRecursive(data) {
 
-    // få tag i lat
-
-    id++
-
     if (data.type === "directory") {
 
-
-      // path är unikt...
-
-      var dirobj = { id: data.path , parent: "#",a_attr: {class:"no_checkbox"},text: data.name };
-
+      // if directory is empty, dont set any checkbox.
+      if (data.children.length <= 0)
+      {
+        var dirobj = { id: data.path , parent: "#",a_attr: {class:"no_checkbox"},text: data.name };
+      }
+      else
+      {
+        var dirobj = { id: data.path , parent: "#",text: data.name };
+      }
 
       jstree.push(dirobj);
 
-      // kolla om den har .. barn.. om det har de så lägg in dessa oxo..
       // Ta hand om barnen
-      if (Array.isArray(data.children)) {
-        // varning.. vad händer.. då data.children INTE finns alls...
-        //    for (var i = 0; i < data.children.length; i++) {
-
+      if (Array.isArray(data.children))
+      {
         data.children.forEach(eachRecursive)
-        // eachRecursive(data.children);
-        //   }
       }
 
-    } else if (data.type === "file") {
-
-
+    } else if (data.type === "file")
+    {
       // remove everything after & including the last forward slazh!
       var afterWithout = data.path.substr(0, data.path.lastIndexOf("/"));
-
 
       var fileobj = { id: afterWithout+data.name, parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
 
       jstree.push(fileobj);
     }
-
-
   }
 
   tree.forEach(eachRecursive);
