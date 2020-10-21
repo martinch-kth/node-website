@@ -58,65 +58,6 @@ router.get('/:tagId', function(req, res) {
 
 
 
-///////////////////
-
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-
-// https://stackoverflow.com/questions/46390733/recursively-read-a-directories-with-a-folder
-
-
-//  NÅGOT ÄR FEL...får inte med FILER!!!
-
-const traverse = function(dir, result = []) {
-
-  // list files in directory and loop through
-  fs.readdirSync(dir).forEach((file) => {
-
-    // builds full path of file
-    const fPath = path.resolve(dir, file);
-
-    // prepare stats obj
-    const fileStats = { file, path: fPath };
-
-    // is the file a directory ?
-    // if yes, traverse it also, if no just add it to the result
-    if (fs.statSync(fPath).isDirectory()) {
-      fileStats.type = 'dir';
-      fileStats.files = [];
-
-
-      var dirobj = { id: fileStats.file, parent: "#",a_attr: {class:"yes_checkbox"},text: fileStats.file};
-
-      result.push(dirobj);
-
-      return traverse(fPath, fileStats.files)
-    }
-
-
-
-    fileStats.type = 'file';
-
-    //
-    //  Ta BORT allt före / ... så får du path fast ..directory bara...
-    //
-    var fileobj = { id: fileStats.file+'/'+fileStats.path, parent: fileStats.path, text: fileStats.file, icon : " glyphicon glyphicon-file" };
-
-    result.push(fileobj);
-  });
-  return result;
-};
-
-console.log(util.inspect(traverse("public/data")), false, null);
-
-console.log()
-
-
-//////////////////////////////////
-
-
-
 async function createTreemapData(file) {
   try {
     const file_data = await jsonfile.readFile(file, 'utf8');
@@ -191,24 +132,41 @@ function getJstree() {
   const treed = Object.values(dirTree("public/data"));
   const tree = treed[2]
 
-  var latest_parent = "";
   var jstree = []
-
-  var id = 0
 
   function eachRecursive(data) {
 
+    // remove "public/" from path, not needed.
+    data.path = data.path.substring(7, data.path.length)
+
+    // remove everything after & including the last forward slazh!
+    var afterWithout = data.path.substr(0, data.path.lastIndexOf("/"));
+
     if (data.type === "directory") {
 
-      // if directory is empty, dont set any checkbox.
-      if (data.children.length <= 0)
+
+      // Måste göra så för att ROOT folder ska få sin '#'....
+      if (data.path.split("/").length <= 2)
       {
-        var dirobj = { id: data.path , parent: "#",a_attr: {class:"no_checkbox"},text: data.name };
+        var dirobj = { id: data.path , parent: "#" ,text: data.name };
       }
       else
       {
-        var dirobj = { id: data.path , parent: "#",text: data.name };
+        // Is not root node
+        var dirobj = { id: data.path , parent: afterWithout ,text: data.name };
       }
+
+/*
+      // if directory is empty, dont set any checkbox.
+      if (data.children.length <= 0)
+      {
+        var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
+      }
+      else
+      {
+        var dirobj = { id: data.path , parent: "#" ,text: data.name };
+      }
+*/
 
       jstree.push(dirobj);
 
@@ -220,10 +178,7 @@ function getJstree() {
 
     } else if (data.type === "file")
     {
-      // remove everything after & including the last forward slazh!
-      var afterWithout = data.path.substr(0, data.path.lastIndexOf("/"));
-
-      var fileobj = { id: afterWithout+data.name, parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
+       var fileobj = { id: data.path , parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
 
       jstree.push(fileobj);
     }
