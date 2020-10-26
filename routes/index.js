@@ -257,10 +257,6 @@ router.get('/diff', function(req, res, next) {
   res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles(), jstree: getJstree()});
 });
 
-router.get('/difffolders', function(req, res, next) {
-  res.render('difffolders', {page:'Diff folders', menuId:'difffolders',filenames: getAllFiles(), jstree: getJstree()});
-});
-
 router.get('/buildstatus', function(req, res, next) {
 
   var jenkins = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
