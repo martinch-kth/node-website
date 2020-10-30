@@ -257,8 +257,13 @@ router.get('/diff', function(req, res, next) {
   res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles(), jstree: getJstree()});
 });
 
+
+//
+//  kräver att man kan lösenord.... funkar det här?...
+//
 router.get('/buildstatus', function(req, res, next) {
 
+/*
   var jenkins = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
 
   jenkins.info(function(err, data) {
@@ -277,9 +282,10 @@ router.get('/buildstatus', function(req, res, next) {
 
   stream.pipe(process.stdout);
 
-
+*/
 
   res.render('buildstatus', {page:'Build status', menuId:'buildstatus'});
+
 });
 
 module.exports = router;

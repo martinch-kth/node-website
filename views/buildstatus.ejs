@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
 
-    <link rel="stylesheet" href="/stylesheets/diff.css">
+    <link rel="stylesheet" href="/stylesheets/buildstatus.css">
 
     <link href="/stylesheets/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
 
@@ -39,6 +39,83 @@
 <div class="ui four cards" id="ongoingTasksContainer" style="padding-right: 50px">
 </div>
 
+<div class="ui card">
+    <div class="content" style="background-color: lightgreen">
+
+         <h2 class="ui tiny icon header">
+              <i class="desktop icon"></i>
+              <div class="ui header">#12 -  Peregrin -    1 day ago</div>
+         </h2>
+
+    </div>
+    <div class="content">
+        <h4 class="ui sub header">Build name</h4>
+        <div class="ui medium feed">
+            <div class="event">
+                <div class="content">
+                    <div class="summary">
+                        Some info: ... ...  ...
+                    </div>
+
+                    <table class="ui definition table">
+                        <tbody>
+                        <tr>
+                            <td class="two wide column">Modulename</td>
+                            <td>Failed</td>
+                        </tr>
+                        <tr>
+                            <td>Modulename</td>
+                            <td>Failed</td>
+                        </tr>
+                        <tr>
+                            <td>Modulename</td>
+                            <td>Failed</td>
+                        </tr>
+                        <tr>
+                            <td>Modulename</td>
+                            <td>Failed</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="event">
+                <div class="content">
+
+                    <h2 class="ui tiny icon header">
+                        <i class="clock icon" id="imuststyle">2:45h
+                           </i>
+                    </h2>
+
+
+                </div>
+            </div>
+
+
+
+
+
+            <div class="event">
+                <div class="content">
+                    <div class="ui header">
+                        3 builds have failed
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="extra content">
+        <button class="ui button">Join Project</button>
+    </div>
+</div>
+
 
 
 
@@ -50,19 +127,26 @@
         // Take the row headings and make an HTML container out of them
 
         $( '<div class="ui card"> '+
-        '<div class="content"> '+
-            '<div class="header">Host Name</div> '+
-        '</div>                                  '+
+
+        '<div class="content" style="background-color: lightblue;"> '+
+           ' <h2 class="ui tiny icon header">'+
+            '   <i class="desktop icon"></i>'+
+            '   <div class="ui header">'+
+            '      Peregrin'+
+           ' </div>'+
+          '  </h2>   '+
+        '</div>        ' +
+
+
+
+
         '<div class="content">                   '+
-         '   <h4 class="ui sub header">Build name</h4> '+
-       ' <div class="ui small feed">'+
-        '    <div class="event">'+
-         '   <div class="content">'+
-          '  <div class="summary">'+
-          '  buildname some some some      '+
+         '   <h2 class="ui sub header">Build name</h2> '+
+         ' <div class="ui medium feed">'+
+            '  buildname some some some      '+
+         ' </div>'+
        ' </div>'+
-       ' </div>'+
-       ' </div>'+
+
        ' <div class="event">'+
        '     <div class="content">'+
        '     <div class="summary">'+
@@ -118,14 +202,10 @@
 
 
     }
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
-    updateTaskContainerHead('ongoingTasksContainer');
+
+
+//    updateTaskContainerHead('ongoingTasksContainer');
+
 
 
 
