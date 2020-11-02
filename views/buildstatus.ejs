@@ -4,13 +4,12 @@
 
     <% include partials/script %>
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
 
     <link rel="stylesheet" href="/stylesheets/buildstatus.css">
 
     <link href="/stylesheets/fontawesome-free-5.14.0-web/css/all.css" rel="stylesheet"> <!--load all styles -->
-
 
 
     <!-- Latest compiled and minified CSS -->
@@ -19,13 +18,9 @@
     <link rel="stylesheet" href="/stylesheets/semantic.css">
     <link rel="stylesheet" href="/stylesheets/text_search_style.css">
 
-
-
     <% include partials/head %>
 </head>
 <body>
-
-
 
 
 <div class="row">
@@ -42,19 +37,33 @@
 <div class="ui card">
     <div class="content" style="background-color: lightgreen">
 
-         <h2 class="ui tiny icon header">
-              <i class="desktop icon"></i>
-              <div class="ui header">#12 -  Peregrin -    1 day ago</div>
-         </h2>
-
+        <h2 class="ui tiny icon header">
+            <i class="desktop icon"></i>
+            <div class="ui header">#12 - Peregrin - 1 day ago</div>
+        </h2>
     </div>
+
+
     <div class="content">
+
+        <div class="event">
+            <div class="content">
+
+                <h2 class="ui tiny icon header">
+                    <i class="clock icon" id="imuststyle">2:45h
+                    </i>
+                </h2>
+
+            </div>
+        </div>
+
+
         <h4 class="ui sub header">Build name</h4>
         <div class="ui medium feed">
             <div class="event">
                 <div class="content">
                     <div class="summary">
-                        Some info: ... ...  ...
+                        Project name
                     </div>
 
                     <table class="ui definition table">
@@ -82,132 +91,187 @@
             </div>
 
 
+            <div class="ui two column grid" style="padding-bottom: 10px">
 
+                <div class="column">
+                    <div class="event">
+                        <div class="content">
 
-
-
-            <div class="event">
-                <div class="content">
-
-                    <h2 class="ui tiny icon header">
-                        <i class="clock icon" id="imuststyle">2:45h
-                           </i>
-                    </h2>
-
-
+                            <div class="ui statistics">
+                                <div class="red statistic">
+                                    <div class="value">
+                                        3
+                                    </div>
+                                    <div class="label">
+                                        builds have failed
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
 
+                <div class="column">
+                    <div class="event">
+                        <div class="content">
 
-
-
-            <div class="event">
-                <div class="content">
-                    <div class="ui header">
-                        3 builds have failed
+                            <div class="ui statistics">
+                                <div class="green statistic">
+                                    <div class="value">
+                                        7
+                                    </div>
+                                    <div class="label">
+                                        builds have succeed
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="content">
+
+                <div class="event">
+                    <div class="content">
+
+                        <div class="ui relaxed divided list">
+                            <div class="item">
+                                <i class="large jenkins middle aligned icon"></i>
+                                <div class="content">
+                                    <div class="description">Last build (#23), 1 days 0 hr ago</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="large jenkins middle aligned icon"></i>
+                                <div class="content">
+                                    <div class="description">Last stable build (#23), 1 days 0 hr ago</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <i class="large jenkins middle aligned icon"></i>
+                                <div class="content">
+                                    <div class="description">Last successful build (#23), 1 days 0 hr ago</div>
+                                </div>
+                            </div>
+
+                                <div class="item">
+                                    <i class="large jenkins middle aligned icon"></i>
+                                    <div class="content">
+                                        <div class="description">Last failed build (#20), 1 days 2 hr ago</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <i class="large jenkins middle aligned icon"></i>
+                                    <div class="content">
+                                        <div class="description">Last unsuccessful build (#20), 1 days 2 hr ago</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <i class="large jenkins middle aligned icon"></i>
+                                    <div class="content">
+                                        <div class="description">Last completed build (#23), 1 days 0 hr ago</div>
+                                    </div>
+                                </div>
+
+                          </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
         </div>
     </div>
-    <div class="extra content">
-        <button class="ui button">Join Project</button>
-    </div>
 </div>
-
-
 
 
 <script>
 
     // Update the bootstrap grid once the tasks are added
-    function updateTaskContainerHead(containerId){
+    function updateTaskContainerHead(containerId) {
         let containerHead = document.getElementById(containerId);
         // Take the row headings and make an HTML container out of them
 
-        $( '<div class="ui card"> '+
+        $('<div class="ui card"> ' +
 
-        '<div class="content" style="background-color: lightblue;"> '+
-           ' <h2 class="ui tiny icon header">'+
-            '   <i class="desktop icon"></i>'+
-            '   <div class="ui header">'+
-            '      Peregrin'+
-           ' </div>'+
-          '  </h2>   '+
-        '</div>        ' +
-
-
+            '<div class="content" style="background-color: lightblue;"> ' +
+            ' <h2 class="ui tiny icon header">' +
+            '   <i class="desktop icon"></i>' +
+            '   <div class="ui header">' +
+            '      Peregrin' +
+            ' </div>' +
+            '  </h2>   ' +
+            '</div>        ' +
 
 
-        '<div class="content">                   '+
-         '   <h2 class="ui sub header">Build name</h2> '+
-         ' <div class="ui medium feed">'+
-            '  buildname some some some      '+
-         ' </div>'+
-       ' </div>'+
+            '<div class="content">                   ' +
+            '   <h2 class="ui sub header">Build name</h2> ' +
+            ' <div class="ui medium feed">' +
+            '  buildname some some some      ' +
+            ' </div>' +
+            ' </div>' +
 
-       ' <div class="event">'+
-       '     <div class="content">'+
-       '     <div class="summary">'+
-       '     ETA - Time'+
-        '    </div>'+
-        '    </div>'+
-        '    </div>'+
-        '    <div class="event">'+
-        '    <div class="content">'+
-        '    <div class="summary">'+
-        '    Status build/failed'+
-       ' </div>'+
-       ' </div>'+
-       ' </div>'+
+            ' <div class="event">' +
+            '     <div class="content">' +
+            '     <div class="summary">' +
+            '     ETA - Time' +
+            '    </div>' +
+            '    </div>' +
+            '    </div>' +
+            '    <div class="event">' +
+            '    <div class="content">' +
+            '    <div class="summary">' +
+            '    Status build/failed' +
+            ' </div>' +
+            ' </div>' +
+            ' </div>' +
 
-       ' <h4 class="ui sub header">Modules failed</h4>'+
-       ' <div class="ui small feed">'+
-        '    <div class="event">'+
-         '   <div class="content">'+
-         '   <div class="summary">'+
-         '   modulenames: module1, module 2...'+
-       ' </div>'+
-       ' </div>'+
-       ' </div>'+
+            ' <h4 class="ui sub header">Modules failed</h4>' +
+            ' <div class="ui small feed">' +
+            '    <div class="event">' +
+            '   <div class="content">' +
+            '   <div class="summary">' +
+            '   modulenames: module1, module 2...' +
+            ' </div>' +
+            ' </div>' +
+            ' </div>' +
 
-       ' <h4 class="ui sub header">Build name</h4>'+
-       ' <div class="ui small feed">'+
-        '    <div class="event">'+
-        '    <div class="content">'+
-        '    <div class="summary">'+
-         '   buildname some some some'+
-       ' </div>'+
-       ' </div>'+
-       ' </div>'+
-       ' </div>'+
-       ' </div>'+
-       ' <div class="extra content">'+
-        '    <button class="ui button">Some more info..</button>'+
-       ' </div>'+
-       ' </div>'
+            ' <h4 class="ui sub header">Build name</h4>' +
+            ' <div class="ui small feed">' +
+            '    <div class="event">' +
+            '    <div class="content">' +
+            '    <div class="summary">' +
+            '   buildname some some some' +
+            ' </div>' +
+            ' </div>' +
+            ' </div>' +
+            ' </div>' +
+            ' </div>' +
+            ' <div class="extra content">' +
+            '    <button class="ui button">Some more info..</button>' +
+            ' </div>' +
+            ' </div>'
 
 
             , {
-            "class": "four wide column",
-            text: "Click me!",
-            click: function() {
-                $( this ).toggleClass( "test" );
-            }
-        })
+                "class": "four wide column",
+                text: "Click me!",
+                click: function () {
+                    $(this).toggleClass("test");
+                }
+            })
 
-            .appendTo( containerHead );
-
+            .appendTo(containerHead);
 
 
     }
 
 
-//    updateTaskContainerHead('ongoingTasksContainer');
-
-
-
+    //    updateTaskContainerHead('ongoingTasksContainer');
 
 
 </script>

@@ -263,6 +263,33 @@ router.get('/diff', function(req, res, next) {
 //
 router.get('/buildstatus', function(req, res, next) {
 
+  var jenkinsapi = require('jenkins-api');
+
+
+// username/password
+  var jenkins = jenkinsapi.init("http://admin:admin@localhost:8080");
+
+  jenkins.last_build_info('test3', function(err, data) {
+    if (err){ return console.log(err); }
+   // console.log(data)
+
+
+    jenkins.console_output('test3', data.id,  function(err, data) {
+      if (err){ return console.log(err); }
+       // console.log(data)
+
+      console.log(data.body)  // detta är console log....från den...
+
+    });
+
+
+  });
+
+
+
+
+  // http://10.68.108.131:8080
+
 /*
   var jenkins = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
 
@@ -272,10 +299,22 @@ router.get('/buildstatus', function(req, res, next) {
     console.log('info', data);
   });
 
+
+
+  jenkins.last_build_info('test3', function(err, data) {
+    if (err){ return console.log(err); }
+    console.log(data)
+  });
+
+//     'baseUrl': 'http://10.68.108.131:8080',
+
+*/
+
+/*
   var JenkinsLogStream = require('jenkins-log-stream');
   var stream = new JenkinsLogStream({
     'baseUrl': 'http://admin:admin@localhost:8080',
-    'job': 'test',
+    'job': 'test3',
     'build': 'lastBuild',
     'pollInterval': 1000
   });
@@ -285,7 +324,6 @@ router.get('/buildstatus', function(req, res, next) {
 */
 
   res.render('buildstatus', {page:'Build status', menuId:'buildstatus'});
-
 });
 
 module.exports = router;
