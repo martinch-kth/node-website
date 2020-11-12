@@ -190,6 +190,23 @@ function getJstree() {
 
 
 
+function fleetCheck(){
+
+  /*  värKligheTen...
+
+  + echo fleet-check-started
+  fleet-check-started
+  + fleetctl list-units
+  UNIT		MACHINE				ACTIVE	SUB
+  hello.service	5810ec51.../192.168.43.59	active	running
+  + echo fleet-check-ended
+  fleet-check-ended
+
+  */
+
+
+}
+
 
 // format text to a certain length width.
 function explode(text, max) {
@@ -276,12 +293,36 @@ router.get('/buildstatus', function(req, res, next) {
 
     jenkins.console_output('test3', data.id,  function(err, data) {
       if (err){ return console.log(err); }
-       // console.log(data)
 
-      console.log(data.body)  // detta är console log....från den...
 
+      var log = data.body.split("\n")  // split on each line..
+
+      log.forEach(line => {
+
+            var line_array = line.split(/ +/)  // split on spaces only
+
+            line_array.forEach(element => {
+
+              fleetCheck() // borde vara här..(?) .. element = fleet-check-started
+                           // hemskt.. nu är den startad... man måste väl även få ended..INNAN man går vidare..
+
+              //  if (fleet-check-started and fleet-check-ended ... då kan du få ut,,,åå..knepigt...!!
+
+              if (element.includes("[") && element.includes("]"))
+              {
+                var step = line_array[line_array.indexOf(element)+1]
+
+                if (step.charAt(step.length-1) === ")" )
+                {
+                  // här ska vi antagligen ...gör något beroende på nr?... eller lägga alla nr till en array?
+                  // all_steps_so_far.push(nr....????)
+
+                  console.log("this is it--> " +  step.substring(0, step.length - 1))
+                }
+              }
+            });
+      })
     });
-
 
   });
 
