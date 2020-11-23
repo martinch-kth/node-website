@@ -810,5 +810,122 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         });
 
 </script>
+
+
+<script src="javascript/socket.io.js"></script>
+
+<ul id="events"></ul>
+<script>
+
+    /* funkar!!
+    const $events = document.getElementById('events');
+
+    const newItem = (content) => {
+        const item = document.createElement('li');
+        item.innerText = content;
+        return item;
+    };
+
+    const socket = io();
+
+    socket.on('connect', () => {
+        $events.appendChild(newItem('connect'));
+    });
+
+    */
+</script>
+
+
+<input id="file" type="file" />
+<img id="img">
+
+<script src="javascript/socket.io-stream.js"></script>
+<script>
+
+    $(document).ready(function() {
+
+        $(function() {
+            var socket = io.connect('http://localhost:3000');
+
+            socket.on("connect",function() {
+                console.log("on connect");
+
+                ss(socket).on('jenkins-log', function(stream,data) {
+
+
+                    console.log('received',data);
+
+                    
+ /*
+
+
+                    stream.on('data', function(data) {
+                        console.log('data')
+
+                    //    for(var i=0;i<data.length;i++) {
+                    //        binaryString+=String.fromCharCode(data[i]);
+                    //    }
+
+                    });
+
+                    */
+
+                    stream.on('end', function(data) {
+                        console.log('end')
+                   //     $("#img").attr("src","data:image/png;base64,"+window.btoa(binaryString));
+
+                   //     binaryString = "";
+                    });
+                });
+            });
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

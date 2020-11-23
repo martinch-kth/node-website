@@ -4,3 +4,12 @@
 }
 
 
+.FixedHeightContainer
+{
+    height: 250px;
+}
+.Content
+{
+    height:250px;
+    overflow:auto;
+}

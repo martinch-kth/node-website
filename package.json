@@ -21,6 +21,8 @@
     "mongoose": "^5.10.4",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4",
-    "npm-check": "^5.9.2"
+    "npm-check": "^5.9.2",
+    "socket.io": "^3.0.2",
+    "socket.io-stream": "^0.9.1"
   }
 }

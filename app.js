@@ -1,9 +1,71 @@
-var express = require('express');
-var cors = require('cors')
+const express = require("express");
+const app = express();
+// Static files
+app.use(express.static("public"));
+
+////////////////////WEBSOCKETZ///////////////////////
+const socket = require("socket.io");
+
+const server = require('http').createServer(app);
+const io = require('socket.io')(server,{
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+    }
+});
+
+exports.myio = io;
+
+// test
 var path = require('path');
+var fs = require('fs');
+
+
+//  mera...............
+
+/*
+io.on("connection", function (socket) {
+    console.log("Made socket connection fun again");
+
+
+    // DENNA: https://github.com/silas/node-jenkins
+    var jenkins_second_lib = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
+
+    jenkins_second_lib.job.get('test3', function(err, data) {
+        if (err) throw err;
+
+        var log = jenkins_second_lib.build.logStream('test3', data.builds[0].number ,String,3000);
+
+        log.on('data', function(text) {
+
+            var stream = ss.createStream();
+
+            ss(socket).emit('jenkins-log', stream,text);
+
+        });
+
+        log.on('error', function(err) {
+            console.log('error', err);
+        });
+
+        log.on('end', function() {
+            console.log('end');
+        });
+
+    });
+
+});
+*/
+
+server.listen(3000);
+
+//////////////////////////////////////////////////////
+
+
+var cors = require('cors')
 var logger = require('morgan');
 var index = require('./routes/index');
-var app = express();
+//var app = express();
 
 
 /*

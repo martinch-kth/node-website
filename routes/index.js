@@ -1,14 +1,20 @@
-var express = require('express');
+const express = require("express");
+
 var router = express.Router();
 var browseDir = require("browse-directory");
 
 const dirTree = require("directory-tree");
 
-
 var _ = require('lodash');
 const jsonfile = require('jsonfile')
 
 var Comments = require('.././comments');
+
+var file1 = require('../app.js')
+
+//const app = require('app')
+
+
 
 // https://stackoverflow.com/questions/19051041/cannot-overwrite-model-once-compiled-mongoose
 
@@ -55,8 +61,6 @@ router.get('/:tagId', function(req, res) {
 
 
 */
-
-
 
 async function createTreemapData(file) {
   try {
@@ -189,7 +193,6 @@ function getJstree() {
 }
 
 
-
 function fleetCheck(){
 
   /*  värKligheTen...
@@ -235,8 +238,36 @@ function explode(text, max) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+////try out///
+  /*
+  res.header('Content-Type', 'text/event-stream');
+
+  var interval_id = setInterval(function() {
+    res.write("some data");
+  }, 50);
+
+  req.socket.on('close', function() {
+    clearInterval(interval_id);
+  });
+  */
+///////
+
   res.render('index', {page:'Home', menuId:'home',filenames: getAllFiles()});
 });
+/*
+router.get('/sse/events', function(req, res) {
+  res.header('Content-Type', 'text/event-stream');
+
+  var interval_id = setInterval(function() {
+    res.write("some data");
+  }, 50);
+
+  req.socket.on('close', function() {
+    clearInterval(interval_id);
+  });
+
+});
+*/
 
 router.get('/treemapinput', async function(req, res) {
 
@@ -280,8 +311,50 @@ router.get('/diff', function(req, res, next) {
 //
 router.get('/buildstatus', function(req, res, next) {
 
-  var jenkinsapi = require('jenkins-api');
+  var ss = require('socket.io-stream');
 
+  file1.myio.on('connection', function (socket) {
+
+      console.log("Made socket connection fun again");
+
+
+      // eka.midi:8080 10.68.108.166
+
+    http://130.237.59.170:8080/   kth server
+
+
+      // DENNA: https://github.com/silas/node-jenkins            http://admin:admin@localhost:8080
+      var jenkins_second_lib = require('jenkins')({ baseUrl: 'http://10.68.108.164:8080', crumbIssuer: true }); // eka-mini1
+
+      jenkins_second_lib.job.get('install', function(err, data) {
+        if (err) throw err;
+
+        //get latest build
+        var log = jenkins_second_lib.build.logStream('install', data.builds[0].number ,String,3000);
+
+        log.on('data', function(text) {
+
+          var stream = ss.createStream();
+
+          ss(socket).emit('jenkins-log', stream,text);
+
+        });
+
+        log.on('error', function(err) {
+          console.log('error', err);
+        });
+
+        log.on('end', function() {
+          console.log('end');
+        });
+
+      });
+
+  });
+
+ // var jenkinsapi = require('jenkins-api');
+
+/* FUNKAR!!!
 
 // username/password
   var jenkins = jenkinsapi.init("http://admin:admin@localhost:8080");
@@ -289,7 +362,6 @@ router.get('/buildstatus', function(req, res, next) {
   jenkins.last_build_info('test3', function(err, data) {
     if (err){ return console.log(err); }
    // console.log(data)
-
 
     jenkins.console_output('test3', data.id,  function(err, data) {
       if (err){ return console.log(err); }
@@ -326,30 +398,60 @@ router.get('/buildstatus', function(req, res, next) {
 
   });
 
-
-
-
-  // http://10.68.108.131:8080
+*/
 
 /*
-  var jenkins = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
+  // DENNA: https://github.com/silas/node-jenkins
+  var jenkins_second_lib = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
 
-  jenkins.info(function(err, data) {
+  jenkins_second_lib.job.get('test3', function(err, data) {
     if (err) throw err;
 
-    console.log('info', data);
+    // get last build number
+    // check each 3 sec.....
+    // https://github.com/node-schedule/node-schedule  mer komplex..sätt att
+
+   var interval = setInterval(function(str1, str2) {
+
+       console.log(str1 + " " + str2);
+
+   }, 1000, "Hello.", "How are you?");
+
+   clearInterval(interval);  // stoppar helt..!
+
+    var log = jenkins_second_lib.build.logStream('test3', data.builds[0].number ,String,3000);
+
+    log.on('data', function(text) {
+      process.stdout.write(text);
+    });
+
+    log.on('error', function(err) {
+      console.log('error', err);
+    });
+
+    log.on('end', function() {
+      console.log('end');
+    });
+
   });
 
 
+*/
 
+
+
+/*
   jenkins.last_build_info('test3', function(err, data) {
     if (err){ return console.log(err); }
     console.log(data)
   });
+*/
+
 
 //     'baseUrl': 'http://10.68.108.131:8080',
 
-*/
+
+
 
 /*
   var JenkinsLogStream = require('jenkins-log-stream');
@@ -362,9 +464,12 @@ router.get('/buildstatus', function(req, res, next) {
 
   stream.pipe(process.stdout);
 
+  // kommwe den ut?
 */
+
 
   res.render('buildstatus', {page:'Build status', menuId:'buildstatus'});
 });
+
 
 module.exports = router;
