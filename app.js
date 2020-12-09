@@ -20,47 +20,9 @@ exports.myio = io;
 var path = require('path');
 var fs = require('fs');
 
-
-//  mera...............
-
-/*
-io.on("connection", function (socket) {
-    console.log("Made socket connection fun again");
-
-
-    // DENNA: https://github.com/silas/node-jenkins
-    var jenkins_second_lib = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
-
-    jenkins_second_lib.job.get('test3', function(err, data) {
-        if (err) throw err;
-
-        var log = jenkins_second_lib.build.logStream('test3', data.builds[0].number ,String,3000);
-
-        log.on('data', function(text) {
-
-            var stream = ss.createStream();
-
-            ss(socket).emit('jenkins-log', stream,text);
-
-        });
-
-        log.on('error', function(err) {
-            console.log('error', err);
-        });
-
-        log.on('end', function() {
-            console.log('end');
-        });
-
-    });
-
-});
-*/
-
 server.listen(3000);
 
 //////////////////////////////////////////////////////
-
 
 var cors = require('cors')
 var logger = require('morgan');

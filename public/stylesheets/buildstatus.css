@@ -1,6 +1,19 @@
-#imuststyle {
+.contact-background-image {
+    background-image: url("../img/camo.jpg");
+}
+
+.imuststyle {
     float: left;
-    margin-right: 12px !important;
+}
+
+.splitscreen {
+    display:flex;
+}
+.splitscreen .left {
+    flex: 1;
+}
+.splitscreen .right {
+    flex: 1;
 }
 
 

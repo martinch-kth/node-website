@@ -12,6 +12,21 @@ var Comments = require('.././comments');
 
 var file1 = require('../app.js')
 
+const axios = require('axios');
+const cheerio = require('cheerio');
+var ss = require('socket.io-stream');
+
+const Jenkins_async_lib = require('node-async-jenkins-api');
+
+var keep_polling_local = true   // GLOBAL maybe.....
+
+const {
+  dynamic: { setIntervalAsync: setIntervalAsyncD },
+  fixed: { setIntervalAsync: setIntervalAsyncF },
+  legacy: { setIntervalAsync: setIntervalAsyncL },
+  clearIntervalAsync
+} = require('set-interval-async')
+
 //const app = require('app')
 
 
@@ -61,6 +76,7 @@ router.get('/:tagId', function(req, res) {
 
 
 */
+
 
 async function createTreemapData(file) {
   try {
@@ -160,17 +176,17 @@ function getJstree() {
         var dirobj = { id: data.path , parent: afterWithout ,text: data.name };
       }
 
-/*
-      // if directory is empty, dont set any checkbox.
-      if (data.children.length <= 0)
-      {
-        var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
-      }
-      else
-      {
-        var dirobj = { id: data.path , parent: "#" ,text: data.name };
-      }
-*/
+      /*
+            // if directory is empty, dont set any checkbox.
+            if (data.children.length <= 0)
+            {
+              var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
+            }
+            else
+            {
+              var dirobj = { id: data.path , parent: "#" ,text: data.name };
+            }
+      */
 
       jstree.push(dirobj);
 
@@ -182,7 +198,7 @@ function getJstree() {
 
     } else if (data.type === "file")
     {
-       var fileobj = { id: data.path , parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
+      var fileobj = { id: data.path , parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
 
       jstree.push(fileobj);
     }
@@ -254,20 +270,6 @@ router.get('/', function(req, res, next) {
 
   res.render('index', {page:'Home', menuId:'home',filenames: getAllFiles()});
 });
-/*
-router.get('/sse/events', function(req, res) {
-  res.header('Content-Type', 'text/event-stream');
-
-  var interval_id = setInterval(function() {
-    res.write("some data");
-  }, 50);
-
-  req.socket.on('close', function() {
-    clearInterval(interval_id);
-  });
-
-});
-*/
 
 router.get('/treemapinput', async function(req, res) {
 
@@ -277,8 +279,6 @@ router.get('/treemapinput', async function(req, res) {
 
   res.json(result)
 });
-
-
 
 router.get('/rawfile', async function(req, res) {
 
@@ -305,171 +305,190 @@ router.get('/diff', function(req, res, next) {
   res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles(), jstree: getJstree()});
 });
 
+async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last_job_number){
 
-//
-//  kräver att man kan lösenord.... funkar det här?...
-//
-router.get('/buildstatus', function(req, res, next) {
+  var jenkins_lib = require('jenkins')({ baseUrl: jenkins_url, crumbIssuer: true }); // https://www.npmjs.com/package/jenkins#build-log-stream
 
-  var ss = require('socket.io-stream');
-
-  file1.myio.on('connection', function (socket) {
-
-      console.log("Made socket connection fun again");
-
-
-      // eka.midi:8080 10.68.108.166
-
-    http://130.237.59.170:8080/   kth server
-
-
-      // DENNA: https://github.com/silas/node-jenkins            http://admin:admin@localhost:8080
-      var jenkins_second_lib = require('jenkins')({ baseUrl: 'http://10.68.108.164:8080', crumbIssuer: true }); // eka-mini1
-
-      jenkins_second_lib.job.get('install', function(err, data) {
-        if (err) throw err;
-
-        //get latest build
-        var log = jenkins_second_lib.build.logStream('install', data.builds[0].number ,String,3000);
-
-        log.on('data', function(text) {
-
-          var stream = ss.createStream();
-
-          ss(socket).emit('jenkins-log', stream,text);
-
-        });
-
-        log.on('error', function(err) {
-          console.log('error', err);
-        });
-
-        log.on('end', function() {
-          console.log('end');
-        });
-
-      });
-
-  });
-
- // var jenkinsapi = require('jenkins-api');
-
-/* FUNKAR!!!
-
-// username/password
-  var jenkins = jenkinsapi.init("http://admin:admin@localhost:8080");
-
-  jenkins.last_build_info('test3', function(err, data) {
-    if (err){ return console.log(err); }
-   // console.log(data)
-
-    jenkins.console_output('test3', data.id,  function(err, data) {
-      if (err){ return console.log(err); }
-
-
-      var log = data.body.split("\n")  // split on each line..
-
-      log.forEach(line => {
-
-            var line_array = line.split(/ +/)  // split on spaces only
-
-            line_array.forEach(element => {
-
-              fleetCheck() // borde vara här..(?) .. element = fleet-check-started
-                           // hemskt.. nu är den startad... man måste väl även få ended..INNAN man går vidare..
-
-              //  if (fleet-check-started and fleet-check-ended ... då kan du få ut,,,åå..knepigt...!!
-
-              if (element.includes("[") && element.includes("]"))
-              {
-                var step = line_array[line_array.indexOf(element)+1]
-
-                if (step.charAt(step.length-1) === ")" )
-                {
-                  // här ska vi antagligen ...gör något beroende på nr?... eller lägga alla nr till en array?
-                  // all_steps_so_far.push(nr....????)
-
-                  console.log("this is it--> " +  step.substring(0, step.length - 1))
-                }
-              }
-            });
-      })
-    });
-
-  });
-
-*/
-
-/*
-  // DENNA: https://github.com/silas/node-jenkins
-  var jenkins_second_lib = require('jenkins')({ baseUrl: 'http://admin:admin@localhost:8080', crumbIssuer: true });
-
-  jenkins_second_lib.job.get('test3', function(err, data) {
+  jenkins_lib.job.get(jenkins_job_name, function(err, data) {
     if (err) throw err;
 
-    // get last build number
-    // check each 3 sec.....
-    // https://github.com/node-schedule/node-schedule  mer komplex..sätt att
+    //stream log of latest build                    data.id      //data.builds[0].number    2 second poll delay
+    var log = jenkins_lib.build.logStream(jenkins_job_name, last_job_number) //, String, 2000);     //Parameters: name (String): job name, number (Integer): build number, type (String, enum: text, html, default: text): output format, delay (Integer, default: 1000): poll interval in milliseconds
 
-   var interval = setInterval(function(str1, str2) {
+    log.on('data', function (text) {
 
-       console.log(str1 + " " + str2);
-
-   }, 1000, "Hello.", "How are you?");
-
-   clearInterval(interval);  // stoppar helt..!
-
-    var log = jenkins_second_lib.build.logStream('test3', data.builds[0].number ,String,3000);
-
-    log.on('data', function(text) {
-      process.stdout.write(text);
+      var stream = ss.createStream();
+      ss(socket).emit(jenkins_url, stream, text); // skickar text till denna url..
     });
 
-    log.on('error', function(err) {
-      console.log('error', err);
+    log.on('error', function (err) {
+      console.log('error:', err);
     });
 
-    log.on('end', function() {
-      console.log('end');
+    log.on('end', function () {
+
+      console.log('end:' + jenkins_url);
+
+
+      //vänta med detta...sött in sen igen..
+         var stream = ss.createStream();
+         ss(socket).emit("end:" + jenkins_url, stream, jenkins_url); // skickar text till denna url..
+
+      // kan gå att göra om så man inte behöver hårkoda...eller slippa if??..: https://stackoverflow.com/questions/5117127/use-dynamic-variable-names-in-javascript
+      // dvs... nu kan du polla IGEN!!... Verkar inte sättas!!..
+    });
+  })
+}
+
+
+
+
+
+async function axiosTest(url) {
+  try
+  {
+    const {data:response} = await axios.get(url) //use data destructuring to get data from the promise object
+
+    return response
+  }
+
+  catch (error) {
+    console.log(error);
+  }
+}
+
+
+async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
+  try {
+
+    const jenkins2 = new Jenkins_async_lib({
+      url: jenkins_url,
+      username: 'admin',
+      password: passw
     });
 
+    const result_jobinfo = await jenkins2.getJobInfo(jenkins_job_name)
+
+    //   console.log(result_jobinfo)
+
+    const result_lastbuild = await jenkins2.getLastBuildInfo(jenkins_job_name)
+
+    //   console.log(result_lastbuild)
+
+    var jenkins_info = {"getJobInfo":result_jobinfo.data.body, "getLastBuildInfo":result_lastbuild.data.body, "reff_name":reff_name }
+
+    return jenkins_info
+
+
+    /* funkar ..
+
+    var timestamp = ""   // default...value...
+
+    var get_result = await axiosTest('/job/test3/'+ result_lastbuild.data.body.id +'/consoleFull')
+
+    const $ = cheerio.load(get_result);
+
+    var console_text = $('.console-output').text(); // <pre class="console-output">
+
+    var log = console_text.split("\n")  // split on each line..
+
+        for (const line of log) {
+
+          if(timestamp !== "")
+            break;
+
+          var line_array = line.split(/ +/)  // split on spaces only
+
+          for (const element of line_array) {
+
+            // check if string between bracketz is a timestamp
+            if (element.includes("[") && element.includes("]")) {
+              var isISO = element.substring(element.indexOf('[') + 1, element.indexOf(']'));
+
+              if (new Date(isISO) !== "Invalid Date" && !isNaN(new Date(isISO))) {
+                if (isISO == new Date(isISO).toISOString()) {
+                    //console.log(isISO)
+                    //console.log("Valid date");
+                  timestamp = isISO
+                }
+              }
+            }
+          }
+        }
+    // en async funktion returnerar alltid en Promise med svaret inbäddat i 'resolve'...
+   return timestamp
+   */
+
+
+  }
+  catch (e) {
+    console.error(e);
+  }
+}
+
+
+router.get('/buildstatus', async function (req, res, next) {
+
+  var latest_reff1_timestamp = ""  // init value...
+  var latest_reff2_timestamp = ""
+
+  var jenkins_info = ""
+
+  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
+  var reff2_url_no_psw = "http://localhost:8080"
+
+  file1.myio.on('connection', async function (socket) {
+
+    console.log("Made socket connections fun again");
+
+    const {
+      setIntervalAsync,
+      clearIntervalAsync
+    } = require('set-interval-async/dynamic')
+
+    const timer = setIntervalAsync(
+        async () => {
+          console.log('...polling...')
+
+          // get latest timestamp from jenkins
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1")
+          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test3","","Ek2")
+
+          var jenkins_info_latest = {"reffar":[loop_reff1,loop_reff2]}
+
+          // TODO: MÅSTE se till att jenkins_info KOMMER FÖRE de andra STREAM.
+          //
+          if (JSON.stringify(jenkins_info_latest) !== JSON.stringify(jenkins_info))
+          {
+            jenkins_info = jenkins_info_latest
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info', stream, JSON.stringify(jenkins_info_latest)); // skickar jenkins....info...
+
+            run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
+            run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
+
+            /*
+            /// if its the first time OR  not equal the last poll
+            if (latest_reff1_timestamp === "" || latest_reff1_timestamp !== loop_reff1.getLastBuildInfo.timestamp) {
+
+              latest_reff1_timestamp = loop_reff1.getLastBuildInfo.timestamp  // update latest timestamp!
+
+              run_jenkins_job_stream(socket, 'http://admin:admin@localhost:8080', loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
+            }
+            if (latest_reff2_timestamp === "" || latest_reff2_timestamp !== loop_reff2.getLastBuildInfo.timestamp) {
+
+              latest_reff2_timestamp = loop_reff2.getLastBuildInfo.timestamp  // update latest timestamp!
+
+              run_jenkins_job_stream(socket, 'http://admin:sudamerica77M@130.237.59.170:8080', loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
+            }
+            */
+          }
+        },
+        5000)
   });
 
-
-*/
-
-
-
-/*
-  jenkins.last_build_info('test3', function(err, data) {
-    if (err){ return console.log(err); }
-    console.log(data)
-  });
-*/
-
-
-//     'baseUrl': 'http://10.68.108.131:8080',
-
-
-
-
-/*
-  var JenkinsLogStream = require('jenkins-log-stream');
-  var stream = new JenkinsLogStream({
-    'baseUrl': 'http://admin:admin@localhost:8080',
-    'job': 'test3',
-    'build': 'lastBuild',
-    'pollInterval': 1000
-  });
-
-  stream.pipe(process.stdout);
-
-  // kommwe den ut?
-*/
-
-
-  res.render('buildstatus', {page:'Build status', menuId:'buildstatus'});
+  res.render('buildstatus', {page: 'Build status', menuId: 'buildstatus'}); //, jenkins_info: jenkins_info});
 });
-
 
 module.exports = router;
