@@ -451,8 +451,8 @@ router.get('/buildstatus', async function (req, res, next) {
           console.log('...polling...')
 
           // get latest timestamp from jenkins
-          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1")
-          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test3","","Ek2")
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Ek1-Mini")
+          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Ek2-Maxi")
 
           var jenkins_info_latest = {"reffar":[loop_reff1,loop_reff2]}
 
@@ -485,7 +485,7 @@ router.get('/buildstatus', async function (req, res, next) {
             */
           }
         },
-        5000)
+        50000) // brukar köra med 5000 annars..dvs 5 sek..men testa nu med mer för att inte "överbelasta nätet"
   });
 
   res.render('buildstatus', {page: 'Build status', menuId: 'buildstatus'}); //, jenkins_info: jenkins_info});
