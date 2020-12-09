@@ -434,8 +434,8 @@ router.get('/buildstatus', async function (req, res, next) {
 
   var jenkins_info = ""
 
-  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
-  var reff2_url_no_psw = "http://localhost:8080"
+  var reff1_url_no_psw = "http://10.68.108.164:8080" // no PASSWORD...
+  var reff2_url_no_psw = "http://10.68.108.166:8080"
 
   file1.myio.on('connection', async function (socket) {
 
