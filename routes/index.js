@@ -16,9 +16,12 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 var ss = require('socket.io-stream');
 
-const Jenkins_async_lib = require('node-async-jenkins-api');
+const fs = require("fs");
+var shell = require('shelljs');
+const chokidar = require('chokidar');
 
-var keep_polling_local = true   // GLOBAL maybe.....
+
+const Jenkins_async_lib = require('node-async-jenkins-api');
 
 const {
   dynamic: { setIntervalAsync: setIntervalAsyncD },
@@ -29,15 +32,11 @@ const {
 
 //const app = require('app')
 
-
-
 // https://stackoverflow.com/questions/19051041/cannot-overwrite-model-once-compiled-mongoose
 
 //comment_id:String, // two filenames.. the path..host + module name..
 //    username:String,
 //    comment:String
-
-
 /*
 var minicommit = new Comments({ "comment_id" : "66645","username" : "123","comment" : "123" });
 
@@ -142,7 +141,6 @@ async function createTreemapData(file) {
 function getAllFiles() {
 
   var dirFiles = browseDir.browseFiles("public/data");
-
   return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
 }
 
@@ -210,9 +208,7 @@ function getJstree() {
 
 
 function fleetCheck(){
-
-  /*  värKligheTen...
-
+  /*
   + echo fleet-check-started
   fleet-check-started
   + fleetctl list-units
@@ -222,10 +218,7 @@ function fleetCheck(){
   fleet-check-ended
 
   */
-
-
 }
-
 
 // format text to a certain length width.
 function explode(text, max) {
@@ -252,23 +245,60 @@ function explode(text, max) {
   return exploded + "\n" + explode(text);
 }
 
+function readFile (dir, callback){
+
+    try
+    {
+      fs.readdir(dir, function(err, files)
+      {
+        files = files.map(function (fileName)
+        {
+        return {
+          name: fileName,
+          time: fs.statSync(dir + '/' + fileName).mtime.getTime()
+         };
+        })
+          .sort(function (a, b) {
+            return a.time - b.time; })
+          .map(function (v) {
+            return v.name; });
+
+      return callback(files)
+    });
+
+    }catch (e) {
+      console.log("fel på datorn..: " + e)
+    }
+}
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
-////try out///
-  /*
-  res.header('Content-Type', 'text/event-stream');
+router.get('/', async function (req, res, next) {
 
-  var interval_id = setInterval(function() {
-    res.write("some data");
-  }, 50);
+  var root_path = "public/data"
 
-  req.socket.on('close', function() {
-    clearInterval(interval_id);
+  chokidar.watch(root_path).on('all', (event, path) => {
+
+  readFile(root_path, function (reffs){
+
+      for (let i = 0; i <reffs.length ; i++) {
+
+        readFile(root_path+'/'+ reffs[i], function (reffs_folder){
+
+          if (reffs_folder.length > 10) // max 10 foldrar ..testar bara..
+          {
+             for (var j = 10; j < reffs_folder.length; j++)
+             {
+              // console.log("deleting this:" + reffs_folder[j])
+               shell.rm('-rf', root_path + '/' + reffs[i] + '/' + reffs_folder[j]);
+             }
+          }
+        });
+      }
+    });
+
   });
-  */
-///////
 
-  res.render('index', {page:'Home', menuId:'home',filenames: getAllFiles()});
+  res.render('index', {page: 'Home', menuId: 'home', filenames: getAllFiles()});
 });
 
 router.get('/treemapinput', async function(req, res) {
@@ -313,7 +343,7 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
     if (err) throw err;
 
     //stream log of latest build                    data.id      //data.builds[0].number    2 second poll delay
-    var log = jenkins_lib.build.logStream(jenkins_job_name, last_job_number) //, String, 2000);     //Parameters: name (String): job name, number (Integer): build number, type (String, enum: text, html, default: text): output format, delay (Integer, default: 1000): poll interval in milliseconds
+    var log = jenkins_lib.build.logStream(jenkins_job_name, last_job_number, String, 2000);     //Parameters: name (String): job name, number (Integer): build number, type (String, enum: text, html, default: text): output format, delay (Integer, default: 1000): poll interval in milliseconds
 
     log.on('data', function (text) {
 
@@ -329,20 +359,12 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
 
       console.log('end:' + jenkins_url);
 
-
-      //vänta med detta...sött in sen igen..
          var stream = ss.createStream();
          ss(socket).emit("end:" + jenkins_url, stream, jenkins_url); // skickar text till denna url..
 
-      // kan gå att göra om så man inte behöver hårkoda...eller slippa if??..: https://stackoverflow.com/questions/5117127/use-dynamic-variable-names-in-javascript
-      // dvs... nu kan du polla IGEN!!... Verkar inte sättas!!..
     });
   })
 }
-
-
-
-
 
 async function axiosTest(url) {
   try
@@ -357,7 +379,6 @@ async function axiosTest(url) {
   }
 }
 
-
 async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
   try {
 
@@ -369,57 +390,11 @@ async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
 
     const result_jobinfo = await jenkins2.getJobInfo(jenkins_job_name)
 
-    //   console.log(result_jobinfo)
-
     const result_lastbuild = await jenkins2.getLastBuildInfo(jenkins_job_name)
 
-    //   console.log(result_lastbuild)
-
-    var jenkins_info = {"getJobInfo":result_jobinfo.data.body, "getLastBuildInfo":result_lastbuild.data.body, "reff_name":reff_name }
+    var jenkins_info = {"getJobInfo":result_jobinfo.data.body, "getLastBuildInfo":result_lastbuild.data.body, "reff_name":reff_name}
 
     return jenkins_info
-
-
-    /* funkar ..
-
-    var timestamp = ""   // default...value...
-
-    var get_result = await axiosTest('/job/test3/'+ result_lastbuild.data.body.id +'/consoleFull')
-
-    const $ = cheerio.load(get_result);
-
-    var console_text = $('.console-output').text(); // <pre class="console-output">
-
-    var log = console_text.split("\n")  // split on each line..
-
-        for (const line of log) {
-
-          if(timestamp !== "")
-            break;
-
-          var line_array = line.split(/ +/)  // split on spaces only
-
-          for (const element of line_array) {
-
-            // check if string between bracketz is a timestamp
-            if (element.includes("[") && element.includes("]")) {
-              var isISO = element.substring(element.indexOf('[') + 1, element.indexOf(']'));
-
-              if (new Date(isISO) !== "Invalid Date" && !isNaN(new Date(isISO))) {
-                if (isISO == new Date(isISO).toISOString()) {
-                    //console.log(isISO)
-                    //console.log("Valid date");
-                  timestamp = isISO
-                }
-              }
-            }
-          }
-        }
-    // en async funktion returnerar alltid en Promise med svaret inbäddat i 'resolve'...
-   return timestamp
-   */
-
-
   }
   catch (e) {
     console.error(e);
@@ -429,66 +404,59 @@ async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
 
 router.get('/buildstatus', async function (req, res, next) {
 
-  var latest_reff1_timestamp = ""  // init value...
-  var latest_reff2_timestamp = ""
+  var jenkins_info_reff1 = ""
+  var jenkins_info_reff2 = ""
 
-  var jenkins_info = ""
-
-  var reff1_url_no_psw = "http://10.68.108.164:8080" // no PASSWORD...
-  var reff2_url_no_psw = "http://10.68.108.166:8080"
+  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
+  var reff2_url_no_psw = "" // sätt tillbaka sen
 
   file1.myio.on('connection', async function (socket) {
 
-    console.log("Made socket connections fun again");
+  console.log("Made socket connections fun again");
 
-    const {
+  const {
       setIntervalAsync,
       clearIntervalAsync
     } = require('set-interval-async/dynamic')
 
+
+    // TODO: set button with clearInterval aka stop timer start/stop button on page.
+    //
     const timer = setIntervalAsync(
         async () => {
           console.log('...polling...')
 
           // get latest timestamp from jenkins
-          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Ek1-Mini")
-          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Ek2-Maxi")
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
+          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","sudamerica77M","Ek2-Maxi")
 
-          var jenkins_info_latest = {"reffar":[loop_reff1,loop_reff2]}
 
-          // TODO: MÅSTE se till att jenkins_info KOMMER FÖRE de andra STREAM.
-          //
-          if (JSON.stringify(jenkins_info_latest) !== JSON.stringify(jenkins_info))
+          // checks if new job has started. their must be at least 1 job in history
+          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && loop_reff1.getJobInfo !== undefined)
           {
-            jenkins_info = jenkins_info_latest
+            jenkins_info_reff1 = loop_reff1 // update - compare against this next pollning..
 
             var stream = ss.createStream();
-            ss(socket).emit('jenkins_info', stream, JSON.stringify(jenkins_info_latest)); // skickar jenkins....info...
+            ss(socket).emit('jenkins_info_reff1', stream, JSON.stringify(loop_reff1)); // skickar jenkins....info...
 
             run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
-            run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
-
-            /*
-            /// if its the first time OR  not equal the last poll
-            if (latest_reff1_timestamp === "" || latest_reff1_timestamp !== loop_reff1.getLastBuildInfo.timestamp) {
-
-              latest_reff1_timestamp = loop_reff1.getLastBuildInfo.timestamp  // update latest timestamp!
-
-              run_jenkins_job_stream(socket, 'http://admin:admin@localhost:8080', loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
-            }
-            if (latest_reff2_timestamp === "" || latest_reff2_timestamp !== loop_reff2.getLastBuildInfo.timestamp) {
-
-              latest_reff2_timestamp = loop_reff2.getLastBuildInfo.timestamp  // update latest timestamp!
-
-              run_jenkins_job_stream(socket, 'http://admin:sudamerica77M@130.237.59.170:8080', loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
-            }
-            */
           }
+
+          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && loop_reff2.getJobInfo !== undefined)
+          {
+            jenkins_info_reff2 = loop_reff2
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff2', stream, JSON.stringify(loop_reff2));
+
+            run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
+          }
+
         },
-        50000) // brukar köra med 5000 annars..dvs 5 sek..men testa nu med mer för att inte "överbelasta nätet"
+        10000) // brukar köra med 5000 annars..dvs 5 sek..men testa nu med mer för att inte "överbelasta nätet"
   });
 
-  res.render('buildstatus', {page: 'Build status', menuId: 'buildstatus'}); //, jenkins_info: jenkins_info});
+  res.render('buildstatus', {page: 'Build status', menuId: 'buildstatus'});
 });
 
 module.exports = router;

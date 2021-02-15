@@ -2,15 +2,10 @@
 <html lang="en">
 <head>
 
-    <% include partials/script %>
-
     <script src="javascript/socket.io.js"></script>
     <script src="javascript/socket.io-stream.js"></script>
 
     <link rel="stylesheet" href="/stylesheets/buildstatus.css">
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
 
     <!-- jQuery library -->
     <script src="javascript/jquery.min.js"></script>
@@ -21,8 +16,10 @@
     <script src="javascript/semantic/semantic.js"></script>
 
     <script src="javascript/moment.min.js"></script>
+    <script>
+        moment().format();
+    </script>
 
-  <!-- tar bort bootstap css.. blir de finare??  <% include partials/head %>  -->
 </head>
 <body class="contact-background-image">
 
@@ -42,254 +39,326 @@
 
         // Update the bootstrap grid once the tasks are added
         function updateTaskContainerHead(containerId, jenkins_reff) {
-            let containerHead = document.getElementById(containerId);
-            // Take the row headings and make an HTML container out of them
 
-            // Parameter man behöver för varje REF
-            //
-            // Tool: använder detta tool converter: http://pojo.sodhanalibrary.com/ConvertToVariable
-            //
-            // ID, tid osv.. så man ta bort och lägga till?.. hur uppdaterar man allt..?
+            var reff_element = '<div id="' + jenkins_reff.getJobInfo.displayName + '" class="ui card" style="width: 809px;">' +
+                '    <div id="statuscolor_' + jenkins_reff.getJobInfo.displayName + '" class="content" style="height: 15%">' +
+                '' +
+                '        <h2 class="ui icon header">' +
+                '            <i class="laptop icon"></i>' +
+                '            <div class="content">' + jenkins_reff.reff_name + '</div>' +
+                '            <div id="buildname_' + jenkins_reff.getJobInfo.displayName + '" class="content"></div>' +
 
-            $('<div class="ui card" style="width: 809px;">'+
-                '    <div class="content" style="background-color: lightgreen">'+
-                ''+
-                '        <h2 class="ui tiny icon header">'+
-                '            <i class="desktop icon"></i>'+
-                '            <div class="ui header">'+jenkins_reff.reff_name+'</div>'+
-                '        </h2>'+
-                '    </div>'+
-                ''+
-                ''+
-                '    <div class="content">'+
-                ''+
-                '        <div class="event">'+
-                '            <div class="content">'+
-                '                <div class="ui massive message">'+
-                '                  <i class="clock icon imuststyle"></i><div id="timer_'+jenkins_reff.getJobInfo.displayName+'"></div>'+
-                '                    <div>Estimated duration: '+ moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
-                '                    <div>Job started: '+ moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
-                '                </div>'+
-                '            </div>'+
-                '        </div>'+
-                ''+
-                '        <h4 class="ui sub header">Build name</h4>'+
-                '        <div class="ui medium feed">'+
-                '            <div class="event">'+
-                '                <div class="content">'+
-                ''+
-                '                    <table class="ui definition table">'+
-                '                        <tbody>'+
-                '                        <tr>'+
-                '                            <td class="two wide column">Modulename</td>'+
-                '                            <td>Failed</td>'+
-                '                        </tr>'+
-                '                        <tr>'+
-                '                            <td>Modulename</td>'+
-                '                            <td>Failed</td>'+
-                '                        </tr>'+
-                '                        <tr>'+
-                '                            <td>Modulename</td>'+
-                '                            <td>Failed</td>'+
-                '                        </tr>'+
-                '                        <tr>'+
-                '                            <td>Modulename</td>'+
-                '                            <td>Failed</td>'+
-                '                        </tr>'+
-                '                        </tbody>'+
-                '                    </table>'+
-                ''+
-                '                </div>'+
-                '            </div>'+
-                ''+
-
-
+                '        </h2>' +
+                '    </div>' +
+                '' +
+                '' +
+                '    <div class="content">' +
+                '' +
+                '        <div class="event">' +
+                '            <div class="content">' +
+                '                <div class="ui massive message">' +
+                '                  <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.displayName + '"></div>' +
+                '                    <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
+                '                    <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
+                '                </div>' +
+                '            </div>' +
+                '        </div>' +
+                '' +
                 '<div class="FixedHeightContainer">' +
-                '<pre id="out_'+ jenkins_reff.getJobInfo.displayName +'" class="Content"></pre>' +
+                '<pre id="out_' + jenkins_reff.getJobInfo.displayName + '" class="Content"></pre>' +
                 '</div>' +
 
-                ''+
-                '            <div class="ui two column grid" style="padding-bottom: 10px">'+
-                ''+
-                '                <div class="column">'+
-                '                    <div class="event">'+
-                '                        <div class="content">'+
-                ''+
-                '                            <div class="ui statistics">'+
-                '                                <div class="red statistic">'+
-                '                                    <div class="value">'+
-                '                                        3'+
-                '                                    </div>'+
-                '                                    <div class="label">'+
-                '                                        builds have failed'+
-                '                                    </div>'+
-                '                                </div>'+
-                '                            </div>'+
-                '                        </div>'+
-                '                    </div>'+
-                '                </div>'+
-                ''+
-                ''+
-                '                <div class="column">'+
-                '                    <div class="event">'+
-                '                        <div class="content">'+
-                ''+
-                '                            <div class="ui statistics">'+
-                '                                <div class="green statistic">'+
-                '                                    <div class="value">'+
-                '                                        7'+
-                '                                    </div>'+
-                '                                    <div class="label">'+
-                '                                        builds have succeed'+
-                '                                    </div>'+
-                '                                </div>'+
-                '                            </div>'+
-                '                        </div>'+
-                '                    </div>'+
-                '                </div>'+
-                '            </div>'+
-                ''+
-                ''+
-                '            <div class="content">'+
-                ''+
-                '                <div class="event">'+
-                '                    <div class="content">'+
-                ''+
-                '                        <div class="ui relaxed divided list">'+
-                '                            <div class="item">'+
-                '                                <i class="large jenkins middle aligned icon"></i>'+
-                '                                <div class="content">'+
-                '                                    <div class="description">'+jenkins_reff.getJobInfo.displayName+'</div>'+
-                '                                </div>'+
-                '                            </div>'+
-                '                            <div class="item">'+
-                '                                <i class="large jenkins middle aligned icon"></i>'+
-                '                                <div class="content">'+
-                '                                    <div class="description">Last stable build: #'+JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number)+'</div>'+
-                '                                </div>'+
-                '                            </div>'+
-                '                            <div class="item">'+
-                '                                <i class="large jenkins middle aligned icon"></i>'+
-                '                                <div class="content">'+
-                '                                    <div class="description">Last successful build (#23), 1 days 0 hr ago</div>'+
-                '                                </div>'+
-                '                            </div>'+
-                ''+
-                '                                <div class="item">'+
-                '                                    <i class="large jenkins middle aligned icon"></i>'+
-                '                                    <div class="content">'+
-                '                                        <div class="description">Last failed build (#20), 1 days 2 hr ago</div>'+
-                '                                    </div>'+
-                '                                </div>'+
-                '                                <div class="item">'+
-                '                                    <i class="large jenkins middle aligned icon"></i>'+
-                '                                    <div class="content">'+
-                '                                        <div class="description">Last unsuccessful build (#20), 1 days 2 hr ago</div>'+
-                '                                    </div>'+
-                '                                </div>'+
-                '                                <div class="item">'+
-                '                                    <i class="large jenkins middle aligned icon"></i>'+
-                '                                    <div class="content">'+
-                '                                        <div class="description">Last completed build (#23), 1 days 0 hr ago</div>'+
-                '                                    </div>'+
-                '                                </div>'+
-                ''+
-                '                          </div>'+
-                '                        </div>'+
-                '                    </div>'+
-                '                </div>'+
-                ''+
-                '        </div>'+
-                '    </div>'+
-                '</div>'
-            )
-                .appendTo(containerHead);}
+                '        <div class="ui medium feed">' +
+                '            <div class="event">' +
+                '                <div class="content">' +
+                '' +
+                '                    <table class="ui definition table">' +
+                '                        <tbody>' +
+                '                        <tr>' +
+                '                            <td class="two wide column">Modulename</td>' +
+                '                            <td>Failed</td>' +
+                '                        </tr>' +
+                '                        <tr>' +
+                '                            <td>Modulename</td>' +
+                '                            <td>Failed</td>' +
+                '                        </tr>' +
+                '                        <tr>' +
+                '                            <td>Modulename</td>' +
+                '                            <td>Failed</td>' +
+                '                        </tr>' +
+                '                        <tr>' +
+                '                            <td>Modulename</td>' +
+                '                            <td>Failed</td>' +
+                '                        </tr>' +
+                '                        </tbody>' +
+                '                    </table>' +
+                '' +
+                '                </div>' +
+                '            </div>' +
+                '' +
 
+                '                        <div class="ui relaxed divided list">' +
+                '                            <div class="item">' +
+                '                                <i class="large jenkins middle aligned icon"></i>' +
+                '                                <div class="content">' +
+                '                                    <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
+                '                                </div>' +
+                '                            </div>' +
+                '                            <div class="item">' +
+                '                                <i class="large jenkins middle aligned icon"></i>' +
+                '                                <div class="content">' +
+                '                                    <div class="description">Last stable build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number) + '</div>' +
+                '                                </div>' +
+                '                            </div>' +
+                '                            <div class="item">' +
+                '                                <i class="large jenkins middle aligned icon"></i>' +
+                '                                <div class="content">' +
+                '                                    <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                '                                </div>' +
+                '                            </div>' +
+                '' +
+                '                                <div class="item">' +
+                '                                    <i class="large jenkins middle aligned icon"></i>' +
+                '                                    <div class="content">' +
+                '                                        <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
+                '                                    </div>' +
+                '                                </div>' +
+                '                                <div class="item">' +
+                '                                    <i class="large jenkins middle aligned icon"></i>' +
+                '                                    <div class="content">' +
+                '                                        <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
+                '                                    </div>' +
+                '                                </div>' +
+                '                                <div class="item">' +
+                '                                    <i class="large jenkins middle aligned icon"></i>' +
+                '                                    <div class="content">' +
+                '                                        <div class="description">Last completed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                '                                    </div>' +
+                '                                </div>' +
+                '                        </div>' +
+                '                </div>' +
+                '    </div>' +
+                '</div>';
 
-        $(function() {              // BYT mot Serverns. IP.........
+            // finns elementet? -> byt ut det...
+            if ($('#' + jenkins_reff.getJobInfo.displayName.toString()).length)
+            {
+                $('#' + jenkins_reff.getJobInfo.displayName.toString()).replaceWith(reff_element)
+            }
+            else
+            {
+                $('#' + containerId).append(reff_element)  // if non-existing
+            }
+
+        }
+
+ $(function() {                   // BYT mot Serverns URL auto-m....
             var socket = io.connect('http://localhost:3000');
 
             var clear_console_reff1 = false
             var clear_console_reff2 = false
 
-            var jenkins_info
+            var jenkins_info_reff1
+            var jenkins_info_reff2
 
-            var reff1_url = "http://10.68.108.164:8080" // reff 1 - no psw
-            var reff2_url = "http://10.68.108.166:8080"
+            var reff1_url = "http://localhost:8080"
+            var reff2_url = "http://admin:sudamerica77M@130.237.59.170:8080"
+
+            var reff1_obj // only used as a timer object..maybe more later..
+            var reff2_obj
+
+            class Reff {
+                constructor(jenkins_2_obj) {
+                    this.display_name = jenkins_2_obj.getJobInfo.displayName;
+
+                    this.jenkins_2_obj = jenkins_2_obj
+
+                    // Timer stuff...
+                    var now  = moment()
+                    var then = moment(this.jenkins_2_obj.getLastBuildInfo.timestamp)
+                    this.time_since =  moment.utc(now.diff(then))
+
+                    this.isRunning = false;
+                    this.runTimer;
+                }
+                startTimer()
+                {
+                  //  if (!this.isRunning) {
+                  //      this.isRunning = true;
+                        this.runTimer = setInterval(() => {
+
+                            this.time_since.add(1, 'second');
+                            $('#timer_' + this.display_name).html(this.time_since.format('HH:mm:ss'))
+
+                        }, 1000);
+                 //   }
+                }
+                stopTimer() {
+                 //   if (this.isRunning) {
+                        clearInterval(this.runTimer);
+                        this.runTimer = null
+                 //       this.isRunning = false;
+                 //   }
+                }
+            }
 
             socket.on("connect",function() {
                 console.log("on connect");
 
-                ss(socket).on('jenkins_info', function(stream,data) {
+                ss(socket).on('jenkins_info_reff1', function(stream,data)
+                {
+                    jenkins_info_reff1 = JSON.parse(data);
 
-                    // vill egentligen bara byta ut just den reffen som får ny data..men nu byts alla ut..ändra sen..
-                    $('#ongoingTasksContainer').empty();
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff1);
 
-                    jenkins_info = JSON.parse(data);
-
-                    console.log("getting jenksin:" + jenkins_info)
-
-                    // problem!! eftersom jag ritar OM jenkins.. så försvinner ÄVER loggen som fanns från när bygget kördes precis!!!
-
-                    for (const jenkins_reff of jenkins_info.reffar) {
-
-                        updateTaskContainerHead('ongoingTasksContainer', jenkins_reff);
-
-                        function startTimer(element,timestamp)
-                        {
-                            var startTimestamp = timestamp
-                            setInterval(function() {
-                                startTimestamp.add(1, 'second');
-
-                                $('#timer_' + element).html(startTimestamp.format('HH:mm:ss'))
-
-                            }, 1000);
-                        }
-
-                        var now = moment()
-                        var then = moment(jenkins_reff.getLastBuildInfo.timestamp)
-                        var time_since =  moment.utc(now.diff(then))
-
-                        startTimer(jenkins_reff.getJobInfo.displayName,time_since);
-                    }
+                    reff1_obj = new Reff(jenkins_info_reff1)
+                    reff1_obj.startTimer()
                 });
 
+                // Får data från reff1 här som ska visa i textboxxen..
                 ss(socket).on(reff1_url, function(stream,data) {
 
+                    // Default color is grey - installing status
+                    $("#statuscolor_" + jenkins_info_reff1.getJobInfo.displayName).css('background-color','silver');
+
+                    // Om reffen redan har text, ta bort den gamla texten.
                     if(clear_console_reff1)
                     {
-                        $("#out_"+ jenkins_info.reffar[0].getJobInfo.displayName).empty()
+                        $("#out_"+ jenkins_info_reff1.getJobInfo.displayName).empty()
                         clear_console_reff1 = false
                         console.log("clearing console...")
                     }
 
-                    $("#out_"+ jenkins_info.reffar[0].getJobInfo.displayName).append(data) //.replace(/(?:\r\n|\r|\n)/g, '<br>'))
+                    var log = data.split("\n")  // split on each line..
 
-                    var element = document.getElementById("out_" + jenkins_info.reffar[0].getJobInfo.displayName); // always scroll to the end of textbox
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_"+jenkins_info_reff1.getJobInfo.displayName).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            var build_result = line_array.pop();             // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff1.getJobInfo.displayName).css('background-color','#097d00');
+
+                                $('#' + jenkins_info_reff1.getJobInfo.displayName)
+                                       .transition('jiggle')
+                                ;
+                            }
+
+                            if (build_result.trim() === 'FAILURE')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff1.getJobInfo.displayName).css("background-color","#B22222")
+
+                                $('#' + jenkins_info_reff1.getJobInfo.displayName)
+                                    .transition('shake')
+                                ;
+                            }
+                      //    if (build_result === 'UNSTABLE')
+                      //    {
+                      //        $("#buildname_"+jenkins_info_reff1.getJobInfo.displayName).text(buildname)
+                      //    }
+                        }
+                    }
+
+                    $("#out_"+ jenkins_info_reff1.getJobInfo.displayName).append(data)
+
+                    var element = document.getElementById("out_" + jenkins_info_reff1.getJobInfo.displayName); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
+                // Reff1 har fått all data, då är textboxxen klar, inget mer kommer in.
                 ss(socket).on('end:'+ reff1_url, function(stream,data) {
 
                     clear_console_reff1 = true
 
-                    console.log("i got this to clear: "+ data)
+                    console.log(reff1_url + " = browser refname. reff that will be cleared:"+ data)
+
+                    reff1_obj.stopTimer()
                 });
 
                 // Remove duplication of code asap.. DRY :-/
                 ////////////////////////////////////////////
 
+                ss(socket).on('jenkins_info_reff2', function(stream,data)
+                {
+                    jenkins_info_reff2 = JSON.parse(data);
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff2);
+
+                    reff2_obj = new Reff(jenkins_info_reff2)
+                    reff2_obj.startTimer()
+                });
+
                 ss(socket).on(reff2_url, function(stream,data) {
+
+                    // Default color is grey - installing status
+                    $("#statuscolor_" + jenkins_info_reff2.getJobInfo.displayName).css('background-color','silver');
 
                     if(clear_console_reff2)
                     {
-                        $("#out_"+ jenkins_info.reffar[1].getJobInfo.displayName).empty()
-                        clear_console = false
+                        $("#out_"+ jenkins_info_reff2.getJobInfo.displayName).empty()
+                        clear_console_reff2 = false
+                        console.log("clearing console...")
                     }
 
-                    $("#out_"+ jenkins_info.reffar[1].getJobInfo.displayName).append(data)
+                    var log = data.split("\n")  // split on each line..
 
-                    var element = document.getElementById("out_" + jenkins_info.reffar[1].getJobInfo.displayName); // always scroll to the end of textbox
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_" + jenkins_info_reff2.getJobInfo.displayName).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            var build_result = line_array.pop();             // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS') {
+                                $("#statuscolor_" + jenkins_info_reff2.getJobInfo.displayName).css('background-color', '#097d00');
+
+                                $('#' + jenkins_info_reff2.getJobInfo.displayName)
+                                    .transition('jiggle')
+                                ;
+                            }
+
+                            if (build_result.trim() === 'FAILURE') {
+                                $("#statuscolor_" + jenkins_info_reff2.getJobInfo.displayName).css("background-color", "#B22222")
+
+                                $('#' + jenkins_info_reff2.getJobInfo.displayName)
+                                    .transition('shake')
+                                ;
+                            }
+                        }
+                    }
+
+                    $("#out_"+ jenkins_info_reff2.getJobInfo.displayName).append(data)
+
+                    var element = document.getElementById("out_" + jenkins_info_reff2.getJobInfo.displayName); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
@@ -297,7 +366,9 @@
 
                     clear_console_reff2 = true
 
-                    console.log("i got this to clear: "+ data)
+                    console.log(reff2_url + " = browser refname. reff that will be cleared:"+ data)
+
+                    reff2_obj.stopTimer()
                 });
             });
         });

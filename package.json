@@ -6,15 +6,18 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "async-file": "^2.0.2",
     "axios": "^0.21.0",
     "browse-directory": "0.0.3",
     "cheerio": "^1.0.0-rc.3",
+    "chokidar": "^3.5.1",
     "cors": "^2.8.5",
     "diff": "^4.0.2",
     "diff2html": "^3.1.13",
     "directory-tree": "^2.2.4",
     "ejs": "^2.5.7",
     "express": "^4.17.1",
+    "filehound": "^1.17.4",
     "jenkins": "^0.28.1",
     "jenkins-api": "^0.3.1",
     "jenkins-log-stream": "^2.0.0",
@@ -24,9 +27,11 @@
     "mongoose": "^5.10.4",
     "morgan": "^1.10.0",
     "node-async-jenkins-api": "^1.3.0",
+    "node-dir": "^0.1.17",
     "nodemon": "^2.0.4",
     "npm-check": "^5.9.2",
     "set-interval-async": "1.0.33",
+    "shelljs": "^0.8.4",
     "socket.io": "^3.0.2",
     "socket.io-stream": "^0.9.1"
   }
