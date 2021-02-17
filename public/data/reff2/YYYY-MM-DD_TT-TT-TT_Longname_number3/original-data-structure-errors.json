@@ -2,20 +2,6 @@
   "buildID":"0",
   "modules":[
     {
-      "moduleName":"Module1",
-      "errors":[
-        {
-          "message":" error_in_YYY -YYYYYYYYYYY YYY [/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY]",
-          "occurrences":"1"
-        },
-        {
-          "message":"WYYYYYYYYYYY*ÖÖÖÖÖÖÖÖ1error_in_YYYerror_in_YYYerror_in_YYYerror_in_YYYÖÖÖÖÖÖ1.YYY (YY YYYY YYYY YY YYYYYYYYy)",
-          "occurrences":"1"
-        }
-      ],
-      "onHost":"HOST1"
-    },
-    {
       "moduleName":"Module2",
       "errors":[
         {

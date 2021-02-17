@@ -1,11 +1,11 @@
 const express = require("express");
 
 var router = express.Router();
-var browseDir = require("browse-directory");
 
+var browseDir = require("browse-directory");
 const dirTree = require("directory-tree");
 
-var _ = require('lodash');
+var _= require('lodash');
 const jsonfile = require('jsonfile')
 
 var Comments = require('.././comments');
@@ -13,13 +13,8 @@ var Comments = require('.././comments');
 var file1 = require('../app.js')
 
 const axios = require('axios');
-const cheerio = require('cheerio');
+
 var ss = require('socket.io-stream');
-
-const fs = require("fs");
-var shell = require('shelljs');
-const chokidar = require('chokidar');
-
 
 const Jenkins_async_lib = require('node-async-jenkins-api');
 
@@ -141,7 +136,24 @@ async function createTreemapData(file) {
 function getAllFiles() {
 
   var dirFiles = browseDir.browseFiles("public/data");
-  return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
+
+  var dirFiles_fixed = []
+
+
+  // Ta bara med json filer...
+  for (const file_object of dirFiles)
+  {
+    var extension = file_object.src.substring(file_object.src.lastIndexOf('.') + 1);
+
+    if (file_object.type === 'file' && extension === "json")
+    {
+        dirFiles_fixed.push(file_object)
+    }
+  }
+
+
+
+  return dirFiles_fixed.map(element => element.src).reverse()      // reverse order of files in directory
 }
 
 
@@ -162,11 +174,10 @@ function getJstree() {
 
     if (data.type === "directory") {
 
-
       // Måste göra så för att ROOT folder ska få sin '#'....
       if (data.path.split("/").length <= 2)
       {
-        var dirobj = { id: data.path , parent: "#" ,text: data.name };
+        var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
       }
       else
       {
@@ -245,58 +256,10 @@ function explode(text, max) {
   return exploded + "\n" + explode(text);
 }
 
-function readFile (dir, callback){
 
-    try
-    {
-      fs.readdir(dir, function(err, files)
-      {
-        files = files.map(function (fileName)
-        {
-        return {
-          name: fileName,
-          time: fs.statSync(dir + '/' + fileName).mtime.getTime()
-         };
-        })
-          .sort(function (a, b) {
-            return a.time - b.time; })
-          .map(function (v) {
-            return v.name; });
-
-      return callback(files)
-    });
-
-    }catch (e) {
-      console.log("fel på datorn..: " + e)
-    }
-}
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-
-  var root_path = "public/data"
-
-  chokidar.watch(root_path).on('all', (event, path) => {
-
-  readFile(root_path, function (reffs){
-
-      for (let i = 0; i <reffs.length ; i++) {
-
-        readFile(root_path+'/'+ reffs[i], function (reffs_folder){
-
-          if (reffs_folder.length > 10) // max 10 foldrar ..testar bara..
-          {
-             for (var j = 10; j < reffs_folder.length; j++)
-             {
-              // console.log("deleting this:" + reffs_folder[j])
-               shell.rm('-rf', root_path + '/' + reffs[i] + '/' + reffs_folder[j]);
-             }
-          }
-        });
-      }
-    });
-
-  });
 
   res.render('index', {page: 'Home', menuId: 'home', filenames: getAllFiles()});
 });
@@ -407,8 +370,30 @@ router.get('/buildstatus', async function (req, res, next) {
   var jenkins_info_reff1 = ""
   var jenkins_info_reff2 = ""
 
-  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
-  var reff2_url_no_psw = "" // sätt tillbaka sen
+  var jenkins_info_reff3 = ""
+  var jenkins_info_reff4 = ""
+
+  var jenkins_info_reff5 = ""
+  var jenkins_info_reff6 = ""
+
+
+  //var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
+  //var reff2_url_no_psw = "http://admin:s***M@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
+
+  var reff1_url_no_psw = "http://hansolo:8080"
+  var reff2_url_no_psw = "http://leia"
+  var reff3_url_no_psw = "http://mandalorian:8080"
+  var reff4_url_no_psw = "http://chewbacca:8080"  // ska komma in om 1 år..?
+  var reff5_url_no_psw = "http://sebulba:8080"  // verkar inte vara uppsatt helt..
+  var reff6_url_no_psw = "http://logray:8080"
+
+  // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
+  // 10.68.108.165 http://leia
+  // 10.68.108.166 http://mandalorian
+  // 10.68.108.167 http://chewbacca
+
+  // 10.68.234.80 http://sebulba  vrefs
+  // 10.68.234.81 http://logray
 
   file1.myio.on('connection', async function (socket) {
 
@@ -419,21 +404,25 @@ router.get('/buildstatus', async function (req, res, next) {
       clearIntervalAsync
     } = require('set-interval-async/dynamic')
 
-
-    // TODO: set button with clearInterval aka stop timer start/stop button on page.
-    //
     const timer = setIntervalAsync(
         async () => {
           console.log('...polling...')
 
-          // get latest timestamp from jenkins
-          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
-          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","sudamerica77M","Ek2-Maxi")
+       //   var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
+       //   var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","s**M","Ek2-Maxi")
+
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
+          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Leia")
+          var loop_reff3 = await get_jenkins_info(reff3_url_no_psw, "install", "", "Mandalorian")
+        //  var loop_reff4 = await get_jenkins_info(reff4_url_no_psw, "install","","Chewbacca")
+          var loop_reff5 = await get_jenkins_info(reff5_url_no_psw, "install", "", "Sebulba")
+          var loop_reff6 = await get_jenkins_info(reff6_url_no_psw, "install","","Logray")
 
 
           // checks if new job has started. their must be at least 1 job in history
-          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && loop_reff1.getJobInfo !== undefined)
+          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
           {
+
             jenkins_info_reff1 = loop_reff1 // update - compare against this next pollning..
 
             var stream = ss.createStream();
@@ -442,14 +431,59 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
           }
 
-          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && loop_reff2.getJobInfo !== undefined)
+          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
           {
+
             jenkins_info_reff2 = loop_reff2
 
             var stream = ss.createStream();
             ss(socket).emit('jenkins_info_reff2', stream, JSON.stringify(loop_reff2));
 
             run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
+          }
+
+          if ((JSON.stringify(jenkins_info_reff3) !== JSON.stringify(loop_reff3)) && (typeof loop_reff3.getJobInfo !== "undefined") && (loop_reff3.getJobInfo.firstBuild !== null))
+          {
+
+            jenkins_info_reff3 = loop_reff3
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff3', stream, JSON.stringify(loop_reff3));
+
+            run_jenkins_job_stream(socket, reff3_url_no_psw, loop_reff3.getJobInfo.name, loop_reff3.getLastBuildInfo.id);
+          }
+/*
+          if ((JSON.stringify(jenkins_info_reff4) !== JSON.stringify(loop_reff4)) && (typeof loop_reff4.getJobInfo !== "undefined") && (loop_reff4.getJobInfo.firstBuild !== null))
+          {
+
+            jenkins_info_reff4 = loop_reff4
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff4', stream, JSON.stringify(loop_reff4));
+
+            run_jenkins_job_stream(socket, reff4_url_no_psw, loop_reff4.getJobInfo.name, loop_reff4.getLastBuildInfo.id);
+          }
+*/
+          if ((JSON.stringify(jenkins_info_reff5) !== JSON.stringify(loop_reff5)) && (typeof loop_reff5.getJobInfo !== "undefined") && (loop_reff5.getJobInfo.firstBuild !== null))
+          {
+
+            jenkins_info_reff5 = loop_reff5
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff5', stream, JSON.stringify(loop_reff5));
+
+            run_jenkins_job_stream(socket, reff5_url_no_psw, loop_reff5.getJobInfo.name, loop_reff5.getLastBuildInfo.id);
+          }
+
+          if ((JSON.stringify(jenkins_info_reff6) !== JSON.stringify(loop_reff6)) && (typeof loop_reff6.getJobInfo !== "undefined") && (loop_reff6.getJobInfo.firstBuild !== null))
+          {
+
+            jenkins_info_reff6 = loop_reff6
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff6', stream, JSON.stringify(loop_reff6));
+
+            run_jenkins_job_stream(socket, reff6_url_no_psw, loop_reff6.getJobInfo.name, loop_reff6.getLastBuildInfo.id);
           }
 
         },

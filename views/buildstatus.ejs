@@ -40,7 +40,28 @@
         // Update the bootstrap grid once the tasks are added
         function updateTaskContainerHead(containerId, jenkins_reff) {
 
-            var reff_element = '<div id="' + jenkins_reff.getJobInfo.displayName + '" class="ui card" style="width: 809px;">' +
+
+            function isNull(obj, key) {
+                return (obj[key] == null || obj[key] === undefined || obj[key] === "null");
+            }
+
+            function validate(obj) {
+                var objKeys = Object.keys(obj);
+                objKeys.forEach((key) => {
+                    if(isNull(obj, key)) {
+                        obj[key] = "";
+                    }
+                    if(typeof(obj[key]) == "object") {
+                        validate(obj[key]);
+                    }
+                });
+            }
+
+            validate(jenkins_reff);
+
+
+
+            var reff_element = '<div id="' + jenkins_reff.getJobInfo.displayName + '" class="ui card" style="width: 19%;">' +
                 '    <div id="statuscolor_' + jenkins_reff.getJobInfo.displayName + '" class="content" style="height: 15%">' +
                 '' +
                 '        <h2 class="ui icon header">' +
@@ -153,19 +174,38 @@
         }
 
  $(function() {                   // BYT mot Serverns URL auto-m....
-            var socket = io.connect('http://localhost:3000');
+            var socket = io.connect('http://vdc-s-automix.vdc.saab.se:3000'); // ('http://localhost:3000');
 
             var clear_console_reff1 = false
             var clear_console_reff2 = false
+            var clear_console_reff3 = false
+    //      var clear_console_reff4 = false
+            var clear_console_reff5 = false
+            var clear_console_reff6 = false
 
             var jenkins_info_reff1
             var jenkins_info_reff2
+            var jenkins_info_reff3
+    //      var jenkins_info_reff4
+            var jenkins_info_reff5
+            var jenkins_info_reff6
 
-            var reff1_url = "http://localhost:8080"
-            var reff2_url = "http://admin:sudamerica77M@130.237.59.170:8080"
+         // var reff1_url = "http://localhost:8080"
+         // var reff2_url = "http://admin:sudamerica77M@130.237.59.170:8080"
 
-            var reff1_obj // only used as a timer object..maybe more later..
-            var reff2_obj
+     var reff1_url = "http://hansolo:8080"
+     var reff2_url = "http://leia"
+     var reff3_url = "http://mandalorian:8080"
+  //   var reff4_url = "http://chewbacca:8080"  // ska komma in om 1 år..?
+     var reff5_url = "http://sebulba:8080"  // verkar inte vara uppsatt helt..
+     var reff6_url = "http://logray:8080"
+
+     var reff1_obj // only used as a timer object..maybe more later..
+     var reff2_obj
+     var reff3_obj
+  //   var reff4_obj
+     var reff5_obj
+     var reff6_obj
 
             class Reff {
                 constructor(jenkins_2_obj) {
@@ -208,6 +248,7 @@
                 ss(socket).on('jenkins_info_reff1', function(stream,data)
                 {
                     jenkins_info_reff1 = JSON.parse(data);
+
 
                     updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff1);
 
@@ -285,9 +326,7 @@
                 ss(socket).on('end:'+ reff1_url, function(stream,data) {
 
                     clear_console_reff1 = true
-
                     console.log(reff1_url + " = browser refname. reff that will be cleared:"+ data)
-
                     reff1_obj.stopTimer()
                 });
 
@@ -370,6 +409,324 @@
 
                     reff2_obj.stopTimer()
                 });
+
+                ////////////////////////////////////// reff 3 ////////////////////////////////////////////////////////////
+
+                ss(socket).on('jenkins_info_reff3', function(stream,data)
+                {
+                    jenkins_info_reff3 = JSON.parse(data);
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff3);
+
+                    reff3_obj = new Reff(jenkins_info_reff3)
+                    reff3_obj.startTimer()
+                });
+
+                ss(socket).on(reff3_url, function(stream,data) {
+
+                    // Default color is grey - installing status
+                    $("#statuscolor_" + jenkins_info_reff3.getJobInfo.displayName).css('background-color','silver');
+
+                    if(clear_console_reff3)
+                    {
+                        $("#out_"+ jenkins_info_reff3.getJobInfo.displayName).empty()
+                        clear_console_reff3 = false
+                        console.log("clearing console...")
+                    }
+
+                    var log = data.split("\n")  // split on each line..
+
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_" + jenkins_info_reff3.getJobInfo.displayName).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            var build_result = line_array.pop();             // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS') {
+                                $("#statuscolor_" + jenkins_info_reff3.getJobInfo.displayName).css('background-color', '#097d00');
+
+                                $('#' + jenkins_info_reff3.getJobInfo.displayName)
+                                    .transition('jiggle')
+                                ;
+                            }
+
+                            if (build_result.trim() === 'FAILURE') {
+                                $("#statuscolor_" + jenkins_info_reff3.getJobInfo.displayName).css("background-color", "#B22222")
+
+                                $('#' + jenkins_info_reff3.getJobInfo.displayName)
+                                    .transition('shake')
+                                ;
+                            }
+                        }
+                    }
+
+                    $("#out_"+ jenkins_info_reff3.getJobInfo.displayName).append(data)
+
+                    var element = document.getElementById("out_" + jenkins_info_reff3.getJobInfo.displayName); // always scroll to the end of textbox
+                    element.scrollTop = element.scrollHeight;
+                });
+
+                ss(socket).on('end:'+ reff3_url, function(stream,data) {
+
+                    clear_console_reff3 = true
+
+                    console.log(reff3_url + " = browser refname. reff that will be cleared:"+ data)
+
+                    reff3_obj.stopTimer()
+                });
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////// reff 4 ////////////////////////////////////////////////////////////
+/*
+                ss(socket).on('jenkins_info_reff4', function(stream,data)
+                {
+                    jenkins_info_reff4 = JSON.parse(data);
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff4);
+
+                    reff4_obj = new Reff(jenkins_info_reff4)
+                    reff4_obj.startTimer()
+                });
+
+                ss(socket).on(reff4_url, function(stream,data) {
+
+                    // Default color is grey - installing status
+                    $("#statuscolor_" + jenkins_info_reff4.getJobInfo.displayName).css('background-color','silver');
+
+                    if(clear_console_reff4)
+                    {
+                        $("#out_"+ jenkins_info_reff4.getJobInfo.displayName).empty()
+                        clear_console_reff4 = false
+                        console.log("clearing console...")
+                    }
+
+                    var log = data.split("\n")  // split on each line..
+
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_" + jenkins_info_reff4.getJobInfo.displayName).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            var build_result = line_array.pop();             // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS') {
+                                $("#statuscolor_" + jenkins_info_reff4.getJobInfo.displayName).css('background-color', '#097d00');
+
+                                $('#' + jenkins_info_reff4.getJobInfo.displayName)
+                                    .transition('jiggle')
+                                ;
+                            }
+
+                            if (build_result.trim() === 'FAILURE') {
+                                $("#statuscolor_" + jenkins_info_reff4.getJobInfo.displayName).css("background-color", "#B22222")
+
+                                $('#' + jenkins_info_reff4.getJobInfo.displayName)
+                                    .transition('shake')
+                                ;
+                            }
+                        }
+                    }
+
+                    $("#out_"+ jenkins_info_reff4.getJobInfo.displayName).append(data)
+
+                    var element = document.getElementById("out_" + jenkins_info_reff4.getJobInfo.displayName); // always scroll to the end of textbox
+                    element.scrollTop = element.scrollHeight;
+                });
+
+                ss(socket).on('end:'+ reff4_url, function(stream,data) {
+
+                    clear_console_reff4 = true
+
+                    console.log(reff4_url + " = browser refname. reff that will be cleared:"+ data)
+
+                    reff4_obj.stopTimer()
+                });
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////
+*/
+                ////////////////////////////////////// reff 5 ////////////////////////////////////////////////////////////
+
+                ss(socket).on('jenkins_info_reff5', function(stream,data)
+                {
+                    jenkins_info_reff5 = JSON.parse(data);
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff5);
+
+                    reff5_obj = new Reff(jenkins_info_reff5)
+                    reff5_obj.startTimer()
+                });
+
+                ss(socket).on(reff5_url, function(stream,data) {
+
+                    // Default color is grey - installing status
+                    $("#statuscolor_" + jenkins_info_reff5.getJobInfo.displayName).css('background-color','silver');
+
+                    if(clear_console_reff5)
+                    {
+                        $("#out_"+ jenkins_info_reff5.getJobInfo.displayName).empty()
+                        clear_console_reff5 = false
+                        console.log("clearing console...")
+                    }
+
+                    var log = data.split("\n")  // split on each line..
+
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_" + jenkins_info_reff5.getJobInfo.displayName).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            var build_result = line_array.pop();             // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS') {
+                                $("#statuscolor_" + jenkins_info_reff5.getJobInfo.displayName).css('background-color', '#097d00');
+
+                                $('#' + jenkins_info_reff5.getJobInfo.displayName)
+                                    .transition('jiggle')
+                                ;
+                            }
+
+                            if (build_result.trim() === 'FAILURE') {
+                                $("#statuscolor_" + jenkins_info_reff5.getJobInfo.displayName).css("background-color", "#B22222")
+
+                                $('#' + jenkins_info_reff5.getJobInfo.displayName)
+                                    .transition('shake')
+                                ;
+                            }
+                        }
+                    }
+
+                    $("#out_"+ jenkins_info_reff5.getJobInfo.displayName).append(data)
+
+                    var element = document.getElementById("out_" + jenkins_info_reff5.getJobInfo.displayName); // always scroll to the end of textbox
+                    element.scrollTop = element.scrollHeight;
+                });
+
+                ss(socket).on('end:'+ reff5_url, function(stream,data) {
+
+                    clear_console_reff5 = true
+
+                    console.log(reff5_url + " = browser refname. reff that will be cleared:"+ data)
+
+                    reff5_obj.stopTimer()
+                });
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////// reff 6 ////////////////////////////////////////////////////////////
+
+                ss(socket).on('jenkins_info_reff6', function(stream,data)
+                {
+                    jenkins_info_reff6 = JSON.parse(data);
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff6);
+
+                    reff6_obj = new Reff(jenkins_info_reff6)
+                    reff6_obj.startTimer()
+                });
+
+                ss(socket).on(reff6_url, function(stream,data) {
+
+                    // Default color is grey - installing status
+                    $("#statuscolor_" + jenkins_info_reff6.getJobInfo.displayName).css('background-color','silver');
+
+                    if(clear_console_reff6)
+                    {
+                        $("#out_"+ jenkins_info_reff6.getJobInfo.displayName).empty()
+                        clear_console_reff6 = false
+                        console.log("clearing console...")
+                    }
+
+                    var log = data.split("\n")  // split on each line..
+
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_" + jenkins_info_reff6.getJobInfo.displayName).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            var build_result = line_array.pop();             // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS') {
+                                $("#statuscolor_" + jenkins_info_reff6.getJobInfo.displayName).css('background-color', '#097d00');
+
+                                $('#' + jenkins_info_reff6.getJobInfo.displayName)
+                                    .transition('jiggle')
+                                ;
+                            }
+
+                            if (build_result.trim() === 'FAILURE') {
+                                $("#statuscolor_" + jenkins_info_reff6.getJobInfo.displayName).css("background-color", "#B22222")
+
+                                $('#' + jenkins_info_reff6.getJobInfo.displayName)
+                                    .transition('shake')
+                                ;
+                            }
+                        }
+                    }
+
+                    $("#out_"+ jenkins_info_reff6.getJobInfo.displayName).append(data)
+
+                    var element = document.getElementById("out_" + jenkins_info_reff6.getJobInfo.displayName); // always scroll to the end of textbox
+                    element.scrollTop = element.scrollHeight;
+                });
+
+                ss(socket).on('end:'+ reff6_url, function(stream,data) {
+
+                    clear_console_reff6 = true
+
+                    console.log(reff6_url + " = browser refname. reff that will be cleared:"+ data)
+
+                    reff6_obj.stopTimer()
+                });
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////
             });
         });
     });

@@ -15,13 +15,10 @@ const io = require('socket.io')(server,{
     }
 });
 
-
 exports.myio = io;
-
 
 // test
 var path = require('path');
-var fs = require('fs');
 
 server.listen(3000);
 
@@ -31,6 +28,64 @@ var cors = require('cors')
 var logger = require('morgan');
 var index = require('./routes/index');
 //var app = express();
+const chokidar = require('chokidar');
+const fs = require("fs");
+var shell = require('shelljs');
+
+var root_path = "public/data"
+
+
+// Order directories by time
+function readFile (dir, callback){
+    try
+    {
+        fs.readdir(dir, function(err, files)
+        {
+            files = files.map(function (fileName)
+            {
+                return {
+                    name: fileName,
+                    time: fs.statSync(dir + '/' + fileName).mtime.getTime()
+                };
+            })
+                .sort(function (a, b) {
+                    return b.time - a.time; })
+                .map(function (v) {
+                    return v.name; });
+
+            return callback(files)
+        });
+
+    }catch (e) {
+        console.log("could not delete directories!: " + e)
+    }
+}
+// Cleans up dirs, max 10 folders
+try {
+    chokidar.watch(root_path).on('all', (event, path) => {
+
+        readFile(root_path, function (reffs){
+
+            for (let i = 0; i <reffs.length ; i++) {
+
+                readFile(root_path+'/'+ reffs[i], function (reffs_folder){
+
+                    if (reffs_folder.length > 10) // max 10 foldrar ..testar bara..
+                    {
+                        for (var j = 10; j < reffs_folder.length; j++)
+                        {
+                            // console.log("deleting this:" + reffs_folder[j])
+                            shell.rm('-rf', root_path + '/' + reffs[i] + '/' + reffs_folder[j]);
+                        }
+                    }
+                });
+            }
+        });
+    });
+}
+catch (e) {
+    console.log("could not watch directories!: " + e)
+}
 
 
 /*
@@ -84,5 +139,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {status:err.status, message:err.message});
 });
+
 
 module.exports = app;
