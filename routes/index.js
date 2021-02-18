@@ -137,6 +137,13 @@ function getAllFiles() {
 
   var dirFiles = browseDir.browseFiles("public/data");
 
+  return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
+}
+
+function getAllFilesTreemap() {
+
+  var dirFiles = browseDir.browseFiles("public/data");
+
   var dirFiles_fixed = []
 
 
@@ -261,7 +268,7 @@ function explode(text, max) {
 /* GET home page. */
 router.get('/', async function (req, res, next) {
 
-  res.render('index', {page: 'Home', menuId: 'home', filenames: getAllFiles()});
+  res.render('index', {page: 'Home', menuId: 'home', filenames: getAllFilesTreemap()});
 });
 
 router.get('/treemapinput', async function(req, res) {
