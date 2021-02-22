@@ -3,8 +3,18 @@ const app = express();
 // Static files
 app.use(express.static("public"));
 
+var cors = require('cors')
+//var logger = require('morgan');
+var index = require('./routes/index');
+
+const chokidar = require('chokidar');
+const fs = require("fs");
+var shell = require('shelljs');
+
+var root_path = "public/data"
+
+
 ////////////////////WEBSOCKETZ///////////////////////
-const socket = require("socket.io");
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server,{
@@ -23,17 +33,6 @@ var path = require('path');
 server.listen(3000);
 
 //////////////////////////////////////////////////////
-
-var cors = require('cors')
-var logger = require('morgan');
-var index = require('./routes/index');
-//var app = express();
-const chokidar = require('chokidar');
-const fs = require("fs");
-var shell = require('shelljs');
-
-var root_path = "public/data"
-
 
 // Order directories by time
 function readFile (dir, callback){
