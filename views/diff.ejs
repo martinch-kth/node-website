@@ -112,6 +112,8 @@
         var first_list = $('#container').jstree(true).get_selected();
         var second_list = $('#container2').jstree(true).get_selected();
 
+        console.log(first_list)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json" ]
+
      //   $("#display3").empty()
 
         // måste sätta loopen på något annat sätt... inte = array...
@@ -123,6 +125,8 @@
         for (i = 0; i <= first_list.length-1; i++) {
 
        //     alert("ritar: " + i + "filen:" + first_list[i] )
+
+            console.log(first_list[i])  // får: data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json
 
             $('#diff_container').append('<div id="file'+i+'"></div>')
 

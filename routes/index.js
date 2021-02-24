@@ -18,6 +18,8 @@ var ss = require('socket.io-stream');
 
 const Jenkins_async_lib = require('node-async-jenkins-api');
 
+var child_process = require('child_process');
+
 const {
   dynamic: { setIntervalAsync: setIntervalAsyncD },
   fixed: { setIntervalAsync: setIntervalAsyncF },
@@ -131,6 +133,10 @@ async function createTreemapData(file) {
   }
 }
 
+
+
+
+
 // detta måste köras så for en ny fil kommer in...
 // eller ska jag köra den så fort man byter fil? ... Finns jobb kvar...
 function getAllFiles() {
@@ -140,27 +146,101 @@ function getAllFiles() {
   return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
 }
 
-function getAllFilesTreemap() {
 
-  var dirFiles = browseDir.browseFiles("public/data");
+//
+// få all filer... .json filer...
+
+function getAllFilesTreemap(callback) {
+
+// funkar..  var stdout=cp.exec('git diff --no-index public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number5/fluxion/ public/data/reff2/YYYY-MM-DD_TT-TT-TT_Longname_number3/fluxionChanged/ > comparison.diff').stdout
+
+  var child = child_process.spawnSync("find", ["public/data","-maxdepth","3"], { encoding : 'utf8' });
+  console.log("Process finished.");
+  if(child.error) {
+    console.log("ERROR: ",child.error);
+  }
+
+  var file_array = child.stdout.split(/\n/)
 
   var dirFiles_fixed = []
 
-
-  // Ta bara med json filer...
-  for (const file_object of dirFiles)
+  for (element of file_array)
   {
-    var extension = file_object.src.substring(file_object.src.lastIndexOf('.') + 1);
+      var extension = element.substring(element.lastIndexOf('.') + 1);
 
-    if (file_object.type === 'file' && extension === "json")
+      if (extension === "json")
+      {
+          dirFiles_fixed.push(element)
+      }
+  }
+
+  return dirFiles_fixed.reverse()     // reverse order of files in directory
+}
+
+function getJstree_light() {
+
+
+  // public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json
+
+
+  // få alla kataloger...  dela dess med split??...
+
+  // vette fan..
+
+
+  var jstree = []
+
+  function eachRecursive(data) {
+
+    // remove "public/" from path, not needed.
+    data.path = data.path.substring(7, data.path.length)
+
+    // remove everything after & including the last forward slazh!
+    var afterWithout = data.path.substr(0, data.path.lastIndexOf("/"));
+
+    if (data.type === "directory") {
+
+      // Måste göra så för att ROOT folder ska få sin '#'....
+      if (data.path.split("/").length <= 2)
+      {
+        var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
+      }
+      else
+      {
+        // Is not root node
+        var dirobj = { id: data.path , parent: afterWithout ,text: data.name };
+      }
+
+      /*
+            // if directory is empty, dont set any checkbox.
+            if (data.children.length <= 0)
+            {
+              var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
+            }
+            else
+            {
+              var dirobj = { id: data.path , parent: "#" ,text: data.name };
+            }
+      */
+
+      jstree.push(dirobj);
+
+      // Ta hand om barnen
+      if (Array.isArray(data.children))
+      {
+        data.children.forEach(eachRecursive)
+      }
+
+    } else if (data.type === "file")
     {
-        dirFiles_fixed.push(file_object)
+      var fileobj = { id: data.path , parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
+
+      jstree.push(fileobj);
     }
   }
 
-
-
-  return dirFiles_fixed.map(element => element.src).reverse()      // reverse order of files in directory
+  tree.forEach(eachRecursive);
+  return jstree
 }
 
 
@@ -168,6 +248,11 @@ function getJstree() {
 
   const treed = Object.values(dirTree("public/data"));
   const tree = treed[2]
+
+
+  //console.log(tree)
+  // skippa ovan.. gör om till bara kataloger... fuuuuuukk.. va fult :-)...
+
 
   var jstree = []
 
@@ -262,8 +347,6 @@ function explode(text, max) {
   }
   return exploded + "\n" + explode(text);
 }
-
-
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
