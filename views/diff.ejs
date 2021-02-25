@@ -56,6 +56,15 @@
             Diff files
         </div>
     </div>
+
+    <div style="width: 10%; padding-top: 3%; ">
+        <div id="diff_button_back" class="ui green huge right labeled icon button">
+            <i class="right arrow icon"></i>
+            Diff backend
+        </div>
+    </div>
+
+
 </div>
 
 
@@ -114,13 +123,6 @@
 
         console.log(first_list)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json" ]
 
-     //   $("#display3").empty()
-
-        // måste sätta loopen på något annat sätt... inte = array...
-        // kommer bli FEL beroend på om man klickat i en HEL folder eller inte...
-
-        // TODO.. kör bara makeDIFF OM det är en fil.
-        // $('#container2').jstree(true).get_selected();  <--- den ger BÅDE foldrar och filer.. vill bara ha filer...
         var i;
         for (i = 0; i <= first_list.length-1; i++) {
 
@@ -132,6 +134,58 @@
 
             makeDiff(first_list[i],second_list[i],"file"+i)
         }
+    });
+
+    $( "#diff_button_back" ).click(function() {
+
+        // empty first
+        $('#diff_container').empty()
+
+        var first_list = []
+        var second_list = []
+
+        var first_list  = $('#container').jstree(true).get_selected();
+        var second_list = $('#container2').jstree(true).get_selected();
+
+        var result_first  = first_list[0]
+        var result_second = second_list[0]
+
+        console.log(result_first)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json" ]
+        console.log(result_second)
+
+        var return_first;
+
+        function callback(response) {
+            return_first = response;
+            //use return_first variable here
+
+            console.log("filen ska komma tillbaka!!: " +return_first) // git diff filen skickas tillbaka.. men jag borde nog ta html filen istället..!
+
+            const targetElement = document.getElementById("diff_container");
+
+            const configuration = { inputFormat: 'json', drawFileList: true, matching: 'none', highlight: true,  outputFormat: 'side-by-side' };
+            const diff2htmlUi = new Diff2HtmlUI(targetElement, return_first, configuration);
+            diff2htmlUi.draw();
+            diff2htmlUi.highlightCode();
+
+        }
+
+        var rest_parameters = "difffile?firstfolder="+ result_first + "&secondfolder=" + result_second
+
+        console.log(rest_parameters)
+
+        $.ajax({
+            type: 'GET',
+            url: rest_parameters,
+            'success': function(data){
+                callback(data);
+
+            },
+            error: function(xhr, status, err) {
+                console.log(xhr.responseText);
+            }
+        });
+
     });
 
 
@@ -188,6 +242,8 @@
 
         // TODO.. sätt in riktiga filnamn...bättre...
         var diff = JsDiff.createPatch('fileName', one, other, 'oldHeader', 'newHeader');
+
+
 
         const configuration = { inputFormat: 'json', drawFileList: true, matching: 'none', highlight: true,  outputFormat: 'side-by-side' };
         const diff2htmlUi = new Diff2HtmlUI(targetElement, diff, configuration);

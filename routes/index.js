@@ -20,6 +20,8 @@ const Jenkins_async_lib = require('node-async-jenkins-api');
 
 var child_process = require('child_process');
 
+var path    = require("path");
+
 const {
   dynamic: { setIntervalAsync: setIntervalAsyncD },
   fixed: { setIntervalAsync: setIntervalAsyncF },
@@ -373,6 +375,66 @@ router.get('/rawfile', async function(req, res) {
   var content = file_data.modules
 
   res.json(content)
+});
+
+router.get('/difffile', async function(req, res) {
+
+  // Access the provided 'file' query parameters
+  let firstfolder = req.query.firstfolder;
+  let secondfolder = req.query.secondfolder;
+
+  // kör sen: git diff --no-index folder1/ folder2/ > comparison.diff
+
+  console.log(firstfolder)
+
+  const { exec } = require('child_process');
+
+  exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > public/comparison.diff\n', (err, stdout, stderr) => {
+
+    // handle err, stdout & stderr
+
+    var fs = require('fs');
+
+    fs.readFile("/home/m/developement/kth/hello-world-projects/node-website/public/comparison.diff", "utf8", function(err, data){
+      if(err) throw err;
+
+      //var resultArray = //do operation on data that generates say resultArray;
+
+      console.log("vaad:" + data)
+
+      res.send(data);
+    });
+
+
+  });
+
+
+  //var Diff2Html = require('diff2html').Diff2Html;
+
+  //Diff2Html.getPrettySideBySideHtmlFromDiff(exInput)
+
+  /*
+
+  var child2 = child_process.spawnSync("diff2html", ["-i","file","--","comparison.diff"], { encoding : 'utf8' });
+  console.log("Process finished.");
+  if(child2.error) {
+    console.log("ERROR: ",child2.error);
+  }
+
+  */
+
+  console.log("gå kolla din folder :_)")
+
+
+
+  //läs sedan den skapa filen...
+
+  //const file_data = await jsonfile.readFile('', 'utf8');
+ // var content = file_data.modules
+
+//  res.sendFile(path.join(__dirname, '../public/', 'comparison.diff'));
+
+ // res.json({"ok":secondfolder})
 });
 
 
