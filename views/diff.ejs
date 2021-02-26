@@ -161,13 +161,17 @@
 
             console.log("filen ska komma tillbaka!!: " +return_first) // git diff filen skickas tillbaka.. men jag borde nog ta html filen istället..!
 
+
+            $('#diff_container').append(return_first)
+            /*
+
             const targetElement = document.getElementById("diff_container");
 
             const configuration = { inputFormat: 'json', drawFileList: true, matching: 'none', highlight: true,  outputFormat: 'side-by-side' };
             const diff2htmlUi = new Diff2HtmlUI(targetElement, return_first, configuration);
             diff2htmlUi.draw();
             diff2htmlUi.highlightCode();
-
+*/
         }
 
         var rest_parameters = "difffile?firstfolder="+ result_first + "&secondfolder=" + result_second

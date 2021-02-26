@@ -385,7 +385,7 @@ router.get('/difffile', async function(req, res) {
 
   // kör sen: git diff --no-index folder1/ folder2/ > comparison.diff
 
-  console.log(firstfolder)
+ // console.log(firstfolder)
 
   const { exec } = require('child_process');
 
@@ -400,9 +400,18 @@ router.get('/difffile', async function(req, res) {
 
       //var resultArray = //do operation on data that generates say resultArray;
 
-      console.log("vaad:" + data)
+      const Diff2html = require('diff2html');
+      const diffJson = Diff2html.parse(data);
+      const diffHtml = Diff2html.html(diffJson, {  matching: 'none' ,drawFileList: true });
 
-      res.send(data);
+
+     // document.getElementById('destination-elem-id').innerHTML = diffHtml;
+
+     // console.log(  diffHtml)
+
+    //  console.log("vaad:" + data)
+
+      res.send(diffHtml);
     });
 
 
@@ -532,12 +541,12 @@ router.get('/buildstatus', async function (req, res, next) {
   //var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
   //var reff2_url_no_psw = "http://admin:s***M@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
 
-  var reff1_url_no_psw = "http://hansolo:8080"
-  var reff2_url_no_psw = "http://leia"
-  var reff3_url_no_psw = "http://mandalorian:8080"
-  var reff4_url_no_psw = "http://chewbacca:8080"  // ska komma in om 1 år..?
-  var reff5_url_no_psw = "http://sebulba:8080"  // verkar inte vara uppsatt helt..
-  var reff6_url_no_psw = "http://logray:8080"
+  var reff1_url_no_psw = "http://10.68.108.164:8080"
+  var reff2_url_no_psw = "http://10.68.108.165:8080"
+  var reff3_url_no_psw = "http://10.68.108.166:8080"
+  var reff4_url_no_psw = "http://10.68.108.167:8080"  // ska användas om 1 år
+  var reff5_url_no_psw = "http://10.68.234.80:8080"  // verkar inte vara uppsatt helt..
+  var reff6_url_no_psw = "http://10.68.234.81:8080"
 
   // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
   // 10.68.108.165 http://leia
@@ -572,6 +581,10 @@ router.get('/buildstatus', async function (req, res, next) {
 
 
           // checks if new job has started. their must be at least 1 job in history
+
+          console.log("get jenkins info: " +  loop_reff1)
+          console.log("get jenkins info firstbuild: " +  loop_reff1.getJobInfo.firstBuild)
+
           if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
           {
 
