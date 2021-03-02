@@ -389,13 +389,15 @@ router.get('/difffile', async function(req, res) {
 
   const { exec } = require('child_process');
 
-  exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > public/comparison.diff\n', (err, stdout, stderr) => {
+  console.log(__dirname)
+
+  exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
 
     // handle err, stdout & stderr
 
     var fs = require('fs');
 
-    fs.readFile("/home/m/developement/kth/hello-world-projects/node-website/public/comparison.diff", "utf8", function(err, data){
+    fs.readFile(__dirname + "/../public/comparison.diff", "utf8", function(err, data){
       if(err) throw err;
 
       //var resultArray = //do operation on data that generates say resultArray;

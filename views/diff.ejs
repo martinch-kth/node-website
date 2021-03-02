@@ -49,22 +49,12 @@
             <div id="container2" class="ui segment raised text large"></div>
         </div>
 
-
     <div style="width: 10%; padding-top: 3%; ">
-        <div id="diff_button" class="ui green huge right labeled icon button">
+        <div id="diff_button_back" class="ui green huge right labeled icon button">
             <i class="right arrow icon"></i>
             Diff files
         </div>
     </div>
-
-    <div style="width: 10%; padding-top: 3%; ">
-        <div id="diff_button_back" class="ui green huge right labeled icon button">
-            <i class="right arrow icon"></i>
-            Diff backend
-        </div>
-    </div>
-
-
 </div>
 
 
@@ -79,6 +69,18 @@
 
 
 <script>
+
+    /* diffar en fil i taget...
+        <div style="width: 10%; padding-top: 3%; ">
+        <div id="diff_button" class="ui green huge right labeled icon button">
+            <i class="right arrow icon"></i>
+            Diff files
+        </div>
+        </div>
+     */
+
+
+
     var filedata = JSON.parse('<%- JSON.stringify(jstree) %>');
 
     $('#container').jstree({
