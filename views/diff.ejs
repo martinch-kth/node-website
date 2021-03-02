@@ -41,7 +41,7 @@
 
 
         <div style="width: 40%;">
-            <div id="container" class="ui segment raised text large"></div>
+            <div style="word-wrap: break-word;flex: inherit"  id="container" class="ui segment raised text large"></div>
         </div>
 
 
@@ -121,14 +121,14 @@
         var first_list = $('#container').jstree(true).get_selected();
         var second_list = $('#container2').jstree(true).get_selected();
 
-        console.log(first_list)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json" ]
+        console.log(first_list)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json" ]
 
         var i;
         for (i = 0; i <= first_list.length-1; i++) {
 
        //     alert("ritar: " + i + "filen:" + first_list[i] )
 
-            console.log(first_list[i])  // får: data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json
+            console.log(first_list[i])  // får: data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json
 
             $('#diff_container').append('<div id="file'+i+'"></div>')
 
@@ -150,7 +150,7 @@
         var result_first  = first_list[0]
         var result_second = second_list[0]
 
-        console.log(result_first)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json" ]
+        console.log(result_first)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json" ]
         console.log(result_second)
 
         var return_first;

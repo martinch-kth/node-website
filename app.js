@@ -33,6 +33,7 @@ var path = require('path');
 server.listen(3000);
 
 //////////////////////////////////////////////////////
+/*
 
 // Order directories by time
 function readFile (dir, callback){
@@ -85,7 +86,7 @@ try {
 catch (e) {
     console.log("could not watch directories!: " + e)
 }
-
+*/
 
 /*
 var mongoose = require("mongoose");

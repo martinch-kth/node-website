@@ -182,7 +182,7 @@ function getAllFilesTreemap(callback) {
 function getJstree_light() {
 
 
-  // public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10/original-data-structure-errors.json
+  // public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json
 
 
   // få alla kataloger...  dela dess med split??...

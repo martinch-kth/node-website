@@ -2,28 +2,14 @@
   "buildID":"0",
   "modules":[
     {
-      "moduleName":"ÖÖÖÖÖÖÖÖ1",
-      "errors":[
-        {
-          "message":" error_in_other_fileX WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYY.YYYYYYY.YYYY.YYYYYYYYYYYY[YYYYYYY] - YYYYYY YY YYYYYY YYYYYY YYYYYYYYYYY YYY [/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY]",
-          "occurrences":"1"
-        },
-        {
-          "message":"WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYY.YYYYYYY.YYYY.YYYYYYYYYYYY[YYYYYYY] - YYYYYYYY(/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY*YYYY) YYYY YYYYYY. YYYY.YY.YYYYYYYYYYYYYxYYYYYYY* /YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY (YY YYYY YYYY YY YYYYYYYYy)",
-          "occurrences":"1"
-        }
-      ],
-      "onHost":"ÄÄÄ1"
-    },
-    {
       "moduleName":"ÖÖÖÖÖÖ2",
       "errors":[
         {
-          "message":"YYYY**YYY_YyYYYY_YYYY**YYYY_YYYY  YYYYY (2) YYYYwYYYYYY YyYYYY_YYYY=YYYY wYYY YYw YYYYY=YYYY",
+          "message":"YYYY**YYY_YyYYYY_YYYY**YYYYxxxxxxxxxxYYYYwYYYYYY YyYYYY_YYYY=YYYY wYYY YYw YYYYY=YYYY",
           "occurrences":"1"
         },
         {
-          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*42*626 [YYYY] YYYYY Y.Y.YYY.YyYY.YyYYYYYY - YYy=YYYYYYYYYYY_YYYYYY_YY_0* YYYYY=*YYYYY_YYYY.YYYY_YYYYY_YYYYYY_YYY_YYYYY_YYYYYYYY YYYYY YYY YY YYYYYYYY",
+          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*42*626 [YYYY] YYYYY Y.Y.YYY.YyYxxYYYYYYY_YYYYYY_YY_0xxxxxxxxxxxxx* YYYYY=*YYYYY_YYYY.YYYY_YYYYY_YYYYYY_YYY_YYYYY_YYYYYYYY YYYYY YYY YY YYYYYYYY",
           "occurrences":"1"
         },
         {
@@ -31,7 +17,7 @@
           "occurrences":"1"
         },
         {
-          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*51*376 [YYY.YYYYYYYYY.YYYYY.YYYY.YYYYYwYYY.YYYYYYYYYYYYYYY] YYYYY Y.Y.YYY.YyYY.YyYYYYYY - YYy=YYYYYYYYYYY_YYYYYY_YY_0* YYYYY=*YYYYY_YYYY.YYYY_YYYYY_YYYYYY_YYY_YYYYY_YYYYYYYY YYYYY YYY YY YYYYYYYY",
+          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*51*376 [YYY.YYYYYYYYY.YYYYxxxxxxxxxxxYYYYYYYYYYY] YYYYY Y.Y.YYY.YyYY.YyYYYYYY - YYy=YYYYYYYYYYY_YYYYYY_YY_0* YYYYY=*YYYYY_YYYY.YYYY_YYYYY_YYYYYY_YYY_YYYYY_YYYYYYYY YYYYY YYY YY YYYYYYYY",
           "occurrences":"1"
         },
         {
@@ -39,7 +25,7 @@
           "occurrences":"1"
         },
         {
-          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*53*049 [YWY-YYYYYYYYYY-1] YYYYY Y.Y.Y.Y.Y.YYY4YYYYYYYYYYY - YYYYYYYYYYYYYYYY.YYYYYYYYyYY() - WYYYY YY YYYYYYY YYYYY YYY YYYY * YYYY",
+          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*53*049 [YWY-YYYYYxxxxxxxxxxxxxxxYYYYYYYY - YYYYYYYYYYYYYYYY.YYYYYYYYyYY() - WYYYY YY YYYYYYY YYYYY YYY YYYY * YYYY",
           "occurrences":"1"
         },
         {
@@ -47,7 +33,7 @@
           "occurrences":"1"
         },
         {
-          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*55*785 [YWY-YYYYYYYYYY-1] YYYYY Y.Y.YYY.YyYY.YyYYYYYY - YYy=YYYYYYYYYYY_YYYYYY_YY_0* YYYYY=*YYYYY_YYYY.YYYY_YYYYY_YYYYYY_YYY_YYYYY_YYYYYYYY YYYYY YYY YY YYYYYYYY",
+          "message":"YYYYYYYYYYYYY* 2019-12-10 12*43*55xxxxxxxxxxxxxxYY-1] YYYYY Y.Y.YYY.YyYY.YyYYYYYY - YYy=YYYYYYYYYYY_YYYYYY_YY_0* YYYYY=*YYYYY_YYYY.YYYY_YYYYY_YYYYYY_YYY_YYYYY_YYYYYYYY YYYYY YYY YY YYYYYYYY",
           "occurrences":"1"
         },
         {
