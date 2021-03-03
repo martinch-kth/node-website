@@ -587,7 +587,7 @@ router.get('/buildstatus', async function (req, res, next) {
           console.log("get jenkins info: " +  loop_reff1)
           console.log("get jenkins info firstbuild: " +  loop_reff1.getJobInfo.firstBuild)
 
-          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
           {
 
             jenkins_info_reff1 = loop_reff1 // update - compare against this next pollning..
@@ -598,7 +598,7 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
           }
 
-          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && (typeof loop_reff2 !== "undefined") && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
           {
 
             jenkins_info_reff2 = loop_reff2
@@ -609,7 +609,7 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
           }
 
-          if ((JSON.stringify(jenkins_info_reff3) !== JSON.stringify(loop_reff3)) && (typeof loop_reff3.getJobInfo !== "undefined") && (loop_reff3.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff3) !== JSON.stringify(loop_reff3)) && (typeof loop_reff3 !== "undefined") && (typeof loop_reff3.getJobInfo !== "undefined") && (loop_reff3.getJobInfo.firstBuild !== null))
           {
 
             jenkins_info_reff3 = loop_reff3
@@ -621,7 +621,7 @@ router.get('/buildstatus', async function (req, res, next) {
           }
 /*
 
-          if ((JSON.stringify(jenkins_info_reff4) !== JSON.stringify(loop_reff4)) && (typeof loop_reff4.getJobInfo !== "undefined") && (loop_reff4.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff4) !== JSON.stringify(loop_reff4)) && (typeof loop_reff4 !== "undefined") && (typeof loop_reff4.getJobInfo !== "undefined") && (loop_reff4.getJobInfo.firstBuild !== null))
           {
 
             jenkins_info_reff4 = loop_reff4
@@ -632,7 +632,7 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff4_url_no_psw, loop_reff4.getJobInfo.name, loop_reff4.getLastBuildInfo.id);
           }
 */
-          if ((JSON.stringify(jenkins_info_reff5) !== JSON.stringify(loop_reff5)) && (typeof loop_reff5.getJobInfo !== "undefined") && (loop_reff5.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff5) !== JSON.stringify(loop_reff5)) && (typeof loop_reff5 !== "undefined") && (typeof loop_reff5.getJobInfo !== "undefined") && (loop_reff5.getJobInfo.firstBuild !== null))
           {
 
             jenkins_info_reff5 = loop_reff5
@@ -643,7 +643,7 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff5_url_no_psw, loop_reff5.getJobInfo.name, loop_reff5.getLastBuildInfo.id);
           }
 
-          if ((JSON.stringify(jenkins_info_reff6) !== JSON.stringify(loop_reff6)) && (typeof loop_reff6.getJobInfo !== "undefined") && (loop_reff6.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff6) !== JSON.stringify(loop_reff6)) && (typeof loop_reff6 !== "undefined") && (typeof loop_reff6.getJobInfo !== "undefined") && (loop_reff6.getJobInfo.firstBuild !== null))
           {
 
             jenkins_info_reff6 = loop_reff6
