@@ -540,10 +540,10 @@ router.get('/buildstatus', async function (req, res, next) {
   var jenkins_info_reff6 = ""
 
 
-  //var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
+  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
   //var reff2_url_no_psw = "http://admin:s***M@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
 
-  var reff1_url_no_psw = "http://10.68.108.164:8080"
+  //var reff1_url_no_psw = "http://10.68.108.164:8080"
   var reff2_url_no_psw = "http://10.68.108.165:8080"
   var reff3_url_no_psw = "http://10.68.108.166:8080"
   var reff4_url_no_psw = "http://10.68.108.167:8080"  // ska användas om 1 år
@@ -571,21 +571,19 @@ router.get('/buildstatus', async function (req, res, next) {
         async () => {
           console.log('...polling...')
 
-       //   var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
        //   var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","s**M","Ek2-Maxi")
 
-          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
+          console.log(loop_reff1)
+
+       //   var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
           var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Leia")
           var loop_reff3 = await get_jenkins_info(reff3_url_no_psw, "install", "", "Mandalorian")
         //  var loop_reff4 = await get_jenkins_info(reff4_url_no_psw, "install","","Chewbacca")
           var loop_reff5 = await get_jenkins_info(reff5_url_no_psw, "install", "", "Sebulba")
           var loop_reff6 = await get_jenkins_info(reff6_url_no_psw, "install","","Logray")
 
-
           // checks if new job has started. their must be at least 1 job in history
-
-          console.log("get jenkins info: " +  loop_reff1)
-          console.log("get jenkins info firstbuild: " +  loop_reff1.getJobInfo.firstBuild)
 
           if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
           {
