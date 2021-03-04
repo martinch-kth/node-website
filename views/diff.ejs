@@ -115,29 +115,6 @@
         "plugins" : [ "checkbox" ]
     });
 
-    $( "#diff_button" ).click(function() {
-
-        // empty first
-        $('#diff_container').empty()
-
-        var first_list = $('#container').jstree(true).get_selected();
-        var second_list = $('#container2').jstree(true).get_selected();
-
-        console.log(first_list)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json" ]
-
-        var i;
-        for (i = 0; i <= first_list.length-1; i++) {
-
-       //     alert("ritar: " + i + "filen:" + first_list[i] )
-
-            console.log(first_list[i])  // får: data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json
-
-            $('#diff_container').append('<div id="file'+i+'"></div>')
-
-            makeDiff(first_list[i],second_list[i],"file"+i)
-        }
-    });
-
     $( "#diff_button_back" ).click(function() {
 
         // empty first
@@ -161,10 +138,13 @@
             return_first = response;
             //use return_first variable here
 
-            console.log("filen ska komma tillbaka!!: " +return_first) // git diff filen skickas tillbaka.. men jag borde nog ta html filen istället..!
+            if (typeof return_first !== "undefined")
+            {
+                console.log("Filen som kommer tillbaka: " +return_first) // git diff filen skickas tillbaka.. men jag borde nog ta html filen istället..!
 
+                $('#diff_container').append(return_first)
+            }
 
-            $('#diff_container').append(return_first)
             /*
 
             const targetElement = document.getElementById("diff_container");
@@ -197,7 +177,7 @@
 
     // lösning kanske...
     // https://stackoverflow.com/questions/46994947/semantic-overriding-my-dropdown-menu-making-it-big
-
+/*
     function makeDiff(firstFile, secondFile, targetId)
     {
         var return_first;
@@ -256,6 +236,7 @@
         diff2htmlUi.draw();
         diff2htmlUi.highlightCode();
     }
+*/
 
 </script>
 

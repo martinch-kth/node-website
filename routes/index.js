@@ -393,29 +393,29 @@ router.get('/difffile', async function(req, res) {
 
   exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
 
-    // handle err, stdout & stderr
-
     var fs = require('fs');
 
-    fs.readFile(__dirname + "/../public/comparison.diff", "utf8", function(err, data){
-      if(err) throw err;
+    try
+    {
+      fs.readFile(__dirname + "/../public/comparison.diff", "utf8", function(err, data){
+        if(err) throw err;
 
-      //var resultArray = //do operation on data that generates say resultArray;
+        //var resultArray = //do operation on data that generates say resultArray;
 
-      const Diff2html = require('diff2html');
-      const diffJson = Diff2html.parse(data);
-      const diffHtml = Diff2html.html(diffJson, {  matching: 'none' ,drawFileList: true });
+        const Diff2html = require('diff2html');
+        const diffJson = Diff2html.parse(data);
+        const diffHtml = Diff2html.html(diffJson, {  matching: 'none' ,drawFileList: true });
 
-
-     // document.getElementById('destination-elem-id').innerHTML = diffHtml;
-
-     // console.log(  diffHtml)
-
-    //  console.log("vaad:" + data)
-
-      res.send(diffHtml);
-    });
-
+        res.send(diffHtml);
+      });
+    }
+    catch (err) {
+      if (err.code === 'ENOENT') {
+        console.log('File not found!');
+      } else {
+        throw err;
+      }
+    }
 
   });
 
