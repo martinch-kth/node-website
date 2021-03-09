@@ -182,75 +182,80 @@ function getAllFilesTreemap(callback) {
 function getJstree_light() {
 
 
-  // public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json
-
-
-  // få alla kataloger...  dela dess med split??...
-
-  // vette fan..
-
-
-  var jstree = []
-
-  function eachRecursive(data) {
-
-    // remove "public/" from path, not needed.
-    data.path = data.path.substring(7, data.path.length)
-
-    // remove everything after & including the last forward slazh!
-    var afterWithout = data.path.substr(0, data.path.lastIndexOf("/"));
-
-    if (data.type === "directory") {
-
-      // Måste göra så för att ROOT folder ska få sin '#'....
-      if (data.path.split("/").length <= 2)
-      {
-        var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
-      }
-      else
-      {
-        // Is not root node
-        var dirobj = { id: data.path , parent: afterWithout ,text: data.name };
-      }
-
-      /*
-            // if directory is empty, dont set any checkbox.
-            if (data.children.length <= 0)
-            {
-              var dirobj = { id: data.path , parent: "#" ,a_attr: {class:"no_checkbox"},text: data.name };
-            }
-            else
-            {
-              var dirobj = { id: data.path , parent: "#" ,text: data.name };
-            }
-      */
-
-      jstree.push(dirobj);
-
-      // Ta hand om barnen
-      if (Array.isArray(data.children))
-      {
-        data.children.forEach(eachRecursive)
-      }
-
-    } else if (data.type === "file")
-    {
-      var fileobj = { id: data.path , parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
-
-      jstree.push(fileobj);
-    }
+  var child = child_process.spawnSync("find", ["public/data","-maxdepth","2"], { encoding : 'utf8' });
+  console.log("Process finished.");
+  if(child.error) {
+    console.log("ERROR: ",child.error);
   }
 
-  tree.forEach(eachRecursive);
-  return jstree
+  var file_array = child.stdout.split(/\n/)
+
+  /*
+  public/data
+  public/data/reff4
+  public/data/reff4/YYYY-MM-DD_TT-TT-TT_Longname_number8
+  public/data/reff4/YYYY-MM-DD_TT-TT-TT_Longname_number9
+  public/data/reff4/YYYY-MM-DD_TT-TT-TT_Longname_number10
+
+  $('#using_json').jstree({ 'core' : {
+      'data' : [
+         'Simple root node',
+         {
+           'text' : 'Root node 2',
+           'state' : {
+             'opened' : true,
+             'selected' : true
+           },
+           'children' : [
+             { 'text' : 'Child 1' },
+             'Child 2'
+           ]
+        }
+      ]
+  } });
+
+   */
+
+  var custom_jstree = []
+
+  var parent = ""
+
+  for (element of file_array)
+  {
+    var paths = element.split("/");
+
+      if (paths.length <= 3 && paths.length > 2)  // tex public/data/reff2 (x >= 0.001 && x <= 0.009)
+      {
+        console.log("borde va reff:" + element)
+
+        // Is not root node
+        var dirobj = { id: paths[paths.length-1] , parent: "#" ,a_attr: {class:"no_checkbox"},text: paths[paths.length-1] };
+
+        parent = paths[paths.length-1]
+
+        custom_jstree.push(dirobj)
+
+      }
+      if (paths.length > 3)
+      {
+        // Is not root node
+        var dirobj = { id: paths[paths.length-1] , parent: parent ,text: paths[paths.length-1] };
+
+        custom_jstree.push(dirobj)
+
+        console.log("borde va katalog:" + element)
+      }
+  }
+
+  return custom_jstree
+
 }
-
-
+/*
+// old function..  deprecated.. takes to much resources,, nice recursion :-(
 function getJstree() {
 
   const treed = Object.values(dirTree("public/data"));
   const tree = treed[2]
-
 
   //console.log(tree)
   // skippa ovan.. gör om till bara kataloger... fuuuuuukk.. va fult :-)...
@@ -258,7 +263,7 @@ function getJstree() {
 
   var jstree = []
 
-  function eachRecursive(data) {
+  function eachRecursive(data, level) {
 
     // remove "public/" from path, not needed.
     data.path = data.path.substring(7, data.path.length)
@@ -279,7 +284,7 @@ function getJstree() {
         var dirobj = { id: data.path , parent: afterWithout ,text: data.name };
       }
 
-      /*
+
             // if directory is empty, dont set any checkbox.
             if (data.children.length <= 0)
             {
@@ -289,41 +294,35 @@ function getJstree() {
             {
               var dirobj = { id: data.path , parent: "#" ,text: data.name };
             }
-      */
+
 
       jstree.push(dirobj);
 
-      // Ta hand om barnen
-      if (Array.isArray(data.children))
+
+      // Ta hand om barnen..nää
+
+      if (Array.isArray(data.children) && (level < 1))
       {
-        data.children.forEach(eachRecursive)
+        data.children.forEach(eachRecursive, level)
+
+        level++
       }
 
-    } else if (data.type === "file")
+    }
+
+    else if (data.type === "file")
     {
       var fileobj = { id: data.path , parent: afterWithout, text: data.name, icon : " glyphicon glyphicon-file" };
 
       jstree.push(fileobj);
     }
+
   }
 
   tree.forEach(eachRecursive);
   return jstree
 }
-
-
-function fleetCheck(){
-  /*
-  + echo fleet-check-started
-  fleet-check-started
-  + fleetctl list-units
-  UNIT		MACHINE				ACTIVE	SUB
-  hello.service	5810ec51.../192.168.43.59	active	running
-  + echo fleet-check-ended
-  fleet-check-ended
-
-  */
-}
+*/
 
 // format text to a certain length width.
 function explode(text, max) {
@@ -352,6 +351,11 @@ function explode(text, max) {
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
+
+
+  //testar bara...
+
+  getJstree_light()
 
   res.render('index', {page: 'Home', menuId: 'home', filenames: getAllFilesTreemap()});
 });
@@ -458,7 +462,8 @@ router.get('/contact', function(req, res, next) {
 });
 
 router.get('/diff', function(req, res, next) {
-  res.render('diff', {page:'Diff files', menuId:'diff',filenames: getAllFiles(), jstree: getJstree()});
+
+  res.render('diff', {page:'Diff files', menuId:'diff', jstree: getJstree_light()}); // tog bort: filenames: getAllFiles()
 });
 
 async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last_job_number){
@@ -504,6 +509,31 @@ async function axiosTest(url) {
     console.log(error);
   }
 }
+
+async function ssh_to_fleetctl(url) {
+  try
+  {
+/*
+funkar ..   exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
+
+
+
+    var child = child_process.spawnSync("find", ["public/data","-maxdepth","3"], { encoding : 'utf8' });
+    console.log("Process finished.");
+    if(child.error) {
+      console.log("ERROR: ",child.error);
+    }
+    */
+
+//    return response
+  }
+
+  catch (error) {
+    console.log(error);
+  }
+}
+
+
 
 async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
   try {
