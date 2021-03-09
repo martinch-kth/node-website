@@ -395,7 +395,9 @@ router.get('/difffile', async function(req, res) {
 
   console.log(__dirname)
 
-  exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
+
+  // byggnamn / comp folder... om jag minns rätt-...
+  exec('git diff --no-index public/'+ firstfolder +'/comp/ public/'+ secondfolder +'/comp/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
 
     var fs = require('fs');
 
