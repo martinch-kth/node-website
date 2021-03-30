@@ -60,7 +60,7 @@
             validate(jenkins_reff);
 
             var reff_element = '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card" style="width: 19%;">' +
-                '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="content" style="height: 15%">' +
+                '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="content" style="height: 12%">' +
                 '' +
                 '        <h2 class="ui icon header">' +
                 '            <i class="laptop icon"></i>' +
@@ -75,7 +75,7 @@
                 '' +
                 '        <div class="event">' +
                 '            <div class="content">' +
-                '                <div class="ui massive message">' +
+                '                <div class="ui massive message" style="padding: 2px">' +
                 '                  <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.url + '"></div>' +
                 '                    <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
                 '                    <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
@@ -84,80 +84,31 @@
                 '        </div>' +
                 '' +
                 '<div class="FixedHeightContainer">' +
-                '<pre id="out_' + jenkins_reff.getJobInfo.url + '" class="Content"></pre>' +
+                '<pre id="out_' + jenkins_reff.getJobInfo.url + '" class="Content" style="border: 1px solid grey;border-radius: 5px;padding: 1px"></pre>' +
                 '</div>' +
 
-                '        <div class="ui medium feed">' +
-                '            <div class="event">' +
-                '                <div class="content">' +
-                '' +
-                '                    <table class="ui definition table">' +
-                '                        <tbody>' +
-                '                        <tr>' +
-                '                            <td class="two wide column">Modulename</td>' +
-                '                            <td>Failed</td>' +
-                '                        </tr>' +
-                '                        <tr>' +
-                '                            <td>Modulename</td>' +
-                '                            <td>Failed</td>' +
-                '                        </tr>' +
-                '                        <tr>' +
-                '                            <td>Modulename</td>' +
-                '                            <td>Failed</td>' +
-                '                        </tr>' +
-                '                        <tr>' +
-                '                            <td>Modulename</td>' +
-                '                            <td>Failed</td>' +
-                '                        </tr>' +
-                '                        </tbody>' +
-                '                    </table>' +
-                '' +
-                '                </div>' +
-                '            </div>' +
-                '' +
 
-                '                        <div class="ui relaxed divided list">' +
-                '                            <div class="item">' +
-                '                                <i class="large jenkins middle aligned icon"></i>' +
-                '                                <div class="content">' +
-                '                                    <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
-                '                                </div>' +
-                '                            </div>' +
-                '                            <div class="item">' +
-                '                                <i class="large jenkins middle aligned icon"></i>' +
-                '                                <div class="content">' +
-                '                                    <div class="description">Last stable build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number) + '</div>' +
-                '                                </div>' +
-                '                            </div>' +
-                '                            <div class="item">' +
-                '                                <i class="large jenkins middle aligned icon"></i>' +
-                '                                <div class="content">' +
-                '                                    <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                '                                </div>' +
-                '                            </div>' +
-                '' +
-                '                                <div class="item">' +
-                '                                    <i class="large jenkins middle aligned icon"></i>' +
-                '                                    <div class="content">' +
-                '                                        <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
-                '                                    </div>' +
-                '                                </div>' +
-                '                                <div class="item">' +
-                '                                    <i class="large jenkins middle aligned icon"></i>' +
-                '                                    <div class="content">' +
-                '                                        <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
-                '                                    </div>' +
-                '                                </div>' +
-                '                                <div class="item">' +
-                '                                    <i class="large jenkins middle aligned icon"></i>' +
-                '                                    <div class="content">' +
-                '                                        <div class="description">Last completed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                '                                    </div>' +
-                '                                </div>' +
-                '                        </div>' +
-                '                </div>' +
+
+                '<div id="modules_' + jenkins_reff.getJobInfo.url + '" class="ui list" style="border: 1px solid grey;border-radius: 5px;padding: 1px"></div>' +
+
+                '<div class="ui relaxed divided list" class="ui list" style="border: 1px solid grey;border-radius: 5px;padding: 1px">' +
+                '  <div class="item">' +
+                '     <i class="large jenkins middle aligned icon"></i>' +
+                '     <div class="content">' +
+                '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
+                '           <div class="description">Last stable build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number) + '</div>' +
+                '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
+                '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
+                '           <div class="description">Last completed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                '     </div>' +
                 '    </div>' +
-                '</div>';
+                '  </div>' +
+
+
+
+              '  </div>' +
+            '</div>';  // ui card main wrap
 
             // finns elementet? -> byt ut det...
             if ($('#' + jenkins_reff.getJobInfo.url.toString()).length)
@@ -172,7 +123,7 @@
         }
 
  $(function() {                   // BYT mot Serverns URL auto-m....
-            var socket = io.connect('http://vdc-s-automix.vdc.saab.se:3000'); // ('http://localhost:3000');
+            var socket = io.connect('http://localhost:3000');
 
             var clear_console_reff1 = false
             var clear_console_reff2 = false
@@ -188,7 +139,7 @@
             var jenkins_info_reff5
             var jenkins_info_reff6
 
-         // var reff1_url = "http://localhost:8080"
+          var reff1_url = "http://localhost:8080"
          // var reff2_url = "http://admin:sudamerica77M@130.237.59.170:8080"
 
      // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
@@ -199,7 +150,7 @@
      // 10.68.234.80 http://sebulba  vrefs
      // 10.68.234.81 http://logray
 
-     var reff1_url = "http://10.68.108.164:8080"
+   //  var reff1_url = "http://10.68.108.164:8080"
      var reff2_url = "http://10.68.108.165:8080"
      var reff3_url = "http://10.68.108.166:8080"
   //   var reff4_url = "http://10.68.108.167:8080"  // ska komma in om 1 år..
@@ -265,7 +216,26 @@
                 });
 
                 // Får data från reff1 här som ska visa i textboxxen..
-                ss(socket).on(reff1_url, function(stream,data) {
+                ss(socket).on(reff1_url, function(stream,data, modules_status) {
+
+                    // ---- warning! working area - wear helmet at all times -
+
+                    console.log(modules_status)
+
+                    // vill nu sätta in detta i .. GUI::.....
+                    var modules_splitted = modules_status.split("\n")  // split on each line..
+
+                    var all_modules = ""
+                    for (const line of modules_splitted)
+                    {
+                        all_modules += '<div class="item">'+ line + '</div>'
+                    }
+
+                    $("#modules_"+ jenkins_info_reff1.getJobInfo.url).empty()
+
+                    $("#modules_" + jenkins_info_reff1.getJobInfo.url).html(all_modules)
+
+                    //----------------------------------
 
                     // Default color is grey - installing status
                     $("#statuscolor_" + jenkins_info_reff1.getJobInfo.url).css('background-color','silver');

@@ -148,10 +148,6 @@ function getAllFiles() {
   return dirFiles.map(element => element.src).reverse()      // reverse order of files in directory
 }
 
-
-//
-// få all filer... .json filer...
-
 function getAllFilesTreemap(callback) {
 
 // funkar..  var stdout=cp.exec('git diff --no-index public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number5/fluxion/ public/data/reff2/YYYY-MM-DD_TT-TT-TT_Longname_number3/fluxionChanged/ > comparison.diff').stdout
@@ -352,11 +348,6 @@ function explode(text, max) {
 /* GET home page. */
 router.get('/', async function (req, res, next) {
 
-
-  //testar bara...
-
-  getJstree_light()
-
   res.render('index', {page: 'Home', menuId: 'home', filenames: getAllFilesTreemap()});
 });
 
@@ -424,34 +415,6 @@ router.get('/difffile', async function(req, res) {
     }
 
   });
-
-
-  //var Diff2Html = require('diff2html').Diff2Html;
-
-  //Diff2Html.getPrettySideBySideHtmlFromDiff(exInput)
-
-  /*
-
-  var child2 = child_process.spawnSync("diff2html", ["-i","file","--","comparison.diff"], { encoding : 'utf8' });
-  console.log("Process finished.");
-  if(child2.error) {
-    console.log("ERROR: ",child2.error);
-  }
-
-  */
-
-  console.log("gå kolla din folder :_)")
-
-
-
-  //läs sedan den skapa filen...
-
-  //const file_data = await jsonfile.readFile('', 'utf8');
- // var content = file_data.modules
-
-//  res.sendFile(path.join(__dirname, '../public/', 'comparison.diff'));
-
- // res.json({"ok":secondfolder})
 });
 
 
@@ -480,8 +443,33 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
 
     log.on('data', function (text) {
 
+
+      var modules_status = ["mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
+        "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
+        "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
+        "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
+        "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead"]
+
+      // clean it...
+
+      var clean_out = []
+      for (line of modules_status)
+      {
+        var clean = line.split(/\s{2,}|\t/)
+
+        clean_out.push(clean[0] + " " + clean[3])
+      }
+
+      console.log(clean_out)
+
+      //var some = str.split(/\s{2,}|\t/)     splittar upp en rad... till en array... aa.. ta sen bara va du vill ha...
+
+      //console.log(some[0]+ " " + some [3]);
+
+     // (myArray.join(',')
+
       var stream = ss.createStream();
-      ss(socket).emit(jenkins_url, stream, text); // skickar text till denna url..
+      ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n')); // skickar text till denna url OCH status på modulerna => inactive/dead
     });
 
     log.on('error', function (err) {
@@ -515,19 +503,58 @@ async function axiosTest(url) {
 async function ssh_to_fleetctl(url) {
   try
   {
-/*
-funkar ..   exec('git diff --no-index public/'+ firstfolder +'/ public/'+ secondfolder +'/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
+        // spara till fil?... doh...eller skicka som retur? ska kanske polla den..
+
+        // denna metod ska polla på.. man vill veta modulstatus..
+
+        // fleet-ctl list-units | grep dead
+        // fleet-ctl list-units | grep inactive
+
+      // failed  <- finns också... ska den med kanske?
+
+// DE GÅÅÅÅR!!!! ger.. -> STDOUT:      apply    Apply files to declaratively manage osquery configurations
+
+      /*
 
 
+      var spawn = require('child_process').spawn;
+      var child = spawn("ssh root@10.68.234.81 ssh mcf1 fleetctl --endpoint http://127.0.0.1:49153 list-units | grep failed", {
+          shell: true
+      });
+      child.stderr.on('data', function (data) {
+          console.error("STDERR:", data.toString());
+      });
+      child.on('exit', function (exitCode) {
+          console.log("Child exited with code: " + exitCode);
+      });
+      child.stdout.on('data', function (data) {
+          console.log("STDOUT:", data.toString());
 
-    var child = child_process.spawnSync("find", ["public/data","-maxdepth","3"], { encoding : 'utf8' });
-    console.log("Process finished.");
-    if(child.error) {
-      console.log("ERROR: ",child.error);
-    }
-    */
+          // lägg in data i array ... funkar ..har testa irl :-)
 
-//    return response
+            var file_array = child.stdout.split(/\n/)
+
+      var modules = []
+
+      for (element of file_array)
+      {
+      // gör nått? ...
+      }
+
+   // return ... vad man nu vill...
+
+      });
+
+  */
+      // tror man får köra 3 ssh anrop? eller greppea.. efter flera saker??... vette fan.. sen sätta ihop allt!!!!
+
+     var fakeresponce = ["module XZY iiiiiiiiiiiiiis dead..........","module XZY iiiiiiiiiiiiiis dead..........",
+         "module XZY iiiiiiiiiiiiiis dead..........","module XZY iiiiiiiiiiiiiis dead..........",
+         "module XZY iiiiiiiiiiiiiis dead..........","module XZY iiiiiiiiiiiiiis dead..........",
+         "module XZY iiiiiiiiiiiiiis dead..........","module XZY iiiiiiiiiiiiiis dead..........",
+         "module XZY iiiiiiiiiiiiiis inactive..........","module XZY iiiiiiiiiiiiiis inactive.........."]
+
+     return fakeresponce
   }
 
   catch (error) {
@@ -606,27 +633,31 @@ router.get('/buildstatus', async function (req, res, next) {
           var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
        //   var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","s**M","Ek2-Maxi")
 
-          console.log(loop_reff1)
 
+        // MÅSTE SÄTTA någon typ av try catch.. fastnar annars om inte reffen finns...
+
+          /*
        //   var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
           var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Leia")
           var loop_reff3 = await get_jenkins_info(reff3_url_no_psw, "install", "", "Mandalorian")
         //  var loop_reff4 = await get_jenkins_info(reff4_url_no_psw, "install","","Chewbacca")
           var loop_reff5 = await get_jenkins_info(reff5_url_no_psw, "install", "", "Sebulba")
           var loop_reff6 = await get_jenkins_info(reff6_url_no_psw, "install","","Logray")
-
+*/
           // checks if new job has started. their must be at least 1 job in history
 
           if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
           {
-
             jenkins_info_reff1 = loop_reff1 // update - compare against this next pollning..
 
             var stream = ss.createStream();
             ss(socket).emit('jenkins_info_reff1', stream, JSON.stringify(loop_reff1)); // skickar jenkins....info...
 
-            run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id);
+            run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id); // stream job info and module status
           }
+
+          /*
+
 
           if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && (typeof loop_reff2 !== "undefined") && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
           {
@@ -649,6 +680,10 @@ router.get('/buildstatus', async function (req, res, next) {
 
             run_jenkins_job_stream(socket, reff3_url_no_psw, loop_reff3.getJobInfo.name, loop_reff3.getLastBuildInfo.id);
           }
+
+          */
+
+
 /*
 
           if ((JSON.stringify(jenkins_info_reff4) !== JSON.stringify(loop_reff4)) && (typeof loop_reff4 !== "undefined") && (typeof loop_reff4.getJobInfo !== "undefined") && (loop_reff4.getJobInfo.firstBuild !== null))
@@ -662,6 +697,9 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff4_url_no_psw, loop_reff4.getJobInfo.name, loop_reff4.getLastBuildInfo.id);
           }
 */
+
+/*
+
           if ((JSON.stringify(jenkins_info_reff5) !== JSON.stringify(loop_reff5)) && (typeof loop_reff5 !== "undefined") && (typeof loop_reff5.getJobInfo !== "undefined") && (loop_reff5.getJobInfo.firstBuild !== null))
           {
 
@@ -684,7 +722,12 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff6_url_no_psw, loop_reff6.getJobInfo.name, loop_reff6.getLastBuildInfo.id);
           }
 
-        },
+*/
+        }
+
+
+
+        ,
         10000) // brukar köra med 5000 annars..dvs 5 sek..men testa nu med mer för att inte "överbelasta nätet"
   });
 

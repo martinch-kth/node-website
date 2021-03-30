@@ -32,6 +32,7 @@
     "npm-check": "^5.9.2",
     "set-interval-async": "1.0.33",
     "shelljs": "^0.8.4",
+    "simple-ssh": "^1.0.0",
     "socket.io": "^3.0.2",
     "socket.io-stream": "^0.9.1"
   }
