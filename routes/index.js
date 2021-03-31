@@ -450,19 +450,28 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
         "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
         "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead"]
 */
-
-      var modules_status = ssh_to_fleetctl(jenkins_url) // returns array .. bra eller inte...
-      // clean it...
+      // obs!!! funkar bara för logray och så.. IP!!!!!......... fixa!!!
 
       var clean_out = []
-      for (line of modules_status)
+
+    //  var reff5_url_no_psw = "http://10.68.234.80:8080"  // verkar inte vara uppsatt helt..
+    //  var reff6_url_no_psw = "http://10.68.234.81:8080"
+
+      // For now... en dag kommer alla reffar kunna detta...
+      if (jenkins_url === "http://10.68.234.80:8080" || jenkins_url === "http://10.68.234.81:8080")
       {
-        var clean = line.split(/\s{2,}|\t/)
+        var modules_status = ssh_to_fleetctl(jenkins_url) // returns array .. bra eller inte...
+        // clean it...
 
-        clean_out.push(clean[0] + " " + clean[3])
+        for (line of modules_status)
+        {
+          var clean = line.split(/\s{2,}|\t/)
+
+          clean_out.push(clean[0] + " " + clean[3])
+        }
+
+        console.log(clean_out)
       }
-
-      console.log(clean_out)
 
       var stream = ss.createStream();
       ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n')); // skickar text till denna url OCH status på modulerna => inactive/dead
@@ -496,19 +505,18 @@ async function axiosTest(url) {
   }
 }
 
-async function ssh_to_fleetctl(url) {
+function ssh_to_fleetctl(url) {
   try
   {
-
     var ip = url.split('/')[2].split(':')[0];
 
         // fleet-ctl list-units | grep dead
         // fleet-ctl list-units | grep inactive
         // failed  <- finns också... ska den med kanske?
 
-      var spawn = require('child_process').spawn;
+      var spawn = require('child_process').spawnSync;
 
-      var child = spawn("ssh root@"+ ip +" ssh mcf1 fleetctl --endpoint http://127.0.0.1:49153 list-units | grep failed", {
+      var child = spawn("ssh root@"+ ip +" ssh mcf1 fleetctl --endpoint http://127.0.0.1:49153 list-units | grep dead", {
           shell: true
       });
       child.stderr.on('data', function (data) {
@@ -520,12 +528,28 @@ async function ssh_to_fleetctl(url) {
       child.stdout.on('data', function (data) {
          console.log("STDOUT:", data.toString());
 
-         // lägg in data i array ... funkar ..har testa irl :-)
-        var file_array = child.stdout.split(/\n/)
+        var dead_modules = child.stdout.split(/\n/)
 
-        return file_array
+        var child_second = spawn("ssh root@"+ ip +" ssh mcf1 fleetctl --endpoint http://127.0.0.1:49153 list-units | grep failed", {
+          shell: true
+        });
+        child_second.stderr.on('data', function (data) {
+          console.error("STDERR:", data.toString());
+        });
+        child_second.on('exit', function (exitCode) {
+          console.log("Child exited with code: " + exitCode);
+        });
+        child_second.stdout.on('data', function (data) {
+          console.log("STDOUT:", data.toString());
+
+          var failed_modules = child_second.stdout.split(/\n/)
+
+          console.log(dead_modules.concat(failed_modules))
+
+          return dead_modules.concat(failed_modules);
+        });
+
       });
-
   }
 
   catch (error) {
