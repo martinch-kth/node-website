@@ -59,55 +59,46 @@
 
             validate(jenkins_reff);
 
-            var reff_element = '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card" style="width: 19%;">' +
-                '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="content" style="height: 12%">' +
-                '' +
-                '        <h2 class="ui icon header">' +
-                '            <i class="laptop icon"></i>' +
-                '            <div class="content">' + jenkins_reff.reff_name + '</div>' +
-                '            <div id="buildname_' + jenkins_reff.getJobInfo.url + '" class="content"></div>' +
+            var reff_element =
 
-                '        </h2>' +
-                '    </div>' +
-                '' +
-                '' +
-                '    <div class="content">' +
-                '' +
-                '        <div class="event">' +
-                '            <div class="content">' +
-                '                <div class="ui massive message" style="padding: 2px">' +
+            '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card"  style="width: 100%;">' +
+
+                    '<div class="row">' +
+
+                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainer" style="width: 9%;float: left;margin-top: 16px;margin-left:5px;margin-bottom: 16px;margin-right:5px;border-radius: 5px;padding-top: 35px;text-align:center;">' +
+                    '        <h2 class="ui icon header">' +
+                    '            <i class="laptop icon"></i>' +
+                    '            <div class="content">' + jenkins_reff.reff_name + '</div>' +
+                    '            <div id="buildname_' + jenkins_reff.getJobInfo.url + '" class="content"></div>' +
+                    '        </h2>' +
+                    '    </div>' +
+
+                '                <div class="ui large message FixedHeightContainer" style="width: 10%;float: left;margin-right: 5px;padding:2px;">' +
                 '                  <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.url + '"></div>' +
                 '                    <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
                 '                    <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
                 '                </div>' +
-                '            </div>' +
-                '        </div>' +
-                '' +
-                '<div class="FixedHeightContainer">' +
-                '<pre id="out_' + jenkins_reff.getJobInfo.url + '" class="Content" style="border: 1px solid grey;border-radius: 5px;padding: 1px"></pre>' +
-                '</div>' +
 
-
-
-                '<div id="modules_' + jenkins_reff.getJobInfo.url + '" class="ui list" style="border: 1px solid grey;border-radius: 5px;padding: 1px"></div>' +
-
-                '<div class="ui relaxed divided list" class="ui list" style="border: 1px solid grey;border-radius: 5px;padding: 1px">' +
-                '  <div class="item">' +
+                        '<div class="ui relaxed divided list FixedHeightContainer" style="border: 1px solid black;border-radius: 5px;padding: 1px;width: 10%;float: left;margin-right: 5px;">' +
                 '     <i class="large jenkins middle aligned icon"></i>' +
-                '     <div class="content">' +
-                '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
-                '           <div class="description">Last stable build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number) + '</div>' +
-                '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
-                '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
-                '           <div class="description">Last completed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                '     </div>' +
-                '    </div>' +
-                '  </div>' +
+                        '  <div class="item">' +
 
+                        '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
+                        '           <div class="description">Last stable build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number) + '</div>' +
+                        '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                        '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
+                        '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
+                        '           <div class="description">Last completed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                        '   </div>' +
+                        '</div>' +
 
+                        '<div id="modules_' + jenkins_reff.getJobInfo.url + '" class="ui list FixedHeightContainer" style="width: 10%;border: 1px solid black;border-radius: 5px;padding: 1px;float: left;margin-right: 5px;"></div>' +
 
-              '  </div>' +
+                  '<div class="FixedHeightContainer" id="scroll_' + jenkins_reff.getJobInfo.url + '" style="width: 57%;float: left;border: 1px solid black;border-radius: 5px;margin-top: 14px;">' +
+                    '<pre id="out_' + jenkins_reff.getJobInfo.url + '"></pre>' +
+                  '</div>' +
+
+                '</div>';  // row
             '</div>';  // ui card main wrap
 
             // finns elementet? -> byt ut det...
@@ -123,7 +114,7 @@
         }
 
  $(function() {                   // BYT mot Serverns URL auto-m....
-            var socket = io.connect('http://vdc-s-automix.vdc.saab.se:3000'); // 'http://localhost:3000');
+            var socket = io.connect('http://vdc-s-automix.vdc.saab.se:3000'); //http://localhost:3000');
 
             var clear_console_reff1 = false
             var clear_console_reff2 = false
@@ -139,7 +130,7 @@
             var jenkins_info_reff5
             var jenkins_info_reff6
 
-       //   var reff1_url = "http://localhost:8080"
+         // var reff1_url = "http://localhost:8080"
          // var reff2_url = "http://admin:s**M@130.237.59.170:8080"
 
      // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
@@ -153,14 +144,14 @@
      var reff1_url = "http://10.68.108.164:8080"
      var reff2_url = "http://10.68.108.165:8080"
      var reff3_url = "http://10.68.108.166:8080"
-  //   var reff4_url = "http://10.68.108.167:8080"  // ska komma in om 1 år..
-     var reff5_url = "http://10.68.234.80:8080"  // verkar inte vara uppsatt helt..
+  // var reff4_url = "http://10.68.108.167:8080"  // ska komma in om 1 år..
+     var reff5_url = "http://10.68.234.80:8080"
      var reff6_url = "http://10.68.234.81:8080"
 
      var reff1_obj // only used as a timer object..maybe more later..
      var reff2_obj
      var reff3_obj
-  //   var reff4_obj
+  // var reff4_obj
      var reff5_obj
      var reff6_obj
 
@@ -213,42 +204,18 @@
 
                     reff1_obj = new Reff(jenkins_info_reff1)
                     reff1_obj.startTimer()
+
                 });
 
                 // Får data från reff1 här som ska visa i textboxxen..
                 ss(socket).on(reff1_url, function(stream,data, modules_status) {
 
-                    // ---- warning! working area - wear helmet at all times -
-
-                    console.log(modules_status)
-
-                    // vill nu sätta in detta i .. GUI::.....
-                    var modules_splitted = modules_status.split("\n")  // split on each line..
-
-                    var all_modules = ""
-                    for (const line of modules_splitted)
-                    {
-                        all_modules += '<div class="item">'+ line + '</div>'
-                    }
-
                     $("#modules_"+ jenkins_info_reff1.getJobInfo.url).empty()
 
-                    $("#modules_" + jenkins_info_reff1.getJobInfo.url).html(all_modules)
-
-                    //----------------------------------
+                    var log = data.split("\n")  // split on each line..
 
                     // Default color is grey - installing status
                     $("#statuscolor_" + jenkins_info_reff1.getJobInfo.url).css('background-color','silver');
-
-                    // Om reffen redan har text, ta bort den gamla texten.
-                    if(clear_console_reff1)
-                    {
-                        $("#out_"+ jenkins_info_reff1.getJobInfo.url).empty()
-                        clear_console_reff1 = false
-                        console.log("clearing console...")
-                    }
-
-                    var log = data.split("\n")  // split on each line..
 
                     var buildname = ""
 
@@ -266,37 +233,50 @@
 
                         if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
                         {
-                            var line_array = line.split(/ +/)  // split on spaces only
+                            reff1_obj.stopTimer() // stoppa tiden...
 
-                            var build_result = line_array.pop();             // last element is the result
+                            var modules_splitted = modules_status.split("\n")  // split on each line..
 
-                            if (build_result.trim() === 'SUCCESS')
+                            var all_modules = ""
+                            for (const line of modules_splitted)
                             {
-                                $("#statuscolor_" + jenkins_info_reff1.getJobInfo.url).css('background-color','#097d00');
-
-                                $('#' + jenkins_info_reff1.getJobInfo.url)
-                                       .transition('jiggle')
-                                ;
+                                all_modules += '<div class="item">'+ line + '</div>'
                             }
 
-                            if (build_result.trim() === 'FAILURE')
-                            {
-                                $("#statuscolor_" + jenkins_info_reff1.getJobInfo.url).css("background-color","#B22222")
+                            $("#modules_" + jenkins_info_reff1.getJobInfo.url).html(all_modules)
 
-                                $('#' + jenkins_info_reff1.getJobInfo.url)
-                                    .transition('shake')
-                                ;
-                            }
-                      //    if (build_result === 'UNSTABLE')
-                      //    {
-                      //        $("#buildname_"+jenkins_info_reff1.getJobInfo.displayName).text(buildname)
-                      //    }
+                            var line_array = line.split(/ +/)    // split on spaces only
+                            var build_result = line_array.pop(); // last element is the result
+
+                                if (build_result.trim() === 'SUCCESS')
+                                {
+                                    $("#statuscolor_" + jenkins_info_reff1.getJobInfo.url).css('background-color','#097d00');
+                                    $('#' + jenkins_info_reff1.getJobInfo.url).transition({
+                                    animation  : 'jiggle',
+                                    duration   : '1s',
+                                    allowRepeats : 'false'
+                                })
+                                }
+
+                                if (build_result.trim() === 'FAILURE' || build_result.trim() === 'UNSTABLE')
+                                {
+                                    $("#statuscolor_" + jenkins_info_reff1.getJobInfo.url).css("background-color","#B22222")
+                                    $('#' + jenkins_info_reff1.getJobInfo.url).transition('shake');
+                                }
                         }
                     }
 
-                    $("#out_"+ jenkins_info_reff1.getJobInfo.url).append(data)
+                    // Om reffen redan har text, ta bort den gamla texten.
+                    if(clear_console_reff1)
+                    {
+                        $("#out_"+ jenkins_info_reff1.getJobInfo.url).empty()
+                        clear_console_reff1 = false
+                        console.log("clearing console...")
+                    }
 
-                    var element = document.getElementById("out_" + jenkins_info_reff1.getJobInfo.url); // always scroll to the end of textbox
+                    $("#out_"+ jenkins_info_reff1.getJobInfo.url).append(data) // streams text to logbox
+
+                    var element = document.getElementById("scroll_" + jenkins_info_reff1.getJobInfo.url); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
@@ -305,7 +285,6 @@
 
                     clear_console_reff1 = true
                     console.log(reff1_url + " = browser refname. reff that will be cleared:"+ data)
-                    reff1_obj.stopTimer()
                 });
 
                 // Remove duplication of code asap.. DRY :-/
@@ -322,13 +301,68 @@
 
                     reff2_obj = new Reff(jenkins_info_reff2)
                     reff2_obj.startTimer()
+
                 });
 
-                ss(socket).on(reff2_url, function(stream,data) {
+                ss(socket).on(reff2_url, function(stream,data, modules_status) {
+
+                    $("#modules_"+ jenkins_info_reff2.getJobInfo.url).empty()
+
+                    var log = data.split("\n")  // split on each line..
 
                     // Default color is grey - installing status
                     $("#statuscolor_" + jenkins_info_reff2.getJobInfo.url).css('background-color','silver');
 
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_"+jenkins_info_reff2.getJobInfo.url).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))
+                        {
+                            reff2_obj.stopTimer() // stoppa tiden...
+
+                            var modules_splitted = modules_status.split("\n")  // split on each line..
+
+                            var all_modules = ""
+                            for (const line of modules_splitted)
+                            {
+                                all_modules += '<div class="item">'+ line + '</div>'
+                            }
+
+                            $("#modules_" + jenkins_info_reff2.getJobInfo.url).html(all_modules)
+
+                            var line_array = line.split(/ +/)    // split on spaces only
+                            var build_result = line_array.pop(); // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff2.getJobInfo.url).css('background-color','#097d00');
+                                $('#' + jenkins_info_reff2.getJobInfo.url).transition({
+                                    animation  : 'jiggle',
+                                    duration   : '1s',
+                                    allowRepeats : 'false'
+                                })
+                            }
+
+                            if (build_result.trim() === 'FAILURE' || build_result.trim() === 'UNSTABLE')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff2.getJobInfo.url).css("background-color","#B22222")
+                                $('#' + jenkins_info_reff2.getJobInfo.url).transition('shake');
+                            }
+                        }
+                    }
+
+                    // Om reffen redan har text, ta bort den gamla texten.
                     if(clear_console_reff2)
                     {
                         $("#out_"+ jenkins_info_reff2.getJobInfo.url).empty()
@@ -336,63 +370,18 @@
                         console.log("clearing console...")
                     }
 
-                    var log = data.split("\n")  // split on each line..
+                    $("#out_"+ jenkins_info_reff2.getJobInfo.url).append(data) // streams text to logbox
 
-                    var buildname = ""
-
-                    for (const line of log) {
-
-                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            buildname = line_array.pop();             // last element is the build name
-
-                            // sätt ut den...
-                            $("#buildname_" + jenkins_info_reff2.getJobInfo.url).text(buildname)
-                        }
-
-                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            var build_result = line_array.pop();             // last element is the result
-
-                            if (build_result.trim() === 'SUCCESS') {
-                                $("#statuscolor_" + jenkins_info_reff2.getJobInfo.url).css('background-color', '#097d00');
-
-                                $('#' + jenkins_info_reff2.getJobInfo.url)
-                                    .transition('jiggle')
-                                ;
-                            }
-
-                            if (build_result.trim() === 'FAILURE') {
-                                $("#statuscolor_" + jenkins_info_reff2.getJobInfo.url).css("background-color", "#B22222")
-
-                                $('#' + jenkins_info_reff2.getJobInfo.url)
-                                    .transition('shake')
-                                ;
-                            }
-                        }
-                    }
-
-                    $("#out_"+ jenkins_info_reff2.getJobInfo.url).append(data)
-
-                    var element = document.getElementById("out_" + jenkins_info_reff2.getJobInfo.url); // always scroll to the end of textbox
+                    var element = document.getElementById("scroll_" + jenkins_info_reff2.getJobInfo.url); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
                 ss(socket).on('end:'+ reff2_url, function(stream,data) {
-
                     clear_console_reff2 = true
-
                     console.log(reff2_url + " = browser refname. reff that will be cleared:"+ data)
-
-                    reff2_obj.stopTimer()
                 });
 
                 ////////////////////////////////////// reff 3 ////////////////////////////////////////////////////////////
-
                 ss(socket).on('jenkins_info_reff3', function(stream,data)
                 {
                     jenkins_info_reff3 = JSON.parse(data);
@@ -404,13 +393,68 @@
 
                     reff3_obj = new Reff(jenkins_info_reff3)
                     reff3_obj.startTimer()
+
                 });
 
-                ss(socket).on(reff3_url, function(stream,data) {
+                ss(socket).on(reff3_url, function(stream,data, modules_status) {
+
+                    $("#modules_"+ jenkins_info_reff3.getJobInfo.url).empty()
+
+                    var log = data.split("\n")  // split on each line..
 
                     // Default color is grey - installing status
                     $("#statuscolor_" + jenkins_info_reff3.getJobInfo.url).css('background-color','silver');
 
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_"+jenkins_info_reff3.getJobInfo.url).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))
+                        {
+                            reff3_obj.stopTimer() // stoppa tiden...
+
+                            var modules_splitted = modules_status.split("\n")  // split on each line..
+
+                            var all_modules = ""
+                            for (const line of modules_splitted)
+                            {
+                                all_modules += '<div class="item">'+ line + '</div>'
+                            }
+
+                            $("#modules_" + jenkins_info_reff3.getJobInfo.url).html(all_modules)
+
+                            var line_array = line.split(/ +/)    // split on spaces only
+                            var build_result = line_array.pop(); // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff3.getJobInfo.url).css('background-color','#097d00');
+                                $('#' + jenkins_info_reff3.getJobInfo.url).transition({
+                                    animation  : 'jiggle',
+                                    duration   : '1s',
+                                    allowRepeats : 'false'
+                                })
+                            }
+
+                            if (build_result.trim() === 'FAILURE' || build_result.trim() === 'UNSTABLE')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff3.getJobInfo.url).css("background-color","#B22222")
+                                $('#' + jenkins_info_reff3.getJobInfo.url).transition('shake');
+                            }
+                        }
+                    }
+
+                    // Om reffen redan har text, ta bort den gamla texten.
                     if(clear_console_reff3)
                     {
                         $("#out_"+ jenkins_info_reff3.getJobInfo.url).empty()
@@ -418,146 +462,112 @@
                         console.log("clearing console...")
                     }
 
-                    var log = data.split("\n")  // split on each line..
+                    $("#out_"+ jenkins_info_reff3.getJobInfo.url).append(data) // streams text to logbox
 
-                    var buildname = ""
-
-                    for (const line of log) {
-
-                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            buildname = line_array.pop();             // last element is the build name
-
-                            // sätt ut den...
-                            $("#buildname_" + jenkins_info_reff3.getJobInfo.url).text(buildname)
-                        }
-
-                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            var build_result = line_array.pop();             // last element is the result
-
-                            if (build_result.trim() === 'SUCCESS') {
-                                $("#statuscolor_" + jenkins_info_reff3.getJobInfo.url).css('background-color', '#097d00');
-
-                                $('#' + jenkins_info_reff3.getJobInfo.url)
-                                    .transition('jiggle')
-                                ;
-                            }
-
-                            if (build_result.trim() === 'FAILURE') {
-                                $("#statuscolor_" + jenkins_info_reff3.getJobInfo.url).css("background-color", "#B22222")
-
-                                $('#' + jenkins_info_reff3.getJobInfo.url)
-                                    .transition('shake')
-                                ;
-                            }
-                        }
-                    }
-
-                    $("#out_"+ jenkins_info_reff3.getJobInfo.url).append(data)
-
-                    var element = document.getElementById("out_" + jenkins_info_reff3.getJobInfo.url); // always scroll to the end of textbox
+                    var element = document.getElementById("scroll_" + jenkins_info_reff3.getJobInfo.url); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
                 ss(socket).on('end:'+ reff3_url, function(stream,data) {
-
                     clear_console_reff3 = true
-
                     console.log(reff3_url + " = browser refname. reff that will be cleared:"+ data)
-
-                    reff3_obj.stopTimer()
                 });
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////
                 ////////////////////////////////////// reff 4 ////////////////////////////////////////////////////////////
-/*
-                ss(socket).on('jenkins_info_reff4', function(stream,data)
-                {
-                    jenkins_info_reff4 = JSON.parse(data);
-
-                    var temp = jenkins_info_reff4.getJobInfo.url
-                    jenkins_info_reff4.getJobInfo.url =  temp.replace(/[^a-z0-9-_]+/gi, "")
-
-                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff4);
-
-                    reff4_obj = new Reff(jenkins_info_reff4)
-                    reff4_obj.startTimer()
-                });
-
-                ss(socket).on(reff4_url, function(stream,data) {
-
-                    // Default color is grey - installing status
-                    $("#statuscolor_" + jenkins_info_reff4.getJobInfo.url).css('background-color','silver');
-
-                    if(clear_console_reff4)
+                    /*
+                    ss(socket).on('jenkins_info_reff4', function(stream,data)
                     {
-                        $("#out_"+ jenkins_info_reff4.getJobInfo.url).empty()
-                        clear_console_reff4 = false
-                        console.log("clearing console...")
-                    }
+                        jenkins_info_reff4 = JSON.parse(data);
 
-                    var log = data.split("\n")  // split on each line..
+                        var temp = jenkins_info_reff4.getJobInfo.url
+                        jenkins_info_reff4.getJobInfo.url =  temp.replace(/[^a-z0-9-_]+/gi, "")
 
-                    var buildname = ""
+                        updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff4);
 
-                    for (const line of log) {
+                        reff4_obj = new Reff(jenkins_info_reff4)
+                        reff4_obj.startTimer()
 
-                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
+                    });
 
-                            buildname = line_array.pop();             // last element is the build name
+                    ss(socket).on(reff4_url, function(stream,data, modules_status) {
 
-                            // sätt ut den...
-                            $("#buildname_" + jenkins_info_reff4.getJobInfo.url).text(buildname)
-                        }
+                        $("#modules_"+ jenkins_info_reff4.getJobInfo.url).empty()
 
-                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
+                        var log = data.split("\n")  // split on each line..
 
-                            var build_result = line_array.pop();             // last element is the result
+                        // Default color is grey - installing status
+                        $("#statuscolor_" + jenkins_info_reff4.getJobInfo.url).css('background-color','silver');
 
-                            if (build_result.trim() === 'SUCCESS') {
-                                $("#statuscolor_" + jenkins_info_reff4.getJobInfo.url).css('background-color', '#097d00');
+                        var buildname = ""
 
-                                $('#' + jenkins_info_reff4.getJobInfo.url)
-                                    .transition('jiggle')
-                                ;
+                        for (const line of log) {
+
+                            if (line.includes("Using latest build with specific key word:"))
+                            {
+                                var line_array = line.split(/ +/)  // split on spaces only
+
+                                buildname = line_array.pop();             // last element is the build name
+
+                                // sätt ut den...
+                                $("#buildname_"+jenkins_info_reff4.getJobInfo.url).text(buildname)
                             }
 
-                            if (build_result.trim() === 'FAILURE') {
-                                $("#statuscolor_" + jenkins_info_reff4.getJobInfo.url).css("background-color", "#B22222")
+                            if (line.includes("Finished:"))
+                            {
+                                reff4_obj.stopTimer() // stoppa tiden...
 
-                                $('#' + jenkins_info_reff4.getJobInfo.url)
-                                    .transition('shake')
-                                ;
+                                var modules_splitted = modules_status.split("\n")  // split on each line..
+
+                                var all_modules = ""
+                                for (const line of modules_splitted)
+                                {
+                                    all_modules += '<div class="item">'+ line + '</div>'
+                                }
+
+                                $("#modules_" + jenkins_info_reff4.getJobInfo.url).html(all_modules)
+
+                                var line_array = line.split(/ +/)    // split on spaces only
+                                var build_result = line_array.pop(); // last element is the result
+
+                                    if (build_result.trim() === 'SUCCESS')
+                                    {
+                                        $("#statuscolor_" + jenkins_info_reff4.getJobInfo.url).css('background-color','#097d00');
+                                        $('#' + jenkins_info_reff4.getJobInfo.url).transition({
+                                        animation  : 'jiggle',
+                                        duration   : '1s',
+                                        allowRepeats : 'false'
+                                    })
+                                    }
+
+                                    if (build_result.trim() === 'FAILURE' || build_result.trim() === 'UNSTABLE')
+                                    {
+                                        $("#statuscolor_" + jenkins_info_reff4.getJobInfo.url).css("background-color","#B22222")
+                                        $('#' + jenkins_info_reff4.getJobInfo.url).transition('shake');
+                                    }
                             }
                         }
-                    }
 
-                    $("#out_"+ jenkins_info_reff4.getJobInfo.url).append(data)
+                        // Om reffen redan har text, ta bort den gamla texten.
+                        if(clear_console_reff4)
+                        {
+                            $("#out_"+ jenkins_info_reff4.getJobInfo.url).empty()
+                            clear_console_reff4 = false
+                            console.log("clearing console...")
+                        }
 
-                    var element = document.getElementById("out_" + jenkins_info_reff4.getJobInfo.url); // always scroll to the end of textbox
-                    element.scrollTop = element.scrollHeight;
-                });
+                        $("#out_"+ jenkins_info_reff4.getJobInfo.url).append(data) // streams text to logbox
 
-                ss(socket).on('end:'+ reff4_url, function(stream,data) {
+                        var element = document.getElementById("scroll_" + jenkins_info_reff4.getJobInfo.url); // always scroll to the end of textbox
+                        element.scrollTop = element.scrollHeight;
+                    });
 
-                    clear_console_reff4 = true
-
-                    console.log(reff4_url + " = browser refname. reff that will be cleared:"+ data)
-
-                    reff4_obj.stopTimer()
-                });
+                    ss(socket).on('end:'+ reff4_url, function(stream,data) {
+                        clear_console_reff4 = true
+                        console.log(reff4_url + " = browser refname. reff that will be cleared:"+ data)
+                    });
+                     */
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-*/
-                ////////////////////////////////////// reff 5 ////////////////////////////////////////////////////////////
 
+                ////////////////////////////////////// reff 5 ////////////////////////////////////////////////////////////
                 ss(socket).on('jenkins_info_reff5', function(stream,data)
                 {
                     jenkins_info_reff5 = JSON.parse(data);
@@ -569,13 +579,68 @@
 
                     reff5_obj = new Reff(jenkins_info_reff5)
                     reff5_obj.startTimer()
+
                 });
 
-                ss(socket).on(reff5_url, function(stream,data) {
+                ss(socket).on(reff5_url, function(stream,data, modules_status) {
+
+                    $("#modules_"+ jenkins_info_reff5.getJobInfo.url).empty()
+
+                    var log = data.split("\n")  // split on each line..
 
                     // Default color is grey - installing status
                     $("#statuscolor_" + jenkins_info_reff5.getJobInfo.url).css('background-color','silver');
 
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_"+jenkins_info_reff5.getJobInfo.url).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))
+                        {
+                            reff5_obj.stopTimer() // stoppa tiden...
+
+                            var modules_splitted = modules_status.split("\n")  // split on each line..
+
+                            var all_modules = ""
+                            for (const line of modules_splitted)
+                            {
+                                all_modules += '<div class="item">'+ line + '</div>'
+                            }
+
+                            $("#modules_" + jenkins_info_reff5.getJobInfo.url).html(all_modules)
+
+                            var line_array = line.split(/ +/)    // split on spaces only
+                            var build_result = line_array.pop(); // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff5.getJobInfo.url).css('background-color','#097d00');
+                                $('#' + jenkins_info_reff5.getJobInfo.url).transition({
+                                    animation  : 'jiggle',
+                                    duration   : '1s',
+                                    allowRepeats : 'false'
+                                })
+                            }
+
+                            if (build_result.trim() === 'FAILURE' || build_result.trim() === 'UNSTABLE')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff5.getJobInfo.url).css("background-color","#B22222")
+                                $('#' + jenkins_info_reff5.getJobInfo.url).transition('shake');
+                            }
+                        }
+                    }
+
+                    // Om reffen redan har text, ta bort den gamla texten.
                     if(clear_console_reff5)
                     {
                         $("#out_"+ jenkins_info_reff5.getJobInfo.url).empty()
@@ -583,63 +648,19 @@
                         console.log("clearing console...")
                     }
 
-                    var log = data.split("\n")  // split on each line..
+                    $("#out_"+ jenkins_info_reff5.getJobInfo.url).append(data) // streams text to logbox
 
-                    var buildname = ""
-
-                    for (const line of log) {
-
-                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            buildname = line_array.pop();             // last element is the build name
-
-                            // sätt ut den...
-                            $("#buildname_" + jenkins_info_reff5.getJobInfo.url).text(buildname)
-                        }
-
-                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            var build_result = line_array.pop();             // last element is the result
-
-                            if (build_result.trim() === 'SUCCESS') {
-                                $("#statuscolor_" + jenkins_info_reff5.getJobInfo.url).css('background-color', '#097d00');
-
-                                $('#' + jenkins_info_reff5.getJobInfo.url)
-                                    .transition('jiggle')
-                                ;
-                            }
-
-                            if (build_result.trim() === 'FAILURE') {
-                                $("#statuscolor_" + jenkins_info_reff5.getJobInfo.url).css("background-color", "#B22222")
-
-                                $('#' + jenkins_info_reff5.getJobInfo.url)
-                                    .transition('shake')
-                                ;
-                            }
-                        }
-                    }
-
-                    $("#out_"+ jenkins_info_reff5.getJobInfo.url).append(data)
-
-                    var element = document.getElementById("out_" + jenkins_info_reff5.getJobInfo.url); // always scroll to the end of textbox
+                    var element = document.getElementById("scroll_" + jenkins_info_reff5.getJobInfo.url); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
                 ss(socket).on('end:'+ reff5_url, function(stream,data) {
-
                     clear_console_reff5 = true
-
                     console.log(reff5_url + " = browser refname. reff that will be cleared:"+ data)
-
-                    reff5_obj.stopTimer()
                 });
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                ////////////////////////////////////// reff 6 ////////////////////////////////////////////////////////////
 
+                ////////////////////////////////////// reff 6 ////////////////////////////////////////////////////////////
                 ss(socket).on('jenkins_info_reff6', function(stream,data)
                 {
                     jenkins_info_reff6 = JSON.parse(data);
@@ -651,13 +672,68 @@
 
                     reff6_obj = new Reff(jenkins_info_reff6)
                     reff6_obj.startTimer()
+
                 });
 
-                ss(socket).on(reff6_url, function(stream,data) {
+                ss(socket).on(reff6_url, function(stream,data, modules_status) {
+
+                    $("#modules_"+ jenkins_info_reff6.getJobInfo.url).empty()
+
+                    var log = data.split("\n")  // split on each line..
 
                     // Default color is grey - installing status
                     $("#statuscolor_" + jenkins_info_reff6.getJobInfo.url).css('background-color','silver');
 
+                    var buildname = ""
+
+                    for (const line of log) {
+
+                        if (line.includes("Using latest build with specific key word:"))
+                        {
+                            var line_array = line.split(/ +/)  // split on spaces only
+
+                            buildname = line_array.pop();             // last element is the build name
+
+                            // sätt ut den...
+                            $("#buildname_"+jenkins_info_reff6.getJobInfo.url).text(buildname)
+                        }
+
+                        if (line.includes("Finished:"))
+                        {
+                            reff6_obj.stopTimer() // stoppa tiden...
+
+                            var modules_splitted = modules_status.split("\n")  // split on each line..
+
+                            var all_modules = ""
+                            for (const line of modules_splitted)
+                            {
+                                all_modules += '<div class="item">'+ line + '</div>'
+                            }
+
+                            $("#modules_" + jenkins_info_reff6.getJobInfo.url).html(all_modules)
+
+                            var line_array = line.split(/ +/)    // split on spaces only
+                            var build_result = line_array.pop(); // last element is the result
+
+                            if (build_result.trim() === 'SUCCESS')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff6.getJobInfo.url).css('background-color','#097d00');
+                                $('#' + jenkins_info_reff6.getJobInfo.url).transition({
+                                    animation  : 'jiggle',
+                                    duration   : '1s',
+                                    allowRepeats : 'false'
+                                })
+                            }
+
+                            if (build_result.trim() === 'FAILURE' || build_result.trim() === 'UNSTABLE')
+                            {
+                                $("#statuscolor_" + jenkins_info_reff6.getJobInfo.url).css("background-color","#B22222")
+                                $('#' + jenkins_info_reff6.getJobInfo.url).transition('shake');
+                            }
+                        }
+                    }
+
+                    // Om reffen redan har text, ta bort den gamla texten.
                     if(clear_console_reff6)
                     {
                         $("#out_"+ jenkins_info_reff6.getJobInfo.url).empty()
@@ -665,59 +741,15 @@
                         console.log("clearing console...")
                     }
 
-                    var log = data.split("\n")  // split on each line..
+                    $("#out_"+ jenkins_info_reff6.getJobInfo.url).append(data) // streams text to logbox
 
-                    var buildname = ""
-
-                    for (const line of log) {
-
-                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            buildname = line_array.pop();             // last element is the build name
-
-                            // sätt ut den...
-                            $("#buildname_" + jenkins_info_reff6.getJobInfo.url).text(buildname)
-                        }
-
-                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
-                        {
-                            var line_array = line.split(/ +/)  // split on spaces only
-
-                            var build_result = line_array.pop();             // last element is the result
-
-                            if (build_result.trim() === 'SUCCESS') {
-                                $("#statuscolor_" + jenkins_info_reff6.getJobInfo.url).css('background-color', '#097d00');
-
-                                $('#' + jenkins_info_reff6.getJobInfo.url)
-                                    .transition('jiggle')
-                                ;
-                            }
-
-                            if (build_result.trim() === 'FAILURE') {
-                                $("#statuscolor_" + jenkins_info_reff6.getJobInfo.url).css("background-color", "#B22222")
-
-                                $('#' + jenkins_info_reff6.getJobInfo.url)
-                                    .transition('shake')
-                                ;
-                            }
-                        }
-                    }
-
-                    $("#out_"+ jenkins_info_reff6.getJobInfo.url).append(data)
-
-                    var element = document.getElementById("out_" + jenkins_info_reff6.getJobInfo.url); // always scroll to the end of textbox
+                    var element = document.getElementById("scroll_" + jenkins_info_reff6.getJobInfo.url); // always scroll to the end of textbox
                     element.scrollTop = element.scrollHeight;
                 });
 
                 ss(socket).on('end:'+ reff6_url, function(stream,data) {
-
                     clear_console_reff6 = true
-
                     console.log(reff6_url + " = browser refname. reff that will be cleared:"+ data)
-
-                    reff6_obj.stopTimer()
                 });
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////
             });

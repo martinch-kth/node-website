@@ -439,42 +439,61 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
     if (err) throw err;
 
     //stream log of latest build                    data.id      //data.builds[0].number    2 second poll delay
-    var log = jenkins_lib.build.logStream(jenkins_job_name, last_job_number, String, 2000);     //Parameters: name (String): job name, number (Integer): build number, type (String, enum: text, html, default: text): output format, delay (Integer, default: 1000): poll interval in milliseconds
+    var log = jenkins_lib.build.logStream(jenkins_job_name, last_job_number, String, 2000);
 
     log.on('data', function (text) {
 
-/*
-      var modules_status = ["mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
-        "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
+/*      var modules_status = ["mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
         "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
         "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead",
         "mdif-sim-vfvf.service    f3432423423423../2344234.3.4.324.4    inactive    dead"]
 */
-      // obs!!! funkar bara för logray och så.. IP!!!!!......... fixa!!!
+     var log = text.split("\n")  // split on each line..
 
-      var clean_out = []
+     var clean_out = []
 
-    //  var reff5_url_no_psw = "http://10.68.234.80:8080"  // verkar inte vara uppsatt helt..
-    //  var reff6_url_no_psw = "http://10.68.234.81:8080"
+     for (const line of log)
+     {
+          if (line.includes("Finished:"))
+          {
+            if (jenkins_url === "http://10.68.234.80:8080" || jenkins_url === "http://10.68.234.81:8080")
+            {
 
-      // For now... en dag kommer alla reffar kunna detta...
-      if (jenkins_url === "http://10.68.234.80:8080" || jenkins_url === "http://10.68.234.81:8080")
-      {
-        var modules_status = ssh_to_fleetctl(jenkins_url) // returns array .. bra eller inte...
-        // clean it...
+              // skippa anropa metoden..kör allt här...
+              var spawn = require('child_process').spawn;
 
-        for (line of modules_status)
-        {
-          var clean = line.split(/\s{2,}|\t/)
+              var child = spawn("ssh root@10.68.234.81 ssh mfc1 fleetctl --endpoint htp://127.0.0.1:49153 list-units | grep dead",{ shell:true});
 
-          clean_out.push(clean[0] + " " + clean[3])
-        }
+              child.stderr.on('data', function (data) {
+                console.error("STDERR:", data.toString());
+              });
+              child.on('exit', function (exitCode) {
+                console.log("Child exited with code: " + exitCode);
+              });
+              child.stdout.on('data', function (data) {
 
-        console.log(clean_out)
-      }
+                console.log("STDOUT:", data.toString());
+
+                var dead_modules = data.toString().split(/\n/)
+
+                //   var modules_status = ssh_to_fleetctl(jenkins_url)
+
+                for (line of dead_modules)
+                {
+                  if (line !== "")
+                  {
+                    var clean = line.split(/\s{2,}|\t/)
+                    clean_out.push(clean[0] + " " + clean[3])
+                  }
+                }
+                console.log(clean_out)
+              })
+            }
+          }
+     }
 
       var stream = ss.createStream();
-      ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n')); // skickar text till denna url OCH status på modulerna => inactive/dead
+      ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n'));
     });
 
     log.on('error', function (err) {
@@ -486,24 +505,13 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
       console.log('end:' + jenkins_url);
 
          var stream = ss.createStream();
-         ss(socket).emit("end:" + jenkins_url, stream, jenkins_url); // skickar text till denna url..
+         ss(socket).emit("end:" + jenkins_url, stream, jenkins_url);
 
     });
   })
 }
 
-async function axiosTest(url) {
-  try
-  {
-    const {data:response} = await axios.get(url) //use data destructuring to get data from the promise object
 
-    return response
-  }
-
-  catch (error) {
-    console.log(error);
-  }
-}
 
 function ssh_to_fleetctl(url) {
   try
@@ -557,8 +565,6 @@ function ssh_to_fleetctl(url) {
   }
 }
 
-
-
 async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
   try {
 
@@ -581,7 +587,6 @@ async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
   }
 }
 
-
 router.get('/buildstatus', async function (req, res, next) {
 
   var jenkins_info_reff1 = ""
@@ -593,15 +598,14 @@ router.get('/buildstatus', async function (req, res, next) {
   var jenkins_info_reff5 = ""
   var jenkins_info_reff6 = ""
 
+//  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
+//  var reff2_url_no_psw = "http://admin:s***M@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
 
-  var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
-  //var reff2_url_no_psw = "http://admin:s***M@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
-
-  //var reff1_url_no_psw = "http://10.68.108.164:8080"
+  var reff1_url_no_psw = "http://10.68.108.164:8080"
   var reff2_url_no_psw = "http://10.68.108.165:8080"
   var reff3_url_no_psw = "http://10.68.108.166:8080"
-  var reff4_url_no_psw = "http://10.68.108.167:8080"  // ska användas om 1 år
-  var reff5_url_no_psw = "http://10.68.234.80:8080"  // verkar inte vara uppsatt helt..
+//var reff4_url_no_psw = "http://10.68.108.167:8080"  // ska användas om 1 år
+  var reff5_url_no_psw = "http://10.68.234.80:8080"
   var reff6_url_no_psw = "http://10.68.234.81:8080"
 
   // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
@@ -625,33 +629,34 @@ router.get('/buildstatus', async function (req, res, next) {
         async () => {
           console.log('...polling...')
 
-       //   var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
-       //   var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","s**M","Ek2-Maxi")
+  //        var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
+  //        var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","s**M","Ek2-Maxi")
 
-        //När du kör lokalt -> MÅSTE SÄTTA någon typ av try catch.. fastnar annars om inte reffen finns...
 
-          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
-          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Leia")
-          var loop_reff3 = await get_jenkins_info(reff3_url_no_psw, "install", "", "Mandalorian")
-      //  var loop_reff4 = await get_jenkins_info(reff4_url_no_psw, "install","","Chewbacca")
-          var loop_reff5 = await get_jenkins_info(reff5_url_no_psw, "install", "", "Sebulba")
-          var loop_reff6 = await get_jenkins_info(reff6_url_no_psw, "install","","Logray")
+      //    var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
+            var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Leia")
+            var loop_reff3 = await get_jenkins_info(reff3_url_no_psw, "install", "", "Mandalorian")
+      //    var loop_reff4 = await get_jenkins_info(reff4_url_no_psw, "install","","Chewbacca")
+            var loop_reff5 = await get_jenkins_info(reff5_url_no_psw, "install", "", "Sebulba")
+            var loop_reff6 = await get_jenkins_info(reff6_url_no_psw, "install","","Logray")
 
+/*
           // checks if new job has started. their must be at least 1 job in history
-          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1.getLastBuildInfo.timestamp)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
           {
-            jenkins_info_reff1 = loop_reff1 // update - compare against this next pollning..
+            jenkins_info_reff1 = loop_reff1.getLastBuildInfo.timestamp // update - compare against this next pollning..
 
             var stream = ss.createStream();
-            ss(socket).emit('jenkins_info_reff1', stream, JSON.stringify(loop_reff1)); // skickar jenkins....info...
+            ss(socket).emit('jenkins_info_reff1', stream, JSON.stringify(loop_reff1));
 
             run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id); // stream job info and module status
           }
+*/
 
-          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2)) && (typeof loop_reff2 !== "undefined") && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2.getLastBuildInfo.timestamp)) && (typeof loop_reff2 !== "undefined") && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
           {
 
-            jenkins_info_reff2 = loop_reff2
+            jenkins_info_reff2 = loop_reff2.getLastBuildInfo.timestamp
 
             var stream = ss.createStream();
             ss(socket).emit('jenkins_info_reff2', stream, JSON.stringify(loop_reff2));
@@ -659,10 +664,10 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
           }
 
-          if ((JSON.stringify(jenkins_info_reff3) !== JSON.stringify(loop_reff3)) && (typeof loop_reff3 !== "undefined") && (typeof loop_reff3.getJobInfo !== "undefined") && (loop_reff3.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff3) !== JSON.stringify(loop_reff3.getLastBuildInfo.timestamp)) && (typeof loop_reff3 !== "undefined") && (typeof loop_reff3.getJobInfo !== "undefined") && (loop_reff3.getJobInfo.firstBuild !== null))
           {
 
-            jenkins_info_reff3 = loop_reff3
+            jenkins_info_reff3 = loop_reff3.getLastBuildInfo.timestamp
 
             var stream = ss.createStream();
             ss(socket).emit('jenkins_info_reff3', stream, JSON.stringify(loop_reff3));
@@ -683,10 +688,10 @@ router.get('/buildstatus', async function (req, res, next) {
           }
 */
 
-          if ((JSON.stringify(jenkins_info_reff5) !== JSON.stringify(loop_reff5)) && (typeof loop_reff5 !== "undefined") && (typeof loop_reff5.getJobInfo !== "undefined") && (loop_reff5.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff5) !== JSON.stringify(loop_reff5.getLastBuildInfo.timestamp)) && (typeof loop_reff5 !== "undefined") && (typeof loop_reff5.getJobInfo !== "undefined") && (loop_reff5.getJobInfo.firstBuild !== null))
           {
 
-            jenkins_info_reff5 = loop_reff5
+            jenkins_info_reff5 = loop_reff5.getLastBuildInfo.timestamp
 
             var stream = ss.createStream();
             ss(socket).emit('jenkins_info_reff5', stream, JSON.stringify(loop_reff5));
@@ -694,10 +699,10 @@ router.get('/buildstatus', async function (req, res, next) {
             run_jenkins_job_stream(socket, reff5_url_no_psw, loop_reff5.getJobInfo.name, loop_reff5.getLastBuildInfo.id);
           }
 
-          if ((JSON.stringify(jenkins_info_reff6) !== JSON.stringify(loop_reff6)) && (typeof loop_reff6 !== "undefined") && (typeof loop_reff6.getJobInfo !== "undefined") && (loop_reff6.getJobInfo.firstBuild !== null))
+          if ((JSON.stringify(jenkins_info_reff6) !== JSON.stringify(loop_reff6.getLastBuildInfo.timestamp)) && (typeof loop_reff6 !== "undefined") && (typeof loop_reff6.getJobInfo !== "undefined") && (loop_reff6.getJobInfo.firstBuild !== null))
           {
 
-            jenkins_info_reff6 = loop_reff6
+            jenkins_info_reff6 = loop_reff6.getLastBuildInfo.timestamp
 
             var stream = ss.createStream();
             ss(socket).emit('jenkins_info_reff6', stream, JSON.stringify(loop_reff6));
