@@ -5,11 +5,11 @@
       "moduleName":"ÖÖÖÖÖÖÖÖ1",
       "errors":[
         {
-          "message":" error_in_other_fileX WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYY.YYYYYYY.YYYY.YYYYYYYYYYYY[YYYYYYY] - YYYYYY YY YYYYYY YYYYYY YYYYYYYYYYY YYY [/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY]",
+          "message":" error_in_other_fileX WYYYYYYYYYY YY YYYYYY YYYYYY YYYYYYYYYYY YYY [/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY]",
           "occurrences":"1"
         },
         {
-          "message":"WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYY.YYYYYYY.YYYY.YYYYYYYYYYYY[YYYYYYY] - YYYYYYYY(/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY*YYYY) YYYY YYYYYY. YYYY.YY.YYYYYYYYYYYYYxYYYYYYY* /YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY (YY YYYY YYYY YY YYYYYYYYy)",
+          "message":"WYYYYYYYYYYY* 12*45*02*599 |-YYYYY YY YY.YYYYYYYYY] - YYYYYYYY(/YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY*YYYY) YYYY YYYYYY. YYYY.YY.YYYYYYYYYYYYYxYYYYYYY* /YYY/YYY/YYYY/YYYYYY/ÖÖÖÖÖÖÖÖ1/ÖÖÖÖÖÖÖÖ1.YYY (YY YYYY YYYY YY YYYYYYYYy)",
           "occurrences":"1"
         }
       ],

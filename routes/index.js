@@ -136,9 +136,6 @@ async function createTreemapData(file) {
 }
 
 
-
-
-
 // detta måste köras så for en ny fil kommer in...
 // eller ska jag köra den så fort man byter fil? ... Finns jobb kvar...
 function getAllFiles() {
@@ -220,14 +217,13 @@ function getJstree_light() {
   {
     var paths = element.split("/");
 
-      if (paths.length <= 3 && paths.length > 2)  // tex public/data/reff2 (x >= 0.001 && x <= 0.009)
+      if (paths.length > 2 && paths.length <= 3)  // tex public/data/reff2 (x >= 0.001 && x <= 0.009)
       {
         console.log("borde va reff:" + element)
 
-        // Is not root node
-        var dirobj = { id: paths[paths.length-1] , parent: "#" ,a_attr: {class:"no_checkbox"},text: paths[paths.length-1] };
+        var dirobj = { id: element , parent: "#" ,a_attr: {class:"no_checkbox"},text: paths[paths.length-1] };
 
-        parent = paths[paths.length-1]
+        parent = element
 
         custom_jstree.push(dirobj)
 
@@ -235,7 +231,7 @@ function getJstree_light() {
       if (paths.length > 3)
       {
         // Is not root node
-        var dirobj = { id: paths[paths.length-1] , parent: parent ,text: paths[paths.length-1] };
+        var dirobj = { id: element , parent: parent ,text: paths[paths.length-1] };
 
         custom_jstree.push(dirobj)
 
@@ -378,43 +374,19 @@ router.get('/difffile', async function(req, res) {
   let firstfolder = req.query.firstfolder;
   let secondfolder = req.query.secondfolder;
 
-  // kör sen: git diff --no-index folder1/ folder2/ > comparison.diff
-
- // console.log(firstfolder)
-
   const { exec } = require('child_process');
 
-  console.log(__dirname)
+  console.log("firstfolder: " + firstfolder)
+  console.log("secondfolder: " + secondfolder)
 
-
-  // byggnamn / comp folder... om jag minns rätt-... för att inte få med logparser.json filen..
-  exec('git diff --no-index public/'+ firstfolder +'/comp/ public/'+ secondfolder +'/comp/ > '+__dirname+'/../public/comparison.diff\n', (err, stdout, stderr) => {
-
-    var fs = require('fs');
-
-    try
-    {
-      fs.readFile(__dirname + "/../public/comparison.diff", "utf8", function(err, data){
-        if(err) throw err;
-
-        //var resultArray = //do operation on data that generates say resultArray;
+  exec('git diff --no-index '+ firstfolder +'/comp/ '+ secondfolder +'/comp/ | cat ', (err, stdout, stderr) => {
 
         const Diff2html = require('diff2html');
-        const diffJson = Diff2html.parse(data);
+        const diffJson = Diff2html.parse(stdout.toString())
         const diffHtml = Diff2html.html(diffJson, {  matching: 'none' ,drawFileList: true });
 
         res.send(diffHtml);
       });
-    }
-    catch (err) {
-      if (err.code === 'ENOENT') {
-        console.log('File not found!');
-      } else {
-        throw err;
-      }
-    }
-
-  });
 });
 
 
@@ -428,7 +400,7 @@ router.get('/contact', function(req, res, next) {
 
 router.get('/diff', function(req, res, next) {
 
-  res.render('diff', {page:'Diff files', menuId:'diff', jstree: getJstree_light()}); // tog bort: filenames: getAllFiles()
+  res.render('diff', {page:'Diff files', menuId:'diff', jstree: getJstree_light()});
 });
 
 async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last_job_number){

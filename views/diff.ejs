@@ -24,17 +24,12 @@
 </head>
 <body>
 
-
-
-
 <div class="row">
     <div class="column">
         <br id="main-container" style="padding-left: 50px">
         <% include partials/menu %>
     </div>
 </div>
-
-
 
 
 <div class="ui equal width grid ">
@@ -122,17 +117,14 @@
         // empty first
         $('#diff_container').empty()
 
-        var first_list = []
-        var second_list = []
-
         var first_list  = $('#container').jstree(true).get_selected();
         var second_list = $('#container2').jstree(true).get_selected();
 
         var result_first  = first_list[0]
         var result_second = second_list[0]
 
-        console.log(result_first)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json" ]
-        console.log(result_second)
+        console.log("fil1: " + result_first)  // får: Array [ "data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number10wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww/original-data-structure-errors.json" ]
+        console.log("fil2: " + result_second)
 
         var return_first;
 
@@ -146,16 +138,6 @@
 
                 $('#diff_container').append(return_first)
             }
-
-            /*
-
-            const targetElement = document.getElementById("diff_container");
-
-            const configuration = { inputFormat: 'json', drawFileList: true, matching: 'none', highlight: true,  outputFormat: 'side-by-side' };
-            const diff2htmlUi = new Diff2HtmlUI(targetElement, return_first, configuration);
-            diff2htmlUi.draw();
-            diff2htmlUi.highlightCode();
-*/
         }
 
         var rest_parameters = "difffile?firstfolder="+ result_first + "&secondfolder=" + result_second
