@@ -3250,7 +3250,7 @@ function debug(namespace) {
 
     var self = enabled;
 
-    // set `diff` timestamp
+    // set `comp` timestamp
     var curr = +new Date();
     var ms = curr - (prevTime || curr);
     self.diff = ms;

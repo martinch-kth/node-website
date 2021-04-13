@@ -147,7 +147,7 @@ function getAllFiles() {
 
 function getAllFilesTreemap(callback) {
 
-// funkar..  var stdout=cp.exec('git diff --no-index public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number5/fluxion/ public/data/reff2/YYYY-MM-DD_TT-TT-TT_Longname_number3/fluxionChanged/ > comparison.diff').stdout
+// funkar..  var stdout=cp.exec('git comp --no-index public/data/reff1/YYYY-MM-DD_TT-TT-TT_Longname_number5/fluxion/ public/data/reff2/YYYY-MM-DD_TT-TT-TT_Longname_number3/fluxionChanged/ > comparison.comp').stdout
 
   var child = child_process.spawnSync("find", ["public/data","-maxdepth","3"], { encoding : 'utf8' });
   console.log("Process finished.");

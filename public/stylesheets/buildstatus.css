@@ -16,11 +16,15 @@
     flex: 1;
 }
 
-
 .FixedHeightContainer
 {
     height: 200px;
     overflow:auto;
+}
+
+.FixedHeightContainerStatus
+{
+    height: 200px;
 }
 
 .modulecontent

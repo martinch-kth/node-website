@@ -1,6 +1,6 @@
 /*!
 
- diff v2.0.1
+ comp v2.0.1
 
 Software License Agreement (BSD License)
 
@@ -94,12 +94,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* See LICENSE file for terms of use */
 
 	/*
-	 * Text diff implementation.
+	 * Text comp implementation.
 	 *
 	 * This library supports the following APIS:
-	 * JsDiff.diffChars: Character by character diff
-	 * JsDiff.diffWords: Word (as defined by \b regex) diff which ignores whitespace
-	 * JsDiff.diffLines: Line based diff
+	 * JsDiff.diffChars: Character by character comp
+	 * JsDiff.diffWords: Word (as defined by \b regex) comp which ignores whitespace
+	 * JsDiff.diffLines: Line based comp
 	 *
 	 * JsDiff.diffCss: Diff targeted at CSS content
 	 *
@@ -244,7 +244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        // Select the diagonal that we want to branch from. We select the prior
 	        // path whose position in the new string is the farthest from the origin
-	        // and does not pass the bounds of the diff graph
+	        // and does not pass the bounds of the comp graph
 	        if (!canAdd || canRemove && addPath.newPos < removePath.newPos) {
 	          basePath = clonePath(removePath);
 	          self.pushComponent(basePath.components, undefined, true);
@@ -737,7 +737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    i++;
 	  }
 
-	  // Parse the unified diff
+	  // Parse the unified comp
 	  for (; i < diffstr.length; i++) {
 	    if (diffstr[i][0] === '@') {
 	      var chnukHeader = diffstr[i].split(/@@ -(\d+),(\d+) \+(\d+),(\d+) @@/);
@@ -764,7 +764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  // Apply the diff to the input
+	  // Apply the comp to the input
 	  var lines = oldStr.split('\n');
 	  for (i = hunks.length - 1; i >= 0; i--) {
 	    var hunk = hunks[i];

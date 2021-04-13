@@ -2185,7 +2185,7 @@ function setup(env) {
         return;
       }
 
-      var self = debug; // Set `diff` timestamp
+      var self = debug; // Set `comp` timestamp
 
       var curr = Number(new Date());
       var ms = curr - (prevTime || curr);
