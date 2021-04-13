@@ -249,10 +249,6 @@ function getJstree() {
   const treed = Object.values(dirTree("public/data"));
   const tree = treed[2]
 
-  //console.log(tree)
-  // skippa ovan.. gör om till bara kataloger... fuuuuuukk.. va fult :-)...
-
-
   var jstree = []
 
   function eachRecursive(data, level) {
