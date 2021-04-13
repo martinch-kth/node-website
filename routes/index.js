@@ -446,7 +446,7 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
 
                 //   var modules_status = ssh_to_fleetctl(jenkins_url)
 
-                for (line of dead_modules)
+                for (const line of dead_modules)
                 {
                   if (line !== "")
                   {
