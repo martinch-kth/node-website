@@ -434,7 +434,7 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
               // skippa anropa metoden..kör allt här...
               var spawn = require('child_process').spawn;
 
-              var child = spawn("ssh root@10.68.234.81 ssh mfc1 fleetctl --endpoint htp://127.0.0.1:49153 list-units | grep dead",{ shell:true});
+              var child = spawn("ssh root@10.68.234.81 ssh mfc1 fleetctl --endpoint http://127.0.0.1:49153 list-units | grep dead",{ shell:true});
 
               child.stderr.on('data', function (data) {
                 console.error("STDERR:", data.toString());
