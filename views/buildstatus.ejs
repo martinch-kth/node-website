@@ -73,26 +73,21 @@
                     '        </h2>' +
                     '    </div>' +
 
-                '                <div class="ui large message FixedHeightContainer" style="width: 10%;float: left;margin-right: 5px;padding:2px;">' +
-                '                  <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.url + '"></div>' +
-                '                    <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
-                '                    <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
-                '                </div>' +
+                '            <div class="ui medium message FixedHeightContainer" style="width: 10%;float: left;margin-right: 5px;padding:2px;">' +
+                '            <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.url + '"></div>' +
+                '            <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
+                '            <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
 
-                        '<div class="ui relaxed divided list FixedHeightContainer" style="border: 1px solid black;border-radius: 5px;padding: 1px;width: 10%;float: left;margin-right: 5px;">' +
-                '     <i class="large jenkins middle aligned icon"></i>' +
-                        '  <div class="item">' +
+                            '  <div class="item" style="padding-top:5px">' +
+                            '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
+                            '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                            '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
+                            '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
+                            ' </div>' +
 
-                        '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
-                        '           <div class="description">Last stable build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastStableBuild.number) + '</div>' +
-                        '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                        '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
-                        '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
-                        '           <div class="description">Last completed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                        '   </div>' +
-                        '</div>' +
+                '    </div>' +
 
-                        '<div id="modules_' + jenkins_reff.getJobInfo.url + '" class="ui list FixedHeightContainer" style="width: 10%;border: 1px solid black;border-radius: 5px;padding: 1px;float: left;margin-right: 5px;"></div>' +
+                        '<div id="modules_' + jenkins_reff.getJobInfo.url + '" class="ui list FixedHeightContainer" style="width: 22%;border: 1px solid black;border-radius: 5px;padding: 1px;float: left;margin-right: 5px;"></div>' +
 
                   '<div class="FixedHeightContainer" id="scroll_' + jenkins_reff.getJobInfo.url + '" style="width: 57%;float: left;border: 1px solid black;border-radius: 5px;margin-top: 14px;">' +
                     '<pre id="out_' + jenkins_reff.getJobInfo.url + '"></pre>' +

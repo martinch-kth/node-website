@@ -5,7 +5,7 @@ app.use(express.static("public"));
 
 var cors = require('cors')
 //var logger = require('morgan');
-var index = require('./routes/index');
+var index = require('./routes/index'); // kör lokalt med -> index_local
 
 const chokidar = require('chokidar');
 const fs = require("fs");
