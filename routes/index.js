@@ -420,6 +420,8 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
 
      var clean_out = []
 
+     var stream_me = true
+
      for (const line of log)
      {
           if (line.includes("Finished:"))
@@ -455,11 +457,17 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
                   }
                 }
                 console.log(clean_out)
+                stream_me = false
                 var stream = ss.createStream();
                 ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n'));
               })
             }
           }
+     }
+     if (stream_me) // this means no ssh was done..just stream text..
+     {
+       var stream = ss.createStream();
+       ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n'));
      }
     });
 
