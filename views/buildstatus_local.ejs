@@ -23,15 +23,8 @@
 </head>
 <body class="contact-background-image">
 
-<div class="row">
-    <div class="column">
-        <br id="main-container" style="padding-left: 50px">
 
-    </div>
-</div>
-
-<div class="ui four cards" id="ongoingTasksContainer" style="padding-left: 50px;">
-</div>
+<div id="ongoingTasksContainer"></div>
 
 <script>
 
@@ -61,11 +54,11 @@
 
             var reff_element =
 
-            '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card"  style="width: 100%;">' +
+            '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card"  style="width: 100%;margin-top: 5px;">' +
 
-                    '<div class="row">' +
+                '<div class="row" style="margin-top: -10px;margin-bottom: -10px">' +
 
-                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainerStatus" style="word-break:break-all;width: 9%;float: left;margin-top: 5px;margin-left:5px;margin-bottom: 16px;margin-right:5px;border-radius: 5px;padding-top: 5px;text-align:center;">' +
+                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainerStatus" style="word-break:break-all;width: 9%;float: left;margin-top: 13px;margin-left:5px;margin-bottom: 16px;margin-right:5px;border-radius: 5px;padding-top: 5px;text-align:center;">' +
                     '        <h2 class="ui medium icon header">' +
                     '            <i class="laptop icon"></i>' +
                     '            <div class="content">' + jenkins_reff.reff_name + '</div>' +
