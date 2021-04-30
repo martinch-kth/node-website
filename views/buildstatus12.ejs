@@ -58,10 +58,9 @@
 
                     '<div class="row" style="margin-top: -10px;margin-bottom: -10px">' +
 
-                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainerStatus" style="word-break:break-all;width: 9%;float: left;margin-top: 16px;margin-left:5px;margin-bottom: 16px;margin-right:5px;border-radius: 5px;padding-top: 5px;text-align:center;">' +
+                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainerStatus" style="word-break:break-all;width: 98%;float: left;border-radius: 5px;padding-top: 5px;text-align:center;">' +
                     '        <h2 class="ui medium icon header">' +
-                    '            <i class="laptop icon"></i>' +
-                    '            <div class="content">' + jenkins_reff.reff_name + '</div>' +
+                    '            <i class="laptop icon">' + jenkins_reff.reff_name + '</i>' +
                     '            <h3 style="margin-top: -5px" id="buildname_' + jenkins_reff.getJobInfo.url + '"></h3>' +
                     '        </h2>' +
                     '    </div>' +
@@ -107,12 +106,8 @@
             var clear_console_reff1 = false
             var clear_console_reff2 = false
 
-     // 10.68.108.165 http://leia
-     // 10.68.108.166 http://mandalorian
-
-
-     var reff1_url = "http://10.68.108.165:8080"
-     var reff2_url = "http://10.68.108.166:8080"
+     var reff1_url = "http://10.68.108.164:8080"
+     var reff2_url = "http://10.68.108.165:8080"
 
 
      var reff1_obj // only used as a timer object..maybe more later..
@@ -195,7 +190,7 @@
                             buildname = line_array.pop();             // last element is the build name
 
                             // sätt ut den...
-                            $("#buildname_"+jenkins_info_reff1.getJobInfo.url).text(buildname)
+                            $("#buildname_"+jenkins_info_reff1.getJobInfo.url).text("Build: " +buildname)
                         }
 
                         if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
@@ -291,7 +286,7 @@
                             buildname = line_array.pop();             // last element is the build name
 
                             // sätt ut den...
-                            $("#buildname_"+jenkins_info_reff2.getJobInfo.url).text(buildname)
+                            $("#buildname_"+jenkins_info_reff2.getJobInfo.url).text("Build: " +buildname)
                         }
 
                         if (line.includes("Finished:"))

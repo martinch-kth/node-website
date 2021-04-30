@@ -613,8 +613,7 @@ router.get('/buildstatusscroller_local', async function (req, res, next) {
 
 
   var reff1_url_no_psw = "http://127.0.0.1:8080" // no PASSWORD...
-  var reff2_url_no_psw = "http://localhost:8080"  // "http://admin:sudamerica77M!!!@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
-
+  var reff2_url_no_psw = "http://localhost:8080"
   file1.myio.on('connection', async function (socket) {
 
     console.log("Made socket connections fun again");
