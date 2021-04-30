@@ -5,7 +5,7 @@
     <script src="javascript/socket.io.js"></script>
     <script src="javascript/socket.io-stream.js"></script>
 
-    <link rel="stylesheet" href="/stylesheets/buildstatuslocal.css">
+    <link rel="stylesheet" href="/stylesheets/buildstatus12.css">
 
     <!-- jQuery library -->
     <script src="javascript/jquery.min.js"></script>
@@ -21,10 +21,10 @@
     </script>
 
 </head>
-<body class="contact-background-image" style="height: auto">
+<body class="contact-background-image">
 
-
-<div id="ongoingTasksContainer"></div>
+<div class="ui four cards" id="ongoingTasksContainer" style="padding-left: 5px;">
+</div>
 
 <script>
 
@@ -56,9 +56,9 @@
 
             '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card"  style="width: 99%;margin: 10px;">' +
 
-                '<div class="row" style="margin-top: -10px;margin-bottom: -10px">' +
+                    '<div class="row" style="margin-top: -10px;margin-bottom: -10px">' +
 
-                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainerStatus" style="word-break:break-all;width: 9%;float: left;margin-top: 13px;margin-left:5px;margin-bottom: 16px;margin-right:5px;border-radius: 5px;padding-top: 5px;text-align:center;">' +
+                    '    <div id="statuscolor_' + jenkins_reff.getJobInfo.url + '" class="FixedHeightContainerStatus" style="word-break:break-all;width: 9%;float: left;margin-top: 5px;margin-left:5px;margin-bottom: 16px;margin-right:5px;border-radius: 5px;padding-top: 5px;text-align:center;">' +
                     '        <h2 class="ui medium icon header">' +
                     '            <i class="laptop icon"></i>' +
                     '            <div class="content">' + jenkins_reff.reff_name + '</div>' +
@@ -66,21 +66,19 @@
                     '        </h2>' +
                     '    </div>' +
 
-                '                <div class="ui medium message FixedHeightContainer" style="width: 10%;float: left;margin-right: 5px;padding:2px;">' +
-                '                  <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.url + '"></div>' +
-                '                    <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
-                '                    <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
-                '                ' +
-                    '  <div class="item" style="padding-top:5px">' +
+                '            <div class="ui medium message FixedHeightContainer" style="width: 10%;float: left;margin-right: 5px;padding:2px;">' +
+                '            <i class="clock icon imuststyle"></i><div id="timer_' + jenkins_reff.getJobInfo.url + '"></div>' +
+                '            <div>Estimated duration: ' + moment.utc(jenkins_reff.getLastBuildInfo.estimatedDuration).format('HH [hours] mm [min]') + '</div>' +
+                '            <div>Job started: ' + moment.utc(jenkins_reff.getLastBuildInfo.timestamp).format(('dddd, MMMM Do YYYY, h:mm:ss a')) + '</div>' +
 
-                    '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
-                    '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
-                    '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
-                    '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
-                    '   </div>' +
-                '</div>' +
+                            '  <div class="item" style="padding-top:5px">' +
+                            '           <div class="description">Job name: ' + jenkins_reff.getJobInfo.displayName + '</div>' +
+                            '           <div class="description">Last successful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastCompletedBuild.number) + '</div>' +
+                            '           <div class="description">Last failed build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastFailedBuild.number) + '</div>' +
+                            '           <div class="description">Last unsuccessful build: #' + JSON.stringify(jenkins_reff.getJobInfo.lastUnsuccessfulBuild.number) + '</div>' +
+                            ' </div>' +
 
-
+                '    </div>' +
 
                         '<div id="modules_' + jenkins_reff.getJobInfo.url + '" class="ui list FixedHeightContainer" style="width: 22%;border: 1px solid black;border-radius: 5px;padding: 1px;float: left;margin-right: 5px;"></div>' +
 
@@ -104,24 +102,10 @@
         }
 
  $(function() {                   // BYT mot Serverns URL auto-m....
-            var socket = io.connect('http://localhost:3000');
+            var socket = io.connect('http://vdc-s-automix.vdc.saab.se:3000'); //http://localhost:3000');
 
             var clear_console_reff1 = false
             var clear_console_reff2 = false
-            var clear_console_reff3 = false
-    //      var clear_console_reff4 = false
-            var clear_console_reff5 = false
-            var clear_console_reff6 = false
-
-            var jenkins_info_reff1
-            var jenkins_info_reff2
-            var jenkins_info_reff3
-    //      var jenkins_info_reff4
-            var jenkins_info_reff5
-            var jenkins_info_reff6
-
-     var reff1_url = "http://127.0.0.1:8080"
-     var reff2_url = "http://localhost:8080"
 
      // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
      // 10.68.108.165 http://leia
@@ -131,12 +115,9 @@
      // 10.68.234.80 http://sebulba  vrefs
      // 10.68.234.81 http://logray
 
-   //  var reff1_url = "http://10.68.108.164:8080"
-  //   var reff2_url = "http://10.68.108.165:8080"
-     var reff3_url = "http://10.68.108.166:8080"
-  // var reff4_url = "http://10.68.108.167:8080"  // ska komma in om 1 år..
-     var reff5_url = "http://10.68.234.80:8080"
-     var reff6_url = "http://10.68.234.81:8080"
+     var reff1_url = "http://10.68.234.80:8080"
+     var reff2_url = "http://10.68.234.81:8080"
+
 
      var reff1_obj // only used as a timer object..maybe more later..
      var reff2_obj
@@ -370,7 +351,7 @@
                     clear_console_reff2 = true
                     console.log(reff2_url + " = browser refname. reff that will be cleared:"+ data)
                 });
-                //////////////////////////////////
+
             });
         });
     });

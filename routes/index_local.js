@@ -414,6 +414,7 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
      var log = text.split("\n")  // split on each line..
 
      var clean_out = []
+      var stream_me = true
 
      for (const line of log)
      {
@@ -447,19 +448,29 @@ async function run_jenkins_job_stream(socket,jenkins_url, jenkins_job_name, last
                   if (line !== "")
                   {
                     var clean = line.split(/\s{2,}|\t/)
-                    clean_out.push(clean[0] + " " + clean[3])
+
+                    clean[0] = clean[0].substring(0, clean[0].lastIndexOf("."))
+
+                    clean[1] = /[^/]*$/.exec(clean[1])[0];
+
+                    clean_out.push(clean[0] + " " + clean[1] +" "+ clean[3])
                   }
                 }
                 console.log(clean_out)
+                stream_me = false
                 var stream = ss.createStream();
-                ss(socket).emit(jenkins_url, stream, text, dead_modules.join('\n'));
+                ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n'));
               })
 
           }
      }
 
      // får tomt data.... alltså clean_out är tom när den skickas nedan...men det kommer ut i loopen.. med consol.log...YYYY????
-
+      if (stream_me) // this means no ssh was done..just stream text..
+      {
+        var stream = ss.createStream();
+        ss(socket).emit(jenkins_url, stream, text, clean_out.join('\n'));
+      }
 
     });
 
@@ -557,31 +568,10 @@ async function get_jenkins_info(jenkins_url, jenkins_job_name,passw,reff_name) {
 router.get('/buildstatus_local', async function (req, res, next) {
 
   var jenkins_info_reff1 = ""
-  var jenkins_info_reff2 = ""
-
-  var jenkins_info_reff3 = ""
-  var jenkins_info_reff4 = ""
-
-  var jenkins_info_reff5 = ""
-  var jenkins_info_reff6 = ""
 
   var reff1_url_no_psw = "http://localhost:8080" // no PASSWORD...
-//  var reff2_url_no_psw = "http://admin:s***M@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
 
-//  var reff1_url_no_psw = "http://10.68.108.164:8080"
-  var reff2_url_no_psw = "http://10.68.108.165:8080"
-  var reff3_url_no_psw = "http://10.68.108.166:8080"
-//var reff4_url_no_psw = "http://10.68.108.167:8080"  // ska användas om 1 år
-  var reff5_url_no_psw = "http://10.68.234.80:8080"
-  var reff6_url_no_psw = "http://10.68.234.81:8080"
 
-  // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
-  // 10.68.108.165 http://leia
-  // 10.68.108.166 http://mandalorian
-  // 10.68.108.167 http://chewbacca
-
-  // 10.68.234.80 http://sebulba  vrefs
-  // 10.68.234.81 http://logray
 
   file1.myio.on('connection', async function (socket) {
 
@@ -597,16 +587,6 @@ router.get('/buildstatus_local', async function (req, res, next) {
           console.log('...polling...')
 
            var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
-  //        var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","s**M","Ek2-Maxi")
-
-
-      //    var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "install", "", "Han Solo")
-      //      var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "install","","Leia")
-      //      var loop_reff3 = await get_jenkins_info(reff3_url_no_psw, "install", "", "Mandalorian")
-      //    var loop_reff4 = await get_jenkins_info(reff4_url_no_psw, "install","","Chewbacca")
-      //      var loop_reff5 = await get_jenkins_info(reff5_url_no_psw, "install", "", "Sebulba")
-      //      var loop_reff6 = await get_jenkins_info(reff6_url_no_psw, "install","","Logray")
-
 
           // checks if new job has started. their must be at least 1 job in history
           if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1.getLastBuildInfo.timestamp)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
@@ -624,6 +604,115 @@ router.get('/buildstatus_local', async function (req, res, next) {
   });
 
   res.render('buildstatus_local', {page: 'Build status', menuId: 'buildstatus'});
+});
+
+router.get('/buildstatusscroller_local', async function (req, res, next) {
+
+  var jenkins_info_reff1 = ""
+  var jenkins_info_reff2 = ""
+
+
+  var reff1_url_no_psw = "http://127.0.0.1:8080" // no PASSWORD...
+  var reff2_url_no_psw = "http://localhost:8080"  // "http://admin:sudamerica77M!!!@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
+
+  file1.myio.on('connection', async function (socket) {
+
+    console.log("Made socket connections fun again");
+
+    const {
+      setIntervalAsync,
+      clearIntervalAsync
+    } = require('set-interval-async/dynamic')
+
+    const timer = setIntervalAsync(
+        async () => {
+          console.log('...polling...')
+
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
+          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test3-ref1", "", "Ek2-Max")
+      //    var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test","sudamerica77M!!!","Ek2-Maxi")
+
+
+          //         && (typeof loop_reff1.getLastBuildInfo.timestamp !== "undefined")
+
+          // checks if new job has started. their must be at least 1 job in history
+          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1.getLastBuildInfo.timestamp))&& (typeof loop_reff1.getLastBuildInfo.timestamp !== "undefined") && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
+          {
+            jenkins_info_reff1 = loop_reff1.getLastBuildInfo.timestamp // update - compare against this next pollning..
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff1', stream, JSON.stringify(loop_reff1));
+
+            run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id); // stream job info and module status
+          }
+
+          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2.getLastBuildInfo.timestamp)) && (typeof loop_reff2.getLastBuildInfo.timestamp !== "undefined") && (typeof loop_reff2 !== "undefined") && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
+          {
+            jenkins_info_reff2 = loop_reff2.getLastBuildInfo.timestamp // update - compare against this next pollning..
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff2', stream, JSON.stringify(loop_reff2));
+
+            run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id); // stream job info and module status
+          }
+
+        },
+        10000) // brukar köra med 5000 annars..dvs 5 sek..men testa nu med mer för att inte "överbelasta nätet"
+  });
+
+  res.render('buildstatusscroller_local', {page: 'Build status', menuId: 'buildstatusscroller_local'});
+});
+
+// Man skulle kunna ha såhär..men ..ja tror det blir fel att ladda om allt!...i loop..
+router.get('/buildstatus12', async function (req, res, next) {
+
+  var jenkins_info_reff1 = ""
+  var jenkins_info_reff2 = ""
+
+  var reff1_url_no_psw = "http://127.0.0.1:8080" // no PASSWORD...
+  var reff2_url_no_psw = "http://localhost:8080"  // "http://admin:sudamerica77M!!!@130.237.59.171:8080" // sätt tillbaka sen // var jenkins = require('jenkins')({ baseUrl: 'http://user:pass@localhost:8080', crumbIssuer: true });
+
+  file1.myio.on('connection', async function (socket) {
+
+    console.log("Made socket connections fun again - reff 1_2");
+
+    const {
+      setIntervalAsync,
+      clearIntervalAsync
+    } = require('set-interval-async/dynamic')
+
+    const timer = setIntervalAsync(
+        async () => {
+          console.log('...polling...reff 1-2..')
+
+          var loop_reff1 = await get_jenkins_info(reff1_url_no_psw, "test3", "", "Ek1-Mini")
+          var loop_reff2 = await get_jenkins_info(reff2_url_no_psw, "test3-ref1", "", "Ek2-Max")
+
+          // checks if new job has started. their must be at least 1 job in history
+          if ((JSON.stringify(jenkins_info_reff1) !== JSON.stringify(loop_reff1.getLastBuildInfo.timestamp)) && (typeof loop_reff1 !== "undefined") && (typeof loop_reff1.getJobInfo !== "undefined") && (loop_reff1.getJobInfo.firstBuild !== null))
+          {
+            jenkins_info_reff1 = loop_reff1.getLastBuildInfo.timestamp // update - compare against this next pollning..
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff1', stream, JSON.stringify(loop_reff1));
+
+            run_jenkins_job_stream(socket, reff1_url_no_psw, loop_reff1.getJobInfo.name, loop_reff1.getLastBuildInfo.id); // stream job info and module status
+          }
+          if ((JSON.stringify(jenkins_info_reff2) !== JSON.stringify(loop_reff2.getLastBuildInfo.timestamp)) && (typeof loop_reff2 !== "undefined") && (typeof loop_reff2.getJobInfo !== "undefined") && (loop_reff2.getJobInfo.firstBuild !== null))
+          {
+
+            jenkins_info_reff2 = loop_reff2.getLastBuildInfo.timestamp
+
+            var stream = ss.createStream();
+            ss(socket).emit('jenkins_info_reff2', stream, JSON.stringify(loop_reff2));
+
+            run_jenkins_job_stream(socket, reff2_url_no_psw, loop_reff2.getJobInfo.name, loop_reff2.getLastBuildInfo.id);
+          }
+        },
+        10000) // brukar köra med 5000 annars..dvs 5 sek..men testa nu med mer för att inte "överbelasta nätet"
+  });
+
+  res.render('buildstatus_local', {page: 'Build status', menuId: 'buildstatus12'});
 });
 
 module.exports = router;

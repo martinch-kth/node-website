@@ -5,7 +5,7 @@
     <script src="javascript/socket.io.js"></script>
     <script src="javascript/socket.io-stream.js"></script>
 
-    <link rel="stylesheet" href="/stylesheets/buildstatuslocal.css">
+    <link rel="stylesheet" href="/stylesheets/buildstatus.css">
 
     <!-- jQuery library -->
     <script src="javascript/jquery.min.js"></script>
@@ -21,14 +21,22 @@
     </script>
 
 </head>
-<body class="contact-background-image" style="height: auto">
+<body class="contact-background-image">
 
 
 <div id="ongoingTasksContainer"></div>
 
 <script>
 
+
+
+
+
+
+
+
     $(document).ready(function() {
+
 
         // Update the bootstrap grid once the tasks are added
         function updateTaskContainerHead(containerId, jenkins_reff) {
@@ -54,7 +62,7 @@
 
             var reff_element =
 
-            '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card"  style="width: 99%;margin: 10px;">' +
+            '<div id="' + jenkins_reff.getJobInfo.url + '" class="ui card"  style="width: 100%;margin-top: 5px;">' +
 
                 '<div class="row" style="margin-top: -10px;margin-bottom: -10px">' +
 
@@ -106,6 +114,121 @@
  $(function() {                   // BYT mot Serverns URL auto-m....
             var socket = io.connect('http://localhost:3000');
 
+     // http://plnkr.co/edit/55h5cmxOAZeNTGbKzedA?p=preview&preview
+     setInterval(function thing() {
+
+         // div id= " # statuscolor_http10681081658080jobinstall  ...
+         //
+
+         //  1) kör 6 st if? kolla vilka ID som finns .. skapa en array?
+         //
+         //  blir konstig om det dyker upp flera reffar... eller gå ner...
+
+         // får en array med ... ..eller object?.. vad jag med detta till..?
+         //
+         var all_reffs = $('div')
+             .filter(function() {
+                 return this.id.match(/statuscolor_http/);
+             })
+
+       // console.log("antal divvar..: " +all_reffs.length)
+
+         if (all_reffs.length <=3)
+         {
+             // gör inget...
+             console.log("under tre...reffar..")
+
+         }
+         else if(all_reffs.length > 3 )
+         {
+             console.log("ÖVER tre...reffar..")
+
+/*
+             var arrays = [], size = all_reffs.length/2; // dela alla i två arrayer..
+
+             while (all_reffs.length > 0)
+                 arrays.push(all_reffs.splice(0, size));
+*/
+             // nu borde man ha två array..
+
+             console.log("alla element i allrefs" + all_reffs)
+
+             // om jag gömmer alla så blir det 2 st...
+             // .........................................
+
+            // Gör detta hela tiden...nu...
+        //     setInterval(function thingtwo() {
+           /*
+             for (const element of all_reffs)
+             {
+
+             }
+           */
+             var b1 = $(all_reffs[0]).attr('id')
+             var b2 = $(all_reffs[1]).attr('id')
+           //
+                var b3 = $(all_reffs[0]).attr('id')
+             console.log("IIIIIIIIIIIDDDDDDDDDDDDDDDDD"+ b3)
+           //   var b2 = all_reffs[1];
+
+              if(b1['style'].display == 'none')
+              {
+                     b1['style'].display = 'block';
+                     b2['style'].display = 'none';
+              }
+              else
+              {
+                     b1['style'].display = 'none';
+                     b2['style'].display = 'block';
+              }
+
+
+        //     }, 2000);
+
+         }
+         // dela upp length i 2 och 2.. modulo två?..
+         /*
+         var a = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+
+         if all_reffs > 3 ...dela på 2.. ..?? visa 3 i taget annars.. annars 2 i taget... kommer vara max 2-2 eller 3-3...
+
+           else .. dela inte alls om det är under <= 3 ..
+
+         var arrays = [], size = all_reffs.length/2; // om men
+
+         while (a.length > 0)
+             arrays.push(a.splice(0, size));
+
+         så... nu har man en array med som bäst 3 -3  hälften hälften...
+
+*/
+         /*
+         if ($("#httplocalhost8080jobtest3tva").length && $("#httplocalhost8080jobtest3tvatre").length)
+         {
+             var b1 = document.getElementById('httplocalhost8080jobtest3tva');
+             var b2 = document.getElementById('httplocalhost8080jobtest3tvatre');
+
+             if(b1['style'].display == 'none')
+             {
+                 b1['style'].display = 'block';
+                 b2['style'].display = 'none';
+             }
+             else
+             {
+                 b1['style'].display = 'none';
+                 b2['style'].display = 'block';
+             }
+         }
+         else
+         {
+             //no elements found  --- inte göra nått??..
+             console.log("....inte hittat nått element ännu...")
+         }
+         */
+
+     }, 5000);
+
+
             var clear_console_reff1 = false
             var clear_console_reff2 = false
             var clear_console_reff3 = false
@@ -120,30 +243,12 @@
             var jenkins_info_reff5
             var jenkins_info_reff6
 
-     var reff1_url = "http://127.0.0.1:8080"
-     var reff2_url = "http://localhost:8080"
+          var reff1_url = "http://127.0.0.1:8080"
+          var reff2_url = "http://localhost:8080"
 
-     // 10.68.108.164 http://hansolo    IDE .. vore koolt att ha liten GIF vid varje reff.. så varje reff har ett TEMA :-)
-     // 10.68.108.165 http://leia
-     // 10.68.108.166 http://mandalorian
-     // 10.68.108.167 http://chewbacca
-
-     // 10.68.234.80 http://sebulba  vrefs
-     // 10.68.234.81 http://logray
-
-   //  var reff1_url = "http://10.68.108.164:8080"
-  //   var reff2_url = "http://10.68.108.165:8080"
-     var reff3_url = "http://10.68.108.166:8080"
-  // var reff4_url = "http://10.68.108.167:8080"  // ska komma in om 1 år..
-     var reff5_url = "http://10.68.234.80:8080"
-     var reff6_url = "http://10.68.234.81:8080"
 
      var reff1_obj // only used as a timer object..maybe more later..
      var reff2_obj
-     var reff3_obj
-  // var reff4_obj
-     var reff5_obj
-     var reff6_obj
 
             class Reff {
                 constructor(jenkins_2_obj) {
@@ -189,6 +294,16 @@
 
                     var temp = jenkins_info_reff1.getJobInfo.url
                     jenkins_info_reff1.getJobInfo.url =  temp.replace(/[^a-z0-9-_]+/gi, "")
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff1);
+
+                    // fake some...
+
+                    jenkins_info_reff1.getJobInfo.url =  jenkins_info_reff1.getJobInfo.url + "tva"
+
+                    updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff1);
+
+                    jenkins_info_reff1.getJobInfo.url =  jenkins_info_reff1.getJobInfo.url + "tre"
 
                     updateTaskContainerHead('ongoingTasksContainer', jenkins_info_reff1);
 
@@ -277,9 +392,9 @@
                     console.log(reff1_url + " = browser refname. reff that will be cleared:"+ data)
                 });
 
-                // Remove duplication of code asap.. DRY :-/
-                ////////////////////////////////////////////
 
+
+                ////////// reff 2 /////////////
                 ss(socket).on('jenkins_info_reff2', function(stream,data)
                 {
                     jenkins_info_reff2 = JSON.parse(data);
@@ -291,9 +406,9 @@
 
                     reff2_obj = new Reff(jenkins_info_reff2)
                     reff2_obj.startTimer()
-
                 });
 
+// Får data från reff2 här som ska visa i textboxxen..
                 ss(socket).on(reff2_url, function(stream,data, modules_status) {
 
                     $("#modules_"+ jenkins_info_reff2.getJobInfo.url).empty()
@@ -307,7 +422,7 @@
 
                     for (const line of log) {
 
-                        if (line.includes("Using latest build with specific key word:"))
+                        if (line.includes("Using latest build with specific key word:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
                         {
                             var line_array = line.split(/ +/)  // split on spaces only
 
@@ -317,7 +432,7 @@
                             $("#buildname_"+jenkins_info_reff2.getJobInfo.url).text(buildname)
                         }
 
-                        if (line.includes("Finished:"))
+                        if (line.includes("Finished:"))  // '[2020-11-10T06:52:59.907Z] Using latest build with specific key word: 2020-11-10_05-13-00_htmgle-master-staging_3731'
                         {
                             reff2_obj.stopTimer() // stoppa tiden...
 
@@ -366,11 +481,16 @@
                     element.scrollTop = element.scrollHeight;
                 });
 
+// reff2 har fått all data, då är textboxxen klar, inget mer kommer in.
                 ss(socket).on('end:'+ reff2_url, function(stream,data) {
+
                     clear_console_reff2 = true
                     console.log(reff2_url + " = browser refname. reff that will be cleared:"+ data)
                 });
-                //////////////////////////////////
+
+
+                //////////////////////////////
+
             });
         });
     });

@@ -204,7 +204,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
     var host_path = "" // keeps track of host your in..
 
     var return_first
-    var return_second
+
     ////////////////////////////////////////////////////////////////////
 
     window.addEventListener('message', function (e) {
@@ -399,33 +399,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
 
                  //  console.log(list[1].toString().includes("region"))
                  //   console.log(Object.keys(d._children[0].key));
-
-                    if (list[1].toString().includes("region") === true)  // true = module
-                    {
-
-                        var second_dropdown = $('#diff_dropdown').dropdown('get text')
-
-                        if (second_dropdown !== "")
-                        {
-                        //    alert("module: "+ d.key)
-
-                            for (mod in return_first.modules) // check if module exist on same host
-                            {
-                                if (return_second.modules[mod].onHost === host_path && return_second.modules[mod].moduleName === d.key)
-                                {
-                                    $('#textareabox').show();
-
-                                    createDiff(JSON.stringify(return_first.modules[mod], null, 1),JSON.stringify(return_second.modules[mod], null, 1))
-                                }
-                            }
-                        }
-
-                    }
-                    else
-                    {
-                       host_path = d.key
-                       $('#textareabox').hide(); // always...
-                    }
 
                     transition(d)
                 });
@@ -709,10 +682,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
         .dropdown({
             values
         });
-    $('.ui.dropdown.diffdrop')
-        .dropdown({
-            values
-        });
 
 
     $('.ui.dropdown.filedrop')
@@ -729,7 +698,7 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
                 $( "#chart" ).empty();
                 $("#status").empty()
                 $("#display3").empty()
-                $('.ui.dropdown.diffdrop').dropdown('clear');
+
 
                 function callback(response) {
                     return_first = response;
@@ -773,34 +742,6 @@ Generic treemap, based on http://bost.ocks.org/mike/treemap/
             }
         })
     ;
-
-    // sätt den först för att rensa värden.. blir fel med CSS eller nått sen..
-    $('.ui.dropdown.diffdrop').dropdown('clear'); // this will also remove css..
-
-    $('.ui.dropdown.diffdrop')
-        .dropdown({
-
-            onChange: function(value, text, $selectedItem) {
-
-                function callback_second(response) {
-                    return_second = response;
-
-                }
-
-                // set URL different...NOT static/localhost....get url used right now..
-                $.ajax({
-                    type: 'GET',
-                    url: '/data/'+ text,
-                    'success': function(data){
-                        callback_second(data);
-
-                    },
-                    error: function(xhr, status, err) {
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-        });
 
 </script>
 

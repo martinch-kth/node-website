@@ -1,0 +1,50 @@
+.contact-background-image {
+    background-image: url("../img/cam.jpg");
+}
+
+.imuststyle {
+    float: left;
+}
+
+.splitscreen {
+    display:flex;
+}
+.splitscreen .left {
+    flex: 1;
+}
+.splitscreen .right {
+    flex: 1;
+}
+
+.FixedHeightContainer
+{
+    height: 48vh;
+    overflow:auto;
+}
+
+.FixedHeightContainerStatus
+{
+    height: 48vh;
+}
+
+.modulecontent
+{
+    height:100px;
+    overflow:auto;
+}
+.divtop
+{
+    height:100px;
+}
+
+
+.myrow {
+    display: flex; /* equal height of the children */
+}
+
+.col {
+    flex: 1; /* additionally, equal width */
+
+    padding: 1em;
+    border: solid;
+}
